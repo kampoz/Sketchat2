@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sketchat</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+    <string name="activity_main_toolbar_title">Activity main</string>
+    <string name="loginInRegisterHint">Username</string>
+</resources>
