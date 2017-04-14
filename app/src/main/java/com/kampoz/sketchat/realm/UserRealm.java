@@ -2,6 +2,7 @@ package com.kampoz.sketchat.realm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by wasili on 2017-04-13.
@@ -9,6 +10,7 @@ import io.realm.annotations.Ignore;
 
 public class UserRealm extends RealmObject{
 
+    @PrimaryKey
     private String name;
 
     @Ignore

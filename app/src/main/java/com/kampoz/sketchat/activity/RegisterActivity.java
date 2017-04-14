@@ -8,8 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.facebook.stetho.Stetho;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.SketchatApplication;
 import com.kampoz.sketchat.realm.UserRealm;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
+
+import java.util.regex.Pattern;
 
 import io.realm.ObjectServerError;
 import io.realm.Realm;
@@ -36,42 +41,51 @@ public class RegisterActivity extends AppCompatActivity {
         etUsernameInRegistration = (EditText)findViewById(R.id.etUsernameInRegistration);
         bOKinRegistration = (Button) findViewById(R.id.bOKinRegistration);
 
-        final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
-        SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
-            @Override
-            public void onSuccess(SyncUser user) {
-                final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).build();
-                Log.d("SyncConfiguration", syncConfiguration.getRealmFileName());
-                Realm.setDefaultConfiguration(syncConfiguration);
-                realm = Realm.getDefaultInstance();
-            }
-
-            @Override
-            public void onError(ObjectServerError error) {
-                Log.d("Error", "To wina wasyla");
-            }
-        });
+//        final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
+//        SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
+//            @Override
+//            public void onSuccess(SyncUser user) {
+//                final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).build();
+//                Log.d("SyncConfiguration", syncConfiguration.getPath());
+//                Realm.setDefaultConfiguration(syncConfiguration);
+//                realm = Realm.getDefaultInstance();
+//
+//                Stetho.initialize(
+//                        Stetho.newInitializerBuilder(RegisterActivity.this)
+//                                .enableDumpapp(Stetho.defaultDumperPluginsProvider(RegisterActivity.this))
+//                                .enableWebKitInspector(RealmInspectorModulesProvider.builder(RegisterActivity.this).withFolder(syncConfiguration.getRealmDirectory()).databaseNamePattern(Pattern.compile(".+\\.realm")).build())
+//                                .build());
+//            }
+//
+//            @Override
+//            public void onError(ObjectServerError error) {
+//                Log.d("Error", "To wina wasyla");
+//            }
+//        });
 
         bOKinRegistration.setOnClickListener(new View.OnClickListener() {
 
 
             @Override
             public void onClick(View v) {
-                String userName = etUsernameInRegistration.getText().toString();
+                final String userName = etUsernameInRegistration.getText().toString();
                 if(TextUtils.isEmpty(userName)) {
                     etUsernameInRegistration.setError("Username cannot be empty");
                 }
                 else{
 
-                    final UserRealm userRealm = new UserRealm();
-                    userRealm.setName(userName);
-                    realm.executeTransaction(new Realm.Transaction() {
+                    Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            realm.copyToRealmOrUpdate(userRealm);
+                            UserRealm userRealm = realm.createObject(UserRealm.class, userName);
+
+                            //realm.copyToRealmOrUpdate(userRealm);
                         }
                     });
-                    realm.close();
+
+                    Log.d("Users count", Integer.toString( Realm.getDefaultInstance().where(UserRealm.class).findAll().size()));
+                    Log.d("Path",  Realm.getDefaultInstance().getPath());
+                    Log.d("Conf filename",  Realm.getDefaultInstance().getConfiguration().getRealmFileName());
                     //intent
                 }
             }
