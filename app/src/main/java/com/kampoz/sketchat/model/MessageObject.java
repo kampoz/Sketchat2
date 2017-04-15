@@ -5,22 +5,46 @@ package com.kampoz.sketchat.model;
  */
 
 public class MessageObject {
-    public boolean left;
-    public String userName;
-    public String message;
+    private boolean left;
+    private String userName;
+    private String stringMessageText;
 
     public MessageObject(){
     }
     public MessageObject(boolean left, String message) {
         super();
         this.left = left;
-        this.message = message;
+        this.stringMessageText = message;
     }
 
     public MessageObject(boolean left, String userName, String message) {
         super();
         this.left = left;
         this.userName = userName;
-        this.message = message;
+        this.stringMessageText = message;
+    }
+
+    public boolean isLeft() {
+        return left;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public String getStringMessageText() {
+        return stringMessageText;
+    }
+
+    public void setStringMessageText(String messageText) {
+        this.stringMessageText = messageText;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

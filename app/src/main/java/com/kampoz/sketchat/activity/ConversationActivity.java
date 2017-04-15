@@ -4,15 +4,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.adapter.ConversationActivityAdapter;
 
 public class ConversationActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private ConversationActivityAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,12 +26,24 @@ public class ConversationActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.activity_conversation_toolbar_title);
         setSupportActionBar(toolbar);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvConversation);
+        // w celach optymalizacji
+        recyclerView.setHasFixedSize(true);
+
+        // ustawiamy LayoutManagera
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new ConversationActivityAdapter();
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+
+
     }
 
 
