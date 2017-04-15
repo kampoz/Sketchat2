@@ -10,4 +10,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kampoz.sketchat.activity.SingleGroupActivity">
 
+    <include android:id="@+id/app_bar"
+        layout="@layout/app_bar"/>
+
+    <ListView
+        android:id="@+id/lvInActivitySingleGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/app_bar"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/colorMyAlmostWhite" />
+
 </RelativeLayout>

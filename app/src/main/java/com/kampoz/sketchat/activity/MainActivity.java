@@ -25,9 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -35,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_setting) {
+        if (id == R.id.action_settings) {
 //            Intent startSettingsActivityIntent = new Intent(this, SettingsActivity.class);
 //            this.startActivity(startSettingsActivityIntent);
 //            this.finish();

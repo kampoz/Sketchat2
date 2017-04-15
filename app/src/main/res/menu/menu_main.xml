@@ -3,7 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_setting"
+        android:id="@+id/action_register"
+        android:title="Register"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_login"
+        android:title="Login"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_groups_list"
+        android:title="Groups list"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_settings"
         android:title="@string/settings"
         app:showAsAction="collapseActionView"/>
 
