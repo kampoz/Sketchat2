@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.ConversationActivityAdapter;
+import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class ConversationActivity extends AppCompatActivity {
 
@@ -28,11 +29,9 @@ public class ConversationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvConversation);
-        // w celach optymalizacji
         recyclerView.setHasFixedSize(true);
-
-        // ustawiamy LayoutManagera
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
         adapter = new ConversationActivityAdapter();
         recyclerView.setAdapter(adapter);
@@ -42,8 +41,6 @@ public class ConversationActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
-
-
     }
 
 

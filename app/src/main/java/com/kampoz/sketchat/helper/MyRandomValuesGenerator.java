@@ -1,5 +1,8 @@
 package com.kampoz.sketchat.helper;
 
+import com.kampoz.sketchat.model.MessageObject;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -34,5 +37,13 @@ public class MyRandomValuesGenerator {
     public boolean getrandomBoolean(){
         Random random = new Random();
         return random.nextBoolean();
+    }
+
+    public ArrayList<MessageObject> setMessagesArrayList(int elementNumber){
+        ArrayList<MessageObject> messagesList = new ArrayList<>();
+        for(int i=0; i<elementNumber; i++){
+            MessageObject messageObject = new MessageObject(getrandomBoolean(), getRandomText());
+        }
+        return messagesList;
     }
 }
