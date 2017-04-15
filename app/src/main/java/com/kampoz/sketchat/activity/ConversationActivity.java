@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.ConversationActivityAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
+import com.kampoz.sketchat.model.MessageObject;
+
+import java.util.ArrayList;
 
 public class ConversationActivity extends AppCompatActivity {
 
@@ -32,8 +35,7 @@ public class ConversationActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
-
-        adapter = new ConversationActivityAdapter();
+        adapter = new ConversationActivityAdapter(generator.generateMessagesArrayList(30), recyclerView);
         recyclerView.setAdapter(adapter);
     }
 

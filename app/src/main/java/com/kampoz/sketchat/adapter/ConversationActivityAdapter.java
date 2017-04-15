@@ -20,9 +20,12 @@ import java.util.ArrayList;
 
 public class ConversationActivityAdapter extends RecyclerView.Adapter {
 
-    private ArrayList<MessageObject> messages = new ArrayList<>();
     private RecyclerView recyclerView;
     MyRandomValuesGenerator myGenerator = new MyRandomValuesGenerator();
+    private ArrayList<MessageObject> messages; // = myGenerator.generateMessagesArrayList(10);
+
+    int TYPE_RIGHT = 0;
+    int TYPE_LEFT = 1;
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvMessageText;
@@ -40,15 +43,25 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         this.recyclerView = recyclerView;
     }
 
-    public ConversationActivityAdapter(){
+    public ConversationActivityAdapter(ArrayList<MessageObject> messages) {
+        this.messages = messages;
+    }
 
+    public ConversationActivityAdapter(){
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
+    public int getItemViewType(int position) {
+        MessageObject messageObject = messages.get(position);
+        return messageObject.isLeft() ? TYPE_LEFT : TYPE_RIGHT;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view;
-        final boolean isLeft = myGenerator.getrandomBoolean();
-        if(isLeft) {
+        //final boolean isLeft = myGenerator.getrandomBoolean();
+
+        if(i == TYPE_LEFT) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_left, viewGroup, false);
         } else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_right, viewGroup, false);
@@ -57,12 +70,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Context context = view.getContext();
-                //int intClickedPosition = recyclerView.getChildAdapterPosition(view);
-                //MessageObject messageObject = messages.get(intClickedPosition);
-
-                //tu pobrac dane na temat wybragej konkretnej rozmowy, aby ja uruchomić
-
+                 //tu pobrac dane na temat wybragej konkretnej rozmowy, aby ja uruchomić
             }
         });
 
@@ -72,23 +80,13 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
 
-        //Prawidłowe gettery
-        //final MessageObject messageObject = messages.get(position);
-        //final boolean isLeft = messageObject.isLeft();
-        final boolean isLeft = myGenerator.getrandomBoolean();
-        ((MyViewHolder)viewHolder).tvMessageText.setText(myGenerator.getRandomText());
+        ((MyViewHolder)viewHolder).tvMessageText.setText(messages.get(position).getStringMessageText());
 
-        if(isLeft){
-
-        }
-        else{
-
-        }
     }
 
     @Override
     public int getItemCount() {
-        //return messages.size();
-        return 30;
+        return messages.size();
+
     }
 }

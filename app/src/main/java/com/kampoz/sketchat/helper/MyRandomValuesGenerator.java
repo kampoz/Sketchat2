@@ -17,7 +17,7 @@ public class MyRandomValuesGenerator {
                 "orem ipsum dolor sit amet, consectetur adipiscing elit. Praesent" +
                 " ut mi non purus scelerisque faucibus. Nunc id laoreet ante. Interdum et malesuada",
                 "In eget accumsan leo. Fusce ornare mauris eget porttitor congue.",
-                "das sddas sda",
+                "veni vidi vici",
                 "Cras aliquet augue nibh, at bibendum mauris imperdiet id. Vestibulum sollicitudin maximus" +
                         " orci et iaculis. Morbi vulputate mollis rutrum. Fusce eleifend, magna vitae placerat " +
                         "eleifend, neque erat tincidunt orci, quis feugiat orci ex a tortor. Praesent tincidunt" +
@@ -29,7 +29,8 @@ public class MyRandomValuesGenerator {
                 "Nie",
                 "Fusce ornare mauris eget porttitor congue. Pellentesque gravida risus massa, in posuere metus finibus eget.",
                 "Pellentesque consectetur ex eget orci consequat viverra. Etiam pretium pellentesque lobortis.",
-                "Morbi sit amet imperdiet felis."
+                "Morbi sit amet imperdiet felis.",
+                "Arci consequat viverra"
         };
         return messages[random.nextInt(messages.length)];
     }
@@ -39,10 +40,13 @@ public class MyRandomValuesGenerator {
         return random.nextBoolean();
     }
 
-    public ArrayList<MessageObject> setMessagesArrayList(int elementNumber){
+    public ArrayList<MessageObject> generateMessagesArrayList(int elementNumber){
         ArrayList<MessageObject> messagesList = new ArrayList<>();
         for(int i=0; i<elementNumber; i++){
-            MessageObject messageObject = new MessageObject(getrandomBoolean(), getRandomText());
+            boolean isLeft = true;
+            if(i%3==1)isLeft=false;
+            MessageObject messageObject = new MessageObject(isLeft, getRandomText());
+            messagesList.add(messageObject);
         }
         return messagesList;
     }
