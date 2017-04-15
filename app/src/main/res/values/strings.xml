@@ -3,5 +3,8 @@
     <string name="about">About</string>
     <string name="settings">Settings</string>
     <string name="activity_main_toolbar_title">Activity main</string>
+    <string name="activity_register_toolbar_title">Register</string>
+    <string name="activity_groups_list_toolbar_title">Groups list</string>
+    <string name="activity_conversation_toolbar_title">Conversation</string>
     <string name="userNameRegisterHint">Username</string>
 </resources>

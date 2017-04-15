@@ -37,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitle(R.string.activity_main_toolbar_title);
+        toolbar.setTitle(R.string.activity_register_toolbar_title);
         setSupportActionBar(toolbar);
 
         etUsernameInRegistration = (EditText)findViewById(R.id.etUsernameInRegistration);
@@ -120,6 +120,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (id == R.id.action_groups_list) {
             Intent startGroupsListActivityIntent = new Intent(this, GroupsListActivity.class);
             this.startActivity(startGroupsListActivityIntent);
+            this.finish();
+        }
+
+        if (id == R.id.action_last_conversation) {
+            Intent startLastConversationActivityIntent = new Intent(this, ConversationActivity.class);
+            this.startActivity(startLastConversationActivityIntent);
             this.finish();
         }
 
