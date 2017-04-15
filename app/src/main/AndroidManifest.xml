@@ -3,23 +3,23 @@
     package="com.kampoz.sketchat">
 
     <application
-        android:name=".SketchatApplication"
+        android:name=".application.SketchatApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity
-            android:name=".activity.RegisterActivity">
+        <activity android:name=".activity.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.GroupsListActivity" />
+        <activity android:name=".activity.ConversationActivity" />
+        <activity android:name=".activity.SingleGroupActivity"></activity>
     </application>
 
 </manifest>

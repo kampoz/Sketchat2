@@ -1,4 +1,4 @@
-package com.kampoz.sketchat;
+package com.kampoz.sketchat.application;
 
 import android.app.Application;
 import android.util.Log;

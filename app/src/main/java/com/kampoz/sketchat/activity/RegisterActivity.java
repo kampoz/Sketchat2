@@ -8,19 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.facebook.stetho.Stetho;
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.SketchatApplication;
 import com.kampoz.sketchat.realm.UserRealm;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
-import java.util.regex.Pattern;
-
-import io.realm.ObjectServerError;
 import io.realm.Realm;
-import io.realm.SyncConfiguration;
-import io.realm.SyncCredentials;
-import io.realm.SyncUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
