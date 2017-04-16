@@ -2,6 +2,7 @@ package com.kampoz.sketchat.helper;
 
 import com.kampoz.sketchat.model.GroupModel;
 import com.kampoz.sketchat.model.MessageModel;
+import com.kampoz.sketchat.model.SubjectModel;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,7 +38,14 @@ public class MyRandomValuesGenerator {
                     " senectus et ultrices tortor vehicula sapien tristique dapibus, mauris enim, euismod nulla non enim nunc, fringilla orci. "
     };
 
-    String[] groupsNames = {"Projektanci", "Robienie mokeup'ów", "Artyści", "Plakaty", "Brodacze", "Rysowanie w 10 min."};
+    String[] groupsNames = {"Projektanci", "Robienie mokeup'ów", "Artyści od swieta",
+            "Plakaty ręcznie malowane w jajka wielkanocne",
+            "Brodacze", "Rysowanie w 10 minut i 24 sekundy",
+            "Projektowanie skomplikowanych systemów nadzoru"};
+
+    String[] subjects = {"Bardzo wazny temat", "Jeszcze wazniejszy temat",
+            "Maecenas consectetur finibus finibus", "Ut id nisl convallis, pharetra libero ut, euismod mi. Mauris",
+            "Donec iaculis tortor purus, sed pulvinar arcu scelerisque in", "Krótki temat", "Mauris malesuada augue sit amet varius gravida"};
 
 
     public String getRandomMessageText(){
@@ -74,5 +82,15 @@ public class MyRandomValuesGenerator {
             groupsList.add(group);
         }
         return groupsList;
+    }
+
+    public ArrayList<SubjectModel> generateSubjectsList(int subjectsNumber){
+        ArrayList<SubjectModel> subjectsList = new ArrayList<>();
+        Random random = new Random();
+        for(int i=0; i<subjectsNumber; i++){
+            SubjectModel subject = new SubjectModel(subjects[random.nextInt(subjects.length)]);
+            subjectsList.add(subject);
+        }
+        return subjectsList;
     }
 }

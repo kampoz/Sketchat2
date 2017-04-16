@@ -4,24 +4,39 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.adapter.GroupsListActivityAdapter;
+import com.kampoz.sketchat.adapter.SubjectsListActivityAdapter;
+import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
-public class SingleGroupActivity extends AppCompatActivity {
+public class SubjectsListActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private SubjectsListActivityAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_group);
+        setContentView(R.layout.activity_subjects_list);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitle(R.string.activity_main_toolbar_title);
+        toolbar.setTitle(R.string.activity_subjects_toolbar_title);
         setSupportActionBar(toolbar);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvSubjects);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+        MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
+        adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(10), recyclerView);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

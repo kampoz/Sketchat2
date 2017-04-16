@@ -7,4 +7,5 @@
     <string name="activity_groups_list_toolbar_title">Groups list</string>
     <string name="activity_conversation_toolbar_title">Conversation</string>
     <string name="userNameRegisterHint">Username</string>
+    <string name="activity_subjects_toolbar_title">Subjects</string>
 </resources>
