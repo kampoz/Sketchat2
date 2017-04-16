@@ -31,7 +31,6 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         public TextView tvMessageText;
         private LinearLayout singleMessageContainer;
 
-
         public MyViewHolder(View view) {
             super(view);
             tvMessageText = (TextView) view.findViewById(R.id.singleMessage);
@@ -43,13 +42,8 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         this.recyclerView = recyclerView;
     }
 
-    public ConversationActivityAdapter(ArrayList<MessageObject> messages) {
-        this.messages = messages;
-    }
 
-    public ConversationActivityAdapter(){
-    }
-
+    //met. okresla typ layoutu dla pojedynczego row. Mozna tu ustawic dowolna liczbe layoputów.
     @Override
     public int getItemViewType(int position) {
         MessageObject messageObject = messages.get(position);
@@ -59,18 +53,20 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view;
-        //final boolean isLeft = myGenerator.getrandomBoolean();
 
-        if(i == TYPE_LEFT) {
+        if(i == TYPE_LEFT)
+        {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_left, viewGroup, false);
-        } else {
+        }
+        else
+        {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_message_right, viewGroup, false);
         }
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 //tu pobrac dane na temat wybragej konkretnej rozmowy, aby ja uruchomić
+                 /***  tu pobrac dane na temat wybragej konkretnej rozmowy, aby ja uruchomić  ***/
             }
         });
 
@@ -79,9 +75,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-
         ((MyViewHolder)viewHolder).tvMessageText.setText(messages.get(position).getStringMessageText());
-
     }
 
     @Override
