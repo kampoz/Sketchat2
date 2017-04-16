@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,7 @@ public class SubjectsListActivity extends AppCompatActivity {
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
-        adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(10), recyclerView);
+        adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(30), recyclerView);
         recyclerView.setAdapter(adapter);
     }
 

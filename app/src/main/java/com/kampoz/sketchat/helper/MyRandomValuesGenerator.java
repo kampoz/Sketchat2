@@ -44,8 +44,9 @@ public class MyRandomValuesGenerator {
             "Projektowanie skomplikowanych systemów nadzoru"};
 
     String[] subjects = {"Bardzo wazny temat", "Jeszcze wazniejszy temat",
-            "Maecenas consectetur finibus finibus", "Ut id nisl convallis, pharetra libero ut, euismod mi. Mauris",
-            "Donec iaculis tortor purus, sed pulvinar arcu scelerisque in", "Krótki temat", "Mauris malesuada augue sit amet varius gravida"};
+            "Maecenas consectetur finibus finibus", "Ut id nisl convallis, pharetra libero ut, euismod mi. Mauris maximus nisi sit amet, suscipit justo. Vivamus cursus faucibus magna, ut tincidunt velit aliquam id.",
+            "Donec iaculis tortor purus, sed pulvinar arcu scelerisque in", "Krótki temat", "Mauris malesuada augue sit amet varius gravida",
+            "Curabitur mollis elit id sem tincidunt auctor. Aliquam venenatis justo sit amet magna pharetra ornare. Nam tincidunt, felis in blandit tristique, turpis sapien auctor diam, quis mollis est risus et metus."};
 
 
     public String getRandomMessageText(){
