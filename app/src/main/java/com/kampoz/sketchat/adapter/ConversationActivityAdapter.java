@@ -1,6 +1,5 @@
 package com.kampoz.sketchat.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
-import com.kampoz.sketchat.model.MessageObject;
+import com.kampoz.sketchat.model.MessageModel;
 
 import java.util.ArrayList;
 
@@ -21,8 +19,7 @@ import java.util.ArrayList;
 public class ConversationActivityAdapter extends RecyclerView.Adapter {
 
     private RecyclerView recyclerView;
-    MyRandomValuesGenerator myGenerator = new MyRandomValuesGenerator();
-    private ArrayList<MessageObject> messages; // = myGenerator.generateMessagesArrayList(10);
+    private ArrayList<MessageModel> messages; // = myGenerator.generateMessagesArrayList(10);
 
     int TYPE_RIGHT = 0;
     int TYPE_LEFT = 1;
@@ -37,7 +34,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public ConversationActivityAdapter(ArrayList<MessageObject> messages, RecyclerView recyclerView){
+    public ConversationActivityAdapter(ArrayList<MessageModel> messages, RecyclerView recyclerView){
         this.messages = messages;
         this.recyclerView = recyclerView;
     }
@@ -46,7 +43,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
     //met. okresla typ layoutu dla pojedynczego row. Mozna tu ustawic dowolna liczbe layoputów.
     @Override
     public int getItemViewType(int position) {
-        MessageObject messageObject = messages.get(position);
+        MessageModel messageObject = messages.get(position);
         return messageObject.isLeft() ? TYPE_LEFT : TYPE_RIGHT;
     }
 
@@ -81,6 +78,5 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return messages.size();
-
     }
 }

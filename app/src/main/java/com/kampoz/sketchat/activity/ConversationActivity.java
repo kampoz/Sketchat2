@@ -9,18 +9,20 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.ConversationActivityAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
-import com.kampoz.sketchat.model.MessageObject;
-
-import java.util.ArrayList;
 
 public class ConversationActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ConversationActivityAdapter adapter;
+    private EditText etToWriteMessage;
+    private Button bSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +33,23 @@ public class ConversationActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.activity_conversation_toolbar_title);
         setSupportActionBar(toolbar);
 
+        etToWriteMessage = (EditText)findViewById(R.id.etToWriteMessage);
+        bSend = (Button)findViewById(R.id.bSend);
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvConversation);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
+
         adapter = new ConversationActivityAdapter(generator.generateMessagesArrayList(30), recyclerView);
         recyclerView.setAdapter(adapter);
+
+        bSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*oprogramowac button bSend*/
+            }
+        });
     }
 
     @Override

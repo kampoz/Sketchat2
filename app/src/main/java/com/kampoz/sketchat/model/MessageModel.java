@@ -4,20 +4,20 @@ package com.kampoz.sketchat.model;
  * Created by wasili on 2017-04-15.
  */
 
-public class MessageObject {
+public class MessageModel {
     private boolean left;
     private String userName;
     private String stringMessageText;
 
-    public MessageObject(){
+    public MessageModel(){
     }
-    public MessageObject(boolean left, String message) {
+    public MessageModel(boolean left, String message) {
         super();
         this.left = left;
         this.stringMessageText = message;
     }
 
-    public MessageObject(boolean left, String userName, String message) {
+    public MessageModel(boolean left, String userName, String message) {
         super();
         this.left = left;
         this.userName = userName;

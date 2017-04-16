@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_groups_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.kampoz.sketchat.activity.GroupsListActivity">
 
     <include android:id="@+id/app_bar"
         layout="@layout/app_bar"/>
 
-    <ListView
-        android:id="@+id/lvInActivityGroupsList"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvGroupsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
         android:layout_below="@+id/app_bar"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@color/colorMyAlmostWhite" />
+        android:background="@color/colorAccent" />
 
-</RelativeLayout>
+</LinearLayout>
