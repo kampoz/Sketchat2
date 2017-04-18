@@ -1,8 +1,8 @@
 package com.kampoz.sketchat.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +15,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         GroupsFragment.GroupsFragmentListener {
 
     private boolean isLand = false;
-    private final FragmentManager fragmentManager = getFragmentManager();
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment currentFragment = null;
     private Toolbar toolbar;
 
@@ -36,11 +36,11 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         }
     }
 
-//    @Override
-//    public void onItemSelected(String msg) {
+    @Override
+    public void onItemSelected() {
 //        SubjectsFragment subjectsFragment = (SubjectsFragment) getFragmentManager()
-//                .findFragmentById(R.id.detailFragment);
-//    }
+//                .findFragmentById(R.id.fSubjectsFragment);
+    }
 
     private void setOverviewFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
@@ -50,20 +50,29 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     }
 
     private void setDetailsFragment() {
-        FragmentTransaction ft = this.fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new SubjectsFragment();
-        ft.replace(R.id.fragment_container, this.currentFragment);
+        //fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
 
         // dodajemy transakcję na stos
         // dzięki temu możemy wrócić przyciskiem BACK
-        ft.addToBackStack(null);
+        fragmentTransaction.addToBackStack(null);
 
         // zatwierdzamy transakcję
-        ft.commit();
+        fragmentTransaction.commit();
     }
 
-    @Override
-    public void onItemSelected() {
-
-    }
+//    @Override
+//    public void onItemSelected() {
+//        FragmentTransaction ft = this.fragmentManager.beginTransaction();
+//        this.currentFragment = new SubjectsFragment();
+//        ft.replace(R.id.fragment_container, this.currentFragment);
+//
+//        // dodajemy transakcję na stos
+//        // dzięki temu możemy wrócić przyciskiem BACK
+//        ft.addToBackStack(null);
+//
+//        // zatwierdzamy transakcję
+//        ft.commit();
+//    }
 }

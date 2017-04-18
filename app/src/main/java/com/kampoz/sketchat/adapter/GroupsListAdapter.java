@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.activity.SubjectsListActivity;
 import com.kampoz.sketchat.model.GroupModel;
 
@@ -57,7 +60,9 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
 //                Intent startSubjectsListActivityIntent = new Intent(context, SubjectsListActivity.class);
 //                context.startActivity(startSubjectsListActivityIntent);
                 //this.finish();
-                //onGroupItemSelectedListener.onItemSelect(position);
+                onGroupItemSelectedListener.onItemSelect(position);
+                String groupName = groupsList.get(position).getGroupName();
+
             }
         });
     }
@@ -67,4 +72,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
         return groupsList.size();
     }
 
+    public void setOnGroupItemSelectedListener(OnGroupItemSelectedListener onGroupItemSelectedListener) {
+        this.onGroupItemSelectedListener = onGroupItemSelectedListener;
+    }
 }

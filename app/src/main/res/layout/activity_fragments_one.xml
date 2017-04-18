@@ -16,7 +16,7 @@
         android:layout_below="@+id/app_bar">
 
     <fragment
-        android:id="@+id/overviewFragment"
+        android:id="@+id/fOverviewFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -24,7 +24,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/subjectsFragment"
+        android:id="@+id/fSubjectsFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

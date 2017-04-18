@@ -1,13 +1,16 @@
 package com.kampoz.sketchat.fragments;
 
-import android.app.Fragment;
+import android.app.Activity;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
@@ -40,6 +43,13 @@ public class GroupsFragment extends Fragment {
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
         adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
+        adapter.setOnGroupItemSelectedListener(new GroupsListAdapter.OnGroupItemSelectedListener() {
+            @Override
+            public void onItemSelect(int position) {
+                listener.onItemSelected();
+                //Toast.makeText(getActivity() , "pos "+position, Toast.LENGTH_SHORT).show();
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         /*
@@ -78,12 +88,12 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof GroupsFragmentListener) {
+        //if (context instanceof GroupsFragmentListener) {
             listener = (GroupsFragmentListener) context;
-        } else {
-            throw new ClassCastException( context.toString() + " musi implementować interfejs " +
-                    "GroupsFragment.GroupsFragmentListener");
-        }
+//        } else {
+//            throw new ClassCastException( context.toString() + " musi implementować interfejs " +
+//                    "GroupsFragment.GroupsFragmentListener");
+//        }
     }
 
     // metoda wysyła dane do aktywności
