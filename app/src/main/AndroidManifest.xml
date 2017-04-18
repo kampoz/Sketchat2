@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.GroupsListActivity">
+        <activity android:name=".activity.FragmentsOneActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +19,8 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConversationActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.SubjectsListActivity"></activity>
+        <activity android:name=".activity.SubjectsListActivity" />
+        <activity android:name=".activity.GroupsListActivity"></activity>
     </application>
 
 </manifest>
