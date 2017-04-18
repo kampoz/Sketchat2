@@ -10,17 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.adapter.GroupsListActivityAdapter;
+import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 /**
  * Created by wasili on 2017-04-18.
  */
 
-public class OverviewFragment extends Fragment {
+public class GroupsFragment extends Fragment {
 
-    private OverviewFragmentActivityListener listener;
-    private GroupsListActivityAdapter adapter;
+    private GroupsFragmentListener listener;
+    private GroupsListAdapter adapter;
 
 
     @Override
@@ -28,17 +28,18 @@ public class OverviewFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // przypisujemy layout do fragmentu
-        View view = inflater.inflate(R.layout.fragment_overview, container,
-                false);
+        View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
+
+
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
-        adapter = new GroupsListActivityAdapter(generator.generateGroupsList(30), recyclerView);
+        adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
         recyclerView.setAdapter(adapter);
 
         /*
@@ -70,23 +71,23 @@ public class OverviewFragment extends Fragment {
     }
 
     // interfejs, który będzie implementować aktywność
-    public interface OverviewFragmentActivityListener {
-        public void onItemSelected(String msg);
+    public interface GroupsFragmentListener {
+        void onItemSelected();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OverviewFragmentActivityListener) {
-            listener = (OverviewFragmentActivityListener) context;
+        if (context instanceof GroupsFragmentListener) {
+            listener = (GroupsFragmentListener) context;
         } else {
             throw new ClassCastException( context.toString() + " musi implementować interfejs " +
-                    "OverviewFragment.OverviewFragmentActivityListener");
+                    "GroupsFragment.GroupsFragmentListener");
         }
     }
 
     // metoda wysyła dane do aktywności
     public void updateDetail(String msg) {
-        listener.onItemSelected(msg);
+        //listener.onItemSelected();
     }
 }

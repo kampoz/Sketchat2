@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.fragments.DetailFragment;
-import com.kampoz.sketchat.fragments.OverviewFragment;
+import com.kampoz.sketchat.fragments.SubjectsFragment;
+import com.kampoz.sketchat.fragments.GroupsFragment;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
-        OverviewFragment.OverviewFragmentActivityListener {
+        GroupsFragment.GroupsFragmentListener {
 
     private boolean isLand = false;
     private final FragmentManager fragmentManager = getFragmentManager();
@@ -30,28 +30,28 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
 
-        // w trybie portrait dodajemy do kontenera OverviewFragment
+        // w trybie portrait dodajemy do kontenera GroupsFragment
         if (!this.isLand) {
             setOverviewFragment();
         }
     }
 
-    @Override
-    public void onItemSelected(String msg) {
-        DetailFragment detailFragment = (DetailFragment) getFragmentManager()
-                .findFragmentById(R.id.detailFragment);
-    }
+//    @Override
+//    public void onItemSelected(String msg) {
+//        SubjectsFragment subjectsFragment = (SubjectsFragment) getFragmentManager()
+//                .findFragmentById(R.id.detailFragment);
+//    }
 
     private void setOverviewFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-        this.currentFragment = new OverviewFragment();
+        this.currentFragment = new GroupsFragment();
         fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
         fragmentTransaction.commit();
     }
 
     private void setDetailsFragment() {
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
-        this.currentFragment = new DetailFragment();
+        this.currentFragment = new SubjectsFragment();
         ft.replace(R.id.fragment_container, this.currentFragment);
 
         // dodajemy transakcję na stos
@@ -62,4 +62,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         ft.commit();
     }
 
+    @Override
+    public void onItemSelected() {
+
+    }
 }

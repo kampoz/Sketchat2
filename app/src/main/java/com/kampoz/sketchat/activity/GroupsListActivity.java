@@ -6,20 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.adapter.ConversationActivityAdapter;
-import com.kampoz.sketchat.adapter.GroupsListActivityAdapter;
+import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class GroupsListActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private GroupsListActivityAdapter adapter;
+    private GroupsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +35,7 @@ public class GroupsListActivity extends AppCompatActivity {
 
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
-        adapter = new GroupsListActivityAdapter(generator.generateGroupsList(30), recyclerView);
+        adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
         recyclerView.setAdapter(adapter);
 
 

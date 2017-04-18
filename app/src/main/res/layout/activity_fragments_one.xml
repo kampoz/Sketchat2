@@ -20,15 +20,15 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        class="com.kampoz.sketchat.fragments.OverviewFragment" >
+        class="com.kampoz.sketchat.fragments.GroupsFragment" >
     </fragment>
 
     <fragment
-        android:id="@+id/detailFragment"
+        android:id="@+id/subjectsFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        class="com.kampoz.sketchat.fragments.DetailFragment" >
+        class="com.kampoz.sketchat.fragments.SubjectsFragment" >
     </fragment>
 
     </LinearLayout>
