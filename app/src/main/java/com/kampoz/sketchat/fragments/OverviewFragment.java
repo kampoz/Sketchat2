@@ -1,15 +1,17 @@
 package com.kampoz.sketchat.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.adapter.GroupsListActivityAdapter;
+import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 /**
  * Created by wasili on 2017-04-18.
@@ -18,6 +20,8 @@ import com.kampoz.sketchat.R;
 public class OverviewFragment extends Fragment {
 
     private OverviewFragmentActivityListener listener;
+    private GroupsListActivityAdapter adapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,6 +31,15 @@ public class OverviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_overview, container,
                 false);
 
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+        MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
+
+        adapter = new GroupsListActivityAdapter(generator.generateGroupsList(30), recyclerView);
+        recyclerView.setAdapter(adapter);
 
         /*
         // definiujemy listener dla poszczególnych elementów (buttonów)

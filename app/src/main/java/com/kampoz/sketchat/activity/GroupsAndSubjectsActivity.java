@@ -11,7 +11,7 @@ import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.DetailFragment;
 import com.kampoz.sketchat.fragments.OverviewFragment;
 
-public class FragmentsOneActivity extends AppCompatActivity implements
+public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         OverviewFragment.OverviewFragmentActivityListener {
 
     private boolean isLand = false;
