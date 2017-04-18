@@ -36,10 +36,36 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         }
     }
 
+//    @Override
+//    public void onItemSelected() {
+//        SubjectsFragment subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
+//        if (subjectsFragment != null && subjectsFragment.isInLayout()) {
+//            FragmentTransaction ft = this.fragmentManager.beginTransaction();
+//            this.currentFragment = new SubjectsFragment();
+//            ft.replace(R.id.fragment_container, this.currentFragment);
+//            ft.commit();
+//
+//        } else {
+//            setDetailsFragment();
+//            this.fragmentManager.executePendingTransactions();
+//        }
+//    }
+
     @Override
     public void onItemSelected() {
-//        SubjectsFragment subjectsFragment = (SubjectsFragment) getFragmentManager()
-//                .findFragmentById(R.id.fSubjectsFragment);
+        if (!this.isLand) {
+            FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+            this.currentFragment = new SubjectsFragment();
+            fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        } else {
+            FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+            this.currentFragment = new SubjectsFragment();
+            fragmentTransaction.replace(R.id.fSubjectsFragment, this.currentFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
     }
 
     private void setOverviewFragment() {
@@ -52,27 +78,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private void setDetailsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new SubjectsFragment();
-        //fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
-
-        // dodajemy transakcję na stos
-        // dzięki temu możemy wrócić przyciskiem BACK
         fragmentTransaction.addToBackStack(null);
-
-        // zatwierdzamy transakcję
         fragmentTransaction.commit();
     }
 
-//    @Override
-//    public void onItemSelected() {
-//        FragmentTransaction ft = this.fragmentManager.beginTransaction();
-//        this.currentFragment = new SubjectsFragment();
-//        ft.replace(R.id.fragment_container, this.currentFragment);
-//
-//        // dodajemy transakcję na stos
-//        // dzięki temu możemy wrócić przyciskiem BACK
-//        ft.addToBackStack(null);
-//
-//        // zatwierdzamy transakcję
-//        ft.commit();
-//    }
+
 }
