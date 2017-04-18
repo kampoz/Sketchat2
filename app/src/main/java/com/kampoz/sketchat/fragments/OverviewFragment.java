@@ -26,6 +26,8 @@ public class OverviewFragment extends Fragment {
         // przypisujemy layout do fragmentu
         View view = inflater.inflate(R.layout.fragment_overview, container,
                 false);
+
+
         /*
         // definiujemy listener dla poszczególnych elementów (buttonów)
         View.OnClickListener clickListener = new View.OnClickListener() {

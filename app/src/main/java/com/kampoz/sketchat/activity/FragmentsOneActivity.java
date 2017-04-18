@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.DetailFragment;
@@ -16,11 +17,16 @@ public class FragmentsOneActivity extends AppCompatActivity implements
     private boolean isLand = false;
     private final FragmentManager fragmentManager = getFragmentManager();
     private Fragment currentFragment = null;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragments_one);
+
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
+        setSupportActionBar(toolbar);
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
 
