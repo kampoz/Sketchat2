@@ -20,7 +20,8 @@
         <activity android:name=".activity.ConversationActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.SubjectsListActivity" />
-        <activity android:name=".activity.GroupsListActivity"></activity>
+        <activity android:name=".activity.GroupsListActivity" />
+        <activity android:name=".activity.DrawActivity"></activity>
     </application>
 
 </manifest>

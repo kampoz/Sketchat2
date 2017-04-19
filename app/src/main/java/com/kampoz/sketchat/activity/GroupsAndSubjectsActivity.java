@@ -37,7 +37,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         if (this.isLand) {
             subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
         }else{
-            setOverviewFragment();
+            setGroupsFragment();
         }
     }
 
@@ -49,19 +49,19 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
             subjectsFragment.seedSubjectsAndReload();
         }
         else{
-            setDetailsFragment();
+            setSubjectsFragment();
             this.fragmentManager.executePendingTransactions();
         }
     }
 
-    private void setOverviewFragment() {
+    private void setGroupsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new GroupsFragment();
         fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
         fragmentTransaction.commit();
     }
 
-    private void setDetailsFragment() {
+    private void setSubjectsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new SubjectsFragment();
         fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
