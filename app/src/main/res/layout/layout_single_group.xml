@@ -6,11 +6,16 @@
     android:layout_margin="2dp"
     android:background="@color/colorMyPrimary">
 
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"/>
+
     <TextView
         android:id="@+id/tvGroupName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:text="Nazwa Grupy"
         android:textSize="20dp"
         android:maxLength="30"
@@ -18,9 +23,9 @@
         />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/members"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/subjects"
         android:layout_marginLeft="20dp"
         />
 
@@ -28,7 +33,7 @@
         android:id="@+id/tvGroupMembersNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="15dp"
         android:text="5"
         android:textSize="20dp"
         android:textColor="@android:color/black"

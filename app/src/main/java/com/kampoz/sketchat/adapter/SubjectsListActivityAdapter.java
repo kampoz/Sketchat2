@@ -4,10 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.model.SubjectModel;
+import com.kampoz.sketchat.realm.SubjectRealm;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 public class SubjectsListActivityAdapter extends RecyclerView.Adapter{
 
     private RecyclerView recyclerView;
-    private ArrayList<SubjectModel> subjectsList;
+    private ArrayList<SubjectRealm> subjectsList;
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvSubject;
@@ -29,7 +28,7 @@ public class SubjectsListActivityAdapter extends RecyclerView.Adapter{
         }
     }
 
-    public SubjectsListActivityAdapter(ArrayList<SubjectModel> subjectsList, RecyclerView recyclerView){
+    public SubjectsListActivityAdapter(ArrayList<SubjectRealm> subjectsList, RecyclerView recyclerView){
         this.subjectsList = subjectsList;
         this.recyclerView = recyclerView;
     }
@@ -56,11 +55,11 @@ public class SubjectsListActivityAdapter extends RecyclerView.Adapter{
         return subjectsList.size();
     }
 
-    public ArrayList<SubjectModel> getSubjectsList() {
+    public ArrayList<SubjectRealm> getSubjectsList() {
         return subjectsList;
     }
 
-    public void setSubjectsList(ArrayList<SubjectModel> subjectsList) {
+    public void setSubjectsList(ArrayList<SubjectRealm> subjectsList) {
         this.subjectsList = subjectsList;
     }
 }

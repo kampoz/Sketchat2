@@ -25,7 +25,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragments_one);
+        setContentView(R.layout.activity_groups_and_subjects);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
@@ -33,14 +33,13 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
 
-        // w trybie portrait dodajemy do kontenera GroupsFragment
+                // w trybie portrait dodajemy do kontenera GroupsFragment
         if (this.isLand) {
             subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
         }else{
             setGroupsFragment();
         }
     }
-
 
     @Override
     public void onItemSelected(int position) {

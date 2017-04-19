@@ -23,5 +23,4 @@
         <activity android:name=".activity.GroupsListActivity" />
         <activity android:name=".activity.DrawActivity"></activity>
     </application>
-
 </manifest>

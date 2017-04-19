@@ -1,27 +1,42 @@
-package com.kampoz.sketchat.model;
+package com.kampoz.sketchat.realm;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by wasili on 2017-04-15.
  */
 
-public class MessageModel {
+public class MessageRealm extends RealmObject{
+
+    @PrimaryKey
+    private int id;
     private boolean left;
     private String userName;
     private String stringMessageText;
 
-    public MessageModel(){
+    public MessageRealm(){
     }
-    public MessageModel(boolean left, String message) {
+
+    public MessageRealm(boolean left, String message) {
         super();
         this.left = left;
         this.stringMessageText = message;
     }
 
-    public MessageModel(boolean left, String userName, String message) {
+    public MessageRealm(boolean left, String userName, String message) {
         super();
         this.left = left;
         this.userName = userName;
         this.stringMessageText = message;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isLeft() {
@@ -47,4 +62,6 @@ public class MessageModel {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+
 }

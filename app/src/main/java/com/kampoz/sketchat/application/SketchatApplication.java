@@ -36,10 +36,7 @@ public class SketchatApplication extends Application {
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this)
-                                .withFolder(new File("/data/data/com.kampoz.sketchat/files/df91fa1834600814a5f76708cacf98df/df91fa1834600814a5f76708cacf98df"))
-                                .databaseNamePattern(Pattern.compile(".+\\.realm"))
-                                .build())
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
 
         final File file =  new File(Realm.getDefaultInstance().getPath()).getParentFile();
@@ -55,15 +52,7 @@ public class SketchatApplication extends Application {
                                 .name("default.realm")
                                 .directory(file).build();
                     Realm.setDefaultConfiguration(syncConfiguration);
-
-                    try {
-                        Log.d("SyncConfiguration", syncConfiguration.getRealmDirectory().getCanonicalPath());
-                        Log.d("SyncConfiguration", syncConfiguration.getRealmDirectory().getAbsolutePath());
-                        Log.d("SyncConfiguration", syncConfiguration.getRealmDirectory().getPath());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
+                    Log.d("Error", "Success CONNECTION");
 
                 }
 

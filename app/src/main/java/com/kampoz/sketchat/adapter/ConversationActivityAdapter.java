@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.model.MessageModel;
+import com.kampoz.sketchat.realm.MessageRealm;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class ConversationActivityAdapter extends RecyclerView.Adapter {
 
     private RecyclerView recyclerView;
-    private ArrayList<MessageModel> messages; // = myGenerator.generateMessagesArrayList(10);
+    private ArrayList<MessageRealm> messages; // = myGenerator.generateMessagesArrayList(10);
 
     int TYPE_RIGHT = 0;
     int TYPE_LEFT = 1;
@@ -34,7 +34,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public ConversationActivityAdapter(ArrayList<MessageModel> messages, RecyclerView recyclerView){
+    public ConversationActivityAdapter(ArrayList<MessageRealm> messages, RecyclerView recyclerView){
         this.messages = messages;
         this.recyclerView = recyclerView;
     }
@@ -43,7 +43,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
     //met. okresla typ layoutu dla pojedynczego row. Mozna tu ustawic dowolna liczbe layoputów.
     @Override
     public int getItemViewType(int position) {
-        MessageModel messageObject = messages.get(position);
+        MessageRealm messageObject = messages.get(position);
         return messageObject.isLeft() ? TYPE_LEFT : TYPE_RIGHT;
     }
 

@@ -1,8 +1,8 @@
 package com.kampoz.sketchat.helper;
 
-import com.kampoz.sketchat.model.GroupModel;
-import com.kampoz.sketchat.model.MessageModel;
-import com.kampoz.sketchat.model.SubjectModel;
+import com.kampoz.sketchat.realm.GroupRealm;
+import com.kampoz.sketchat.realm.MessageRealm;
+import com.kampoz.sketchat.realm.SubjectRealm;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -62,34 +62,34 @@ public class MyRandomValuesGenerator {
         return random.nextBoolean();
     }
 
-        //Generuje ArrayLIst z obiektami MessageModel
-    public ArrayList<MessageModel> generateMessagesArrayList(int elementsNumber){
-        ArrayList<MessageModel> messagesList = new ArrayList<>();
+        //Generuje ArrayLIst z obiektami MessageRealm
+    public ArrayList<MessageRealm> generateMessagesArrayList(int elementsNumber){
+        ArrayList<MessageRealm> messagesList = new ArrayList<>();
         for(int i=0; i<elementsNumber; i++){
             boolean isLeft = true;
             if(i%3==1)isLeft=false;
-            MessageModel messageObject = new MessageModel(isLeft, getRandomMessageText());
+            MessageRealm messageObject = new MessageRealm(isLeft, getRandomMessageText());
             messagesList.add(messageObject);
         }
         return messagesList;
     }
 
         //generuje losowe nazwy grup
-    public ArrayList<GroupModel> generateGroupsList(int groupsNumber){
-        ArrayList<GroupModel> groupsList = new ArrayList<>();
+    public ArrayList<GroupRealm> generateGroupsList(int groupsNumber){
+        ArrayList<GroupRealm> groupsList = new ArrayList<>();
         Random random = new Random();
         for(int i=0; i<groupsNumber; i++){
-            GroupModel group = new GroupModel(groupsNames[random.nextInt(groupsNames.length)]);
+            GroupRealm group = new GroupRealm(groupsNames[random.nextInt(groupsNames.length)]);
             groupsList.add(group);
         }
         return groupsList;
     }
 
-    public ArrayList<SubjectModel> generateSubjectsList(int subjectsNumber){
-        ArrayList<SubjectModel> subjectsList = new ArrayList<>();
+    public ArrayList<SubjectRealm> generateSubjectsList(int subjectsNumber){
+        ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
         Random random = new Random();
         for(int i=0; i<subjectsNumber; i++){
-            SubjectModel subject = new SubjectModel(subjects[random.nextInt(subjects.length)]);
+            SubjectRealm subject = new SubjectRealm(subjects[random.nextInt(subjects.length)]);
             subjectsList.add(subject);
         }
         return subjectsList;

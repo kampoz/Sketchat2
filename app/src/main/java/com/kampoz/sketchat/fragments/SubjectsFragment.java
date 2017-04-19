@@ -2,17 +2,13 @@ package com.kampoz.sketchat.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.adapter.SubjectsListActivityAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
@@ -30,7 +26,7 @@ public class SubjectsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater
-                .inflate(R.layout.fragment_detail, container, false);
+                .inflate(R.layout.fragment_subjects, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         recyclerView.setHasFixedSize(true);
@@ -38,17 +34,9 @@ public class SubjectsFragment extends Fragment {
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         generator = new MyRandomValuesGenerator();
-
         adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(30), recyclerView);
         recyclerView.setAdapter(adapter);
-
         return view;
-    }
-
-
-    public void setText(String txt) {
-//        TextView view = (TextView) getView().findViewById(R.id.detailsText);
-//        view.setText(txt);
     }
 
     public SubjectsListActivityAdapter getAdapter() {

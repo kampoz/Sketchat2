@@ -1,18 +1,13 @@
 package com.kampoz.sketchat.adapter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
-import com.kampoz.sketchat.activity.SubjectsListActivity;
-import com.kampoz.sketchat.model.GroupModel;
+import com.kampoz.sketchat.realm.GroupRealm;
 
 import java.util.ArrayList;
 
@@ -28,18 +23,17 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
 
     private OnGroupItemSelectedListener onGroupItemSelectedListener;
     private RecyclerView recyclerView;
-    private ArrayList<GroupModel> groupsList;
+    private ArrayList<GroupRealm> groupsList;
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvGroupName;
-
         public MyViewHolder(View view) {
             super(view);
             tvGroupName = (TextView) view.findViewById(R.id.tvGroupName);
         }
     }
 
-    public GroupsListAdapter(ArrayList<GroupModel> groupsList, RecyclerView recyclerView){
+    public GroupsListAdapter(ArrayList<GroupRealm> groupsList, RecyclerView recyclerView){
         this.groupsList = groupsList;
         this.recyclerView = recyclerView;
     }
