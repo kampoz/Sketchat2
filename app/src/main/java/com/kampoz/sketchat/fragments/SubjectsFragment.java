@@ -2,6 +2,7 @@ package com.kampoz.sketchat.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -23,6 +24,7 @@ public class SubjectsFragment extends Fragment {
 
     private GroupsFragment.GroupsFragmentListener listener;
     private SubjectsListActivityAdapter adapter;
+    MyRandomValuesGenerator generator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +37,7 @@ public class SubjectsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
+        generator = new MyRandomValuesGenerator();
 
         adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(30), recyclerView);
         recyclerView.setAdapter(adapter);
@@ -47,5 +49,21 @@ public class SubjectsFragment extends Fragment {
     public void setText(String txt) {
 //        TextView view = (TextView) getView().findViewById(R.id.detailsText);
 //        view.setText(txt);
+    }
+
+    public SubjectsListActivityAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(SubjectsListActivityAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    //seedowanie tematów
+    public void seedSubjectsAndReload(){
+        generator = new MyRandomValuesGenerator();
+        adapter.getSubjectsList().clear();
+        adapter.getSubjectsList().addAll(generator.generateSubjectsList(30));
+        adapter.notifyDataSetChanged();
     }
 }

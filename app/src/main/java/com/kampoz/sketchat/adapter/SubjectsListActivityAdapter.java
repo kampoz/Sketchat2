@@ -55,4 +55,12 @@ public class SubjectsListActivityAdapter extends RecyclerView.Adapter{
     public int getItemCount() {
         return subjectsList.size();
     }
+
+    public ArrayList<SubjectModel> getSubjectsList() {
+        return subjectsList;
+    }
+
+    public void setSubjectsList(ArrayList<SubjectModel> subjectsList) {
+        this.subjectsList = subjectsList;
+    }
 }

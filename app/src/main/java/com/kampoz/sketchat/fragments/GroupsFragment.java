@@ -46,7 +46,7 @@ public class GroupsFragment extends Fragment {
         adapter.setOnGroupItemSelectedListener(new GroupsListAdapter.OnGroupItemSelectedListener() {
             @Override
             public void onItemSelect(int position) {
-                listener.onItemSelected();
+                listener.onItemSelected(position);
                 //Toast.makeText(getActivity() , "pos "+position, Toast.LENGTH_SHORT).show();
             }
         });
@@ -82,14 +82,18 @@ public class GroupsFragment extends Fragment {
 
     // interfejs, który będzie implementować aktywność
     public interface GroupsFragmentListener {
-        void onItemSelected();
+        void onItemSelected(int position);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         //if (context instanceof GroupsFragmentListener) {
+        try{
             listener = (GroupsFragmentListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString()+" must implement GroupsFragmentListener!!!!!");
+        }
 //        } else {
 //            throw new ClassCastException( context.toString() + " musi implementować interfejs " +
 //                    "GroupsFragment.GroupsFragmentListener");

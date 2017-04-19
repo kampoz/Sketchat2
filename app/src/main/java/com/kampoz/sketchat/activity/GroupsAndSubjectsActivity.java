@@ -19,6 +19,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private Fragment currentFragment = null;
     private Toolbar toolbar;
 
+    // for Land only
+    private SubjectsFragment subjectsFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,40 +34,23 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         this.isLand = getResources().getBoolean(R.bool.isLand);
 
         // w trybie portrait dodajemy do kontenera GroupsFragment
-        if (!this.isLand) {
+        if (this.isLand) {
+            subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
+        }else{
             setOverviewFragment();
         }
     }
 
-//    @Override
-//    public void onItemSelected() {
-//        SubjectsFragment subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
-//        if (subjectsFragment != null && subjectsFragment.isInLayout()) {
-//            FragmentTransaction ft = this.fragmentManager.beginTransaction();
-//            this.currentFragment = new SubjectsFragment();
-//            ft.replace(R.id.fragment_container, this.currentFragment);
-//            ft.commit();
-//
-//        } else {
-//            setDetailsFragment();
-//            this.fragmentManager.executePendingTransactions();
-//        }
-//    }
 
     @Override
-    public void onItemSelected() {
-        if (!this.isLand) {
-            FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-            this.currentFragment = new SubjectsFragment();
-            fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        } else {
-            FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-            this.currentFragment = new SubjectsFragment();
-            fragmentTransaction.replace(R.id.fSubjectsFragment, this.currentFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+    public void onItemSelected(int position) {
+
+        if(isLand) {
+            subjectsFragment.seedSubjectsAndReload();
+        }
+        else{
+            setDetailsFragment();
+            this.fragmentManager.executePendingTransactions();
         }
     }
 
@@ -78,9 +64,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private void setDetailsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new SubjectsFragment();
+        fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-
 }
