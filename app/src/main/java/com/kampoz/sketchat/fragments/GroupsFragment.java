@@ -29,17 +29,12 @@ public class GroupsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // przypisujemy layout do fragmentu
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
-
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-
-
+        
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
         adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
@@ -47,36 +42,9 @@ public class GroupsFragment extends Fragment {
             @Override
             public void onItemSelect(int position) {
                 listener.onItemSelected(position);
-                //Toast.makeText(getActivity() , "pos "+position, Toast.LENGTH_SHORT).show();
             }
         });
         recyclerView.setAdapter(adapter);
-
-        /*
-        // definiujemy listener dla poszczególnych elementów (buttonów)
-        View.OnClickListener clickListener = new View.OnClickListener() {
-           @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.button1:
-                        updateDetail("Szczegółowe informacje o elemencie pierwszym.");
-                        break;
-                    case R.id.button2:
-                        updateDetail("Szczegółowe informacje o elemencie drugim.");
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        // przypisujemy elementom clickListener
-        Button button1 = (Button) view.findViewById(R.id.button1);
-        Button button2 = (Button) view.findViewById(R.id.button2);
-
-        button1.setOnClickListener(clickListener);
-        button2.setOnClickListener(clickListener);
-        */
         return view;
     }
 
