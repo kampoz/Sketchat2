@@ -1,11 +1,14 @@
 package com.kampoz.sketchat.activity;
 
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
@@ -43,7 +46,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     @Override
     public void onItemSelected(int position) {
-
         if(isLand) {
             subjectsFragment.seedSubjectsAndReload();
         }
@@ -66,5 +68,61 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_groups, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_trash) {
+        }
+
+        if (id == R.id.action_register) {
+            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Action Register");
+            alertDialogBuilder.setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int arg1) {
+                            dialog.dismiss();
+                        }
+                    });
+            android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+
+        if (id == R.id.action_login) {
+//            Intent startSettingsActivityIntent = new Intent(this, SettingsActivity.class);
+//            this.startActivity(startSettingsActivityIntent);
+//            this.finish();
+        }
+
+        if (id == R.id.action_last_conversation) {
+        }
+
+        if (id == R.id.action_settings) {
+        }
+
+        if (id == R.id.action_about) {
+            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Copyright \u00a9 2017\nKamil Poznakowski\nkampoznak@gmail.com");
+            alertDialogBuilder.setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int arg1) {
+                            dialog.dismiss();
+                        }
+                    });
+            android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

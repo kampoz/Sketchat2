@@ -9,7 +9,8 @@
     <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"/>
+        android:layout_marginLeft="15dp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvGroupName"
@@ -23,9 +24,9 @@
         />
 
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/subjects"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/pencil"
         android:layout_marginLeft="20dp"
         />
 
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:text="5"
-        android:textSize="20dp"
+        android:textSize="22dp"
         android:textColor="@android:color/black"
         />
 

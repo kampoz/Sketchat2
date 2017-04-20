@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_trash"
+        android:icon="@drawable/trash"
+        android:title="@string/action_delete"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_register"
+        android:title="Register"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_login"
+        android:title="Login"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_groups_list"
+        android:title="Groups list"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_last_conversation"
+        android:title="Last conversation"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/settings"
+        app:showAsAction="collapseActionView"/>
+
+
+    <item
+        android:id="@+id/action_about"
+        android:title="@string/about"
+        app:showAsAction="collapseActionView"/>
+
+</menu>
