@@ -21,9 +21,11 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment currentFragment = null;
     private Toolbar toolbar;
+    private boolean isTrashClicked = false;
 
     // for Land only
     private SubjectsFragment subjectsFragment;
+    private GroupsFragment groupsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
                 // w trybie portrait dodajemy do kontenera GroupsFragment
         if (this.isLand) {
             subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
+            groupsFragment = (GroupsFragment)getSupportFragmentManager().findFragmentById(R.id.fGroupsFragment);
         }else{
             setGroupsFragment();
         }
@@ -57,8 +60,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     private void setGroupsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-        this.currentFragment = new GroupsFragment();
-        fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
+        //this.currentFragment = new GroupsFragment();
+        groupsFragment = new GroupsFragment();
+        fragmentTransaction.replace(R.id.fragment_container, groupsFragment);
         fragmentTransaction.commit();
     }
 
@@ -81,6 +85,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_trash) {
+            isTrashClicked = !isTrashClicked;
+            groupsFragment.showRadioButtons(isTrashClicked);
         }
 
         if (id == R.id.action_register) {

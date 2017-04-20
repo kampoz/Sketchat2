@@ -54,4 +54,6 @@ public class SubjectsFragment extends Fragment {
         adapter.getSubjectsList().addAll(generator.generateSubjectsList(30));
         adapter.notifyDataSetChanged();
     }
+
+
 }

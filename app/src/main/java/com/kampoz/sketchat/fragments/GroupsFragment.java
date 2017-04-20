@@ -22,7 +22,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private GroupsFragmentListener listener;
     private GroupsListAdapter adapter;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         listener.onItemSelected(position);
     }
 
-    // interfejs, który będzie implementować aktywność
+        // interfejs, który będzie implementować aktywność
     public interface GroupsFragmentListener {
         void onItemSelected(int position);
     }
@@ -59,5 +58,10 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString()+" must implements GroupsFragmentListener!!!!!");
         }
+    }
+
+    public void showRadioButtons(boolean isTrashClicked){
+        adapter.setTrashClicked(isTrashClicked);
+        adapter.notifyDataSetChanged();
     }
 }
