@@ -31,11 +31,8 @@
             android:layout_height="60dp"
             android:src="@drawable/add_image"
             android:theme="@style/MapButton"
-            android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
-            app:layout_anchor="@id/rvGroupsList"
-            app:layout_anchorGravity="bottom|right|end"
-            />
+            android:layout_gravity="bottom|end" />
 
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>
