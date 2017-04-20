@@ -2,6 +2,7 @@ package com.kampoz.sketchat.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,12 +22,14 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
     private GroupsFragmentListener listener;
     private GroupsListAdapter adapter;
+    private FloatingActionButton fabDeleteGroups;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
+        fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -60,8 +63,12 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         }
     }
 
-    public void showRadioButtons(boolean isTrashClicked){
-        adapter.setTrashClicked(isTrashClicked);
+    public void showRadioButtonsAndHideButtons(boolean areRadioButtonsShown){
+        adapter.setAreRadioButtonsShown(areRadioButtonsShown);
         adapter.notifyDataSetChanged();
+        if((fabDeleteGroups.getVisibility())==View.VISIBLE)
+        fabDeleteGroups.setVisibility(View.INVISIBLE);
+        else
+            fabDeleteGroups.setVisibility(View.VISIBLE); ;
     }
 }

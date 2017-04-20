@@ -25,14 +25,17 @@
         android:layout_height="match_parent"
         android:background="@color/colorMyPrimary"/>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/bAddGroup"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/add_image"
-            android:theme="@style/MapButton"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|end" />
+        
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabDeleteGroups"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/trash"
+        android:theme="@style/MapButton"
+        android:layout_margin="16dp"
+        android:layout_gravity="bottom|end"
+        android:visibility="invisible"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

@@ -25,7 +25,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
     private OnGroupItemSelectedListener onGroupItemSelectedListener;
     private RecyclerView recyclerView;
     private ArrayList<GroupRealm> groupsList;
-    private boolean isTrashClicked;
+    private boolean areRadioButtonsShown;
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvGroupName;
@@ -52,7 +52,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         final RadioButton radioButton = ((MyViewHolder)viewHolder).radioButton;
-        if(isTrashClicked){
+        if(areRadioButtonsShown){
             radioButton.setVisibility(View.VISIBLE);
         }else{
             radioButton.setVisibility(View.GONE);
@@ -65,7 +65,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
 //                Intent startSubjectsListActivityIntent = new Intent(context, SubjectsListActivity.class);
 //                context.startActivity(startSubjectsListActivityIntent);
                 //this.finish();
-                if(isTrashClicked){
+                if(areRadioButtonsShown){
                     if(radioButton.isChecked()){
                         radioButton.setChecked(false);
                     }else{
@@ -73,7 +73,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
                     }
                 }
 
-                if(!isTrashClicked){
+                if(!areRadioButtonsShown){
                     onGroupItemSelectedListener.onItemSelect(position);
                 }
 
@@ -91,11 +91,11 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
         this.onGroupItemSelectedListener = onGroupItemSelectedListener;
     }
 
-    public boolean isTrashClicked() {
-        return isTrashClicked;
+    public boolean isAreRadioButtonsShown() {
+        return areRadioButtonsShown;
     }
 
-    public void setTrashClicked(boolean trashClicked) {
-        isTrashClicked = trashClicked;
+    public void setAreRadioButtonsShown(boolean areRadioButtonsShown) {
+        this.areRadioButtonsShown = areRadioButtonsShown;
     }
 }

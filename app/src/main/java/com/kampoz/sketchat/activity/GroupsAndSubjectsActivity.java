@@ -1,6 +1,7 @@
 package com.kampoz.sketchat.activity;
 
 import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
@@ -21,7 +23,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment currentFragment = null;
     private Toolbar toolbar;
-    private boolean isTrashClicked = false;
+    private boolean areRadioButtonsShown = false;
+    private FloatingActionButton fabDeleteGroups;
 
     // for Land only
     private SubjectsFragment subjectsFragment;
@@ -32,6 +35,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_and_subjects);
 
+        fabDeleteGroups = (FloatingActionButton)findViewById(R.id.fabDeleteGroups);
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
         setSupportActionBar(toolbar);
@@ -76,18 +80,17 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_groups, menu);
+        if(isLand){
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        }else {
+            getMenuInflater().inflate(R.menu.menu_groups, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_trash) {
-            isTrashClicked = !isTrashClicked;
-            groupsFragment.showRadioButtons(isTrashClicked);
-        }
 
         if (id == R.id.action_register) {
             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
@@ -113,6 +116,11 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         }
 
         if (id == R.id.action_settings) {
+        }
+
+        if (id == R.id.action_delete_groups) {
+            areRadioButtonsShown = !areRadioButtonsShown;
+            groupsFragment.showRadioButtonsAndHideButtons(areRadioButtonsShown);
         }
 
         if (id == R.id.action_about) {
