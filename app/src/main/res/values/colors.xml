@@ -7,4 +7,6 @@
     <color name="colorMyPrimaryDark">#939393</color>
     <color name="colorMyAccent">#A80429</color>
     <color name="colorMyAlmostWhite">#f5f5f5</color>
+    <color name="colorBallYellowLight">#F7F795</color>
+    <color name="colorBallYellowDark">#F5BF51</color>
 </resources>

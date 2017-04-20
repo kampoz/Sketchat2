@@ -12,4 +12,8 @@
         <item name="android:background">@color/colorMyPrimaryDark</item>
     </style>
 
+    <style name="MapButton" parent="AppTheme">
+        <item name="colorAccent">#FFFFFF</item>
+    </style>
+
 </resources>
