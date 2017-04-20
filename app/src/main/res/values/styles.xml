@@ -12,8 +12,12 @@
         <item name="android:background">@color/colorMyPrimaryDark</item>
     </style>
 
-    <style name="MapButton" parent="AppTheme">
+    <style name="DeleteButton" parent="AppTheme">
         <item name="colorAccent">#FFFFFF</item>
+    </style>
+
+    <style name="CancelButton" parent="AppTheme">
+        <item name="colorAccent">#ee0000</item>
     </style>
 
 </resources>

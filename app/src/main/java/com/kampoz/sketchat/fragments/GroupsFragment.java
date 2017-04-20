@@ -23,6 +23,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private GroupsFragmentListener listener;
     private GroupsListAdapter adapter;
     private FloatingActionButton fabDeleteGroups;
+    private FloatingActionButton fabCancel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,6 +31,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
+        fabCancel = (FloatingActionButton)view.findViewById(R.id.fabCancel);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -66,9 +68,14 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     public void showRadioButtonsAndHideButtons(boolean areRadioButtonsShown){
         adapter.setAreRadioButtonsShown(areRadioButtonsShown);
         adapter.notifyDataSetChanged();
-        if((fabDeleteGroups.getVisibility())==View.VISIBLE)
-        fabDeleteGroups.setVisibility(View.INVISIBLE);
+        if((fabDeleteGroups.getVisibility())==View.VISIBLE) {
+            fabDeleteGroups.setVisibility(View.INVISIBLE);
+            fabCancel.setVisibility(View.INVISIBLE);
+        }
         else
+        {
             fabDeleteGroups.setVisibility(View.VISIBLE); ;
+            fabCancel.setVisibility(View.VISIBLE);
+        } ;
     }
 }
