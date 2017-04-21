@@ -12,10 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
@@ -26,6 +29,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private FloatingActionButton fabDeleteGroups;
     private FloatingActionButton fabCancel;
     private Toolbar toolbar;
+    private boolean areRadioButtonsShown = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +60,19 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_groups, toolbar.getMenu());
+
+        Menu groupsMenu = toolbar.getMenu();
+        for(int i=0; i<groupsMenu.size(); i++) {
+            MenuItem item = groupsMenu.getItem(i);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    onOptionsItemSelected(item);
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -96,6 +113,20 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         {
             fabDeleteGroups.setVisibility(View.VISIBLE); ;
             fabCancel.setVisibility(View.VISIBLE);
-        } ;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_edit) {
+            areRadioButtonsShown = !areRadioButtonsShown;
+            showRadioButtonsAndHideButtons(areRadioButtonsShown);
+            Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
+            return true;
+
+        }else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
