@@ -14,10 +14,6 @@ import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
-/**
- * Created by wasili on 2017-04-18.
- */
-
 public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener {
 
     private GroupsFragmentListener listener;

@@ -9,7 +9,7 @@
         layout="@layout/app_bar"/>
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fl_subjects_and_groups_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/app_bar"/>

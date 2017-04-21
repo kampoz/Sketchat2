@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.fragments.GroupsFragment;
@@ -41,50 +41,36 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
-
-                // w trybie portrait dodajemy do kontenera GroupsFragment
-        if (this.isLand) {
-            subjectsFragment = (SubjectsFragment) getSupportFragmentManager().findFragmentById(R.id.fSubjectsFragment);
-            groupsFragment = (GroupsFragment)getSupportFragmentManager().findFragmentById(R.id.fGroupsFragment);
-        }else{
-            setGroupsFragment();
-        }
+        setGroupsFragment();
     }
 
     @Override
     public void onItemSelected(int position) {
-        if(isLand) {
-            subjectsFragment.seedSubjectsAndReload();
-        }
-        else{
+
             setSubjectsFragment();
             this.fragmentManager.executePendingTransactions();
-        }
+
     }
 
     private void setGroupsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         //this.currentFragment = new GroupsFragment();
         groupsFragment = new GroupsFragment();
-        fragmentTransaction.replace(R.id.fragment_container, groupsFragment);
+        fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, groupsFragment);
         fragmentTransaction.commit();
     }
 
     private void setSubjectsFragment() {
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new SubjectsFragment();
-        fragmentTransaction.replace(R.id.fragment_container, this.currentFragment);
+        fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, this.currentFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(isLand){
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        }else {
-            getMenuInflater().inflate(R.menu.menu_groups, menu);
-        }
+        getMenuInflater().inflate(R.menu.menu_groups_and_subjects, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -118,14 +104,16 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         if (id == R.id.action_settings) {
         }
 
-        if (id == R.id.action_delete_groups) {
+        if (id == R.id.action_delete) {
             areRadioButtonsShown = !areRadioButtonsShown;
             groupsFragment.showRadioButtonsAndHideButtons(areRadioButtonsShown);
         }
 
         if (id == R.id.action_about) {
+            int versionCode = BuildConfig.VERSION_CODE;
+            String versionName = BuildConfig.VERSION_NAME;
             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage("Copyright \u00a9 2017\nKamil Poznakowski\nkampoznak@gmail.com");
+            alertDialogBuilder.setMessage(versionName+" "+versionCode+"\nCopyright \u00a9 2017\nKamil Poznakowski\nkampoznak@gmail.com");
             alertDialogBuilder.setPositiveButton("OK",
                     new DialogInterface.OnClickListener() {
                         @Override

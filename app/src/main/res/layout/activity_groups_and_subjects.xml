@@ -15,21 +15,19 @@
         android:orientation="horizontal"
         android:layout_below="@+id/app_bar">
 
-    <fragment
-        android:id="@+id/fGroupsFragment"
+    <FrameLayout
+        android:id="@+id/fl_subjects_and_groups_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        class="com.kampoz.sketchat.fragments.GroupsFragment" >
-    </fragment>
+        android:layout_weight="1">
+    </FrameLayout>
 
-    <fragment
-        android:id="@+id/fSubjectsFragment"
+    <FrameLayout
+        android:id="@+id/fl_other_things"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        class="com.kampoz.sketchat.fragments.SubjectsFragment" >
-    </fragment>
+        android:layout_weight="1">
+    </FrameLayout>
 
     </LinearLayout>
 
