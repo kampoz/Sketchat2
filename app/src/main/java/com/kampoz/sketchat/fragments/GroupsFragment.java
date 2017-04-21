@@ -2,11 +2,16 @@ package com.kampoz.sketchat.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +25,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private GroupsListAdapter adapter;
     private FloatingActionButton fabDeleteGroups;
     private FloatingActionButton fabCancel;
+    private Toolbar toolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -28,16 +34,34 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
         fabCancel = (FloatingActionButton)view.findViewById(R.id.fabCancel);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
+        toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
+        toolbar.setTitle("Groups");
+
+
+
         adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
         recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_groups, toolbar.getMenu());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
