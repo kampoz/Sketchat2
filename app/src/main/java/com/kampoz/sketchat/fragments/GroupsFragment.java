@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,10 +14,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
@@ -30,6 +31,9 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private FloatingActionButton fabCancel;
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
+//    private Button bEditGroup;
+//    private ImageView ivPencil;
+//    private TextView tvGroupSubjectsNumber;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +42,9 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
         fabCancel = (FloatingActionButton)view.findViewById(R.id.fabCancel);
+//        bEditGroup = (Button)view.findViewById(R.id.bEditGroup);
+//        ivPencil = (ImageView)view.findViewById(R.id.ivPencil);
+//        tvGroupSubjectsNumber = (TextView) view.findViewById(R.id.tvGroupSubjectsNumber);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -47,8 +54,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
         toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
         toolbar.setTitle("Groups");
-
-
 
         adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
@@ -67,7 +72,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
             item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-
                     onOptionsItemSelected(item);
                     return false;
                 }
@@ -102,16 +106,22 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         }
     }
 
-    public void showRadioButtonsAndHideButtons(boolean areRadioButtonsShown){
-        adapter.setAreRadioButtonsShown(areRadioButtonsShown);
+    public void showEditButtonsAndFabs(boolean areRadioButtonsShown){
+        adapter.setAreEditButtonsShown(areRadioButtonsShown);
         adapter.notifyDataSetChanged();
         if((fabDeleteGroups.getVisibility())==View.VISIBLE) {
+//            bEditGroup.setVisibility(View.INVISIBLE);
+//            ivPencil.setVisibility(View.VISIBLE);
+//            tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
             fabDeleteGroups.setVisibility(View.INVISIBLE);
             fabCancel.setVisibility(View.INVISIBLE);
         }
         else
         {
-            fabDeleteGroups.setVisibility(View.VISIBLE); ;
+//            bEditGroup.setVisibility(View.VISIBLE);
+//            ivPencil.setVisibility(View.INVISIBLE);
+//            tvGroupSubjectsNumber.setVisibility(View.INVISIBLE);
+            fabDeleteGroups.setVisibility(View.VISIBLE);
             fabCancel.setVisibility(View.VISIBLE);
         }
     }
@@ -119,13 +129,19 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_edit) {
+        if (id == R.id.action_delete_groups) {
             areRadioButtonsShown = !areRadioButtonsShown;
-            showRadioButtonsAndHideButtons(areRadioButtonsShown);
-            Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
+            showEditButtonsAndFabs(areRadioButtonsShown);
+            //Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
             return true;
-
-        }else {
+        }
+        if (id == R.id.action_edit_groups) {
+            areRadioButtonsShown = !areRadioButtonsShown;
+            showEditButtonsAndFabs(areRadioButtonsShown);
+            //Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
     }

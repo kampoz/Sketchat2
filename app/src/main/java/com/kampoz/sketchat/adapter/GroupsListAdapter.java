@@ -4,17 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.GroupRealm;
 
 import java.util.ArrayList;
-
-/**
- * Created by wasili on 2017-04-15.
- */
 
 public class GroupsListAdapter extends RecyclerView.Adapter{
 
@@ -25,16 +21,20 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
     private OnGroupItemSelectedListener onGroupItemSelectedListener;
     private RecyclerView recyclerView;
     private ArrayList<GroupRealm> groupsList;
-    private boolean areRadioButtonsShown;
+    private boolean areEditButtonsShown;
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tvGroupName;
-        public RadioButton radioButton;
+        public Button bEditGroup;
+        private TextView tvGroupSubjectsNumber;
+        private ImageView ivPencil;
 
         public MyViewHolder(View view) {
             super(view);
             tvGroupName = (TextView) view.findViewById(R.id.tvGroupName);
-            radioButton = (RadioButton)view.findViewById(R.id.rbDelete);
+            bEditGroup = (Button)view.findViewById(R.id.bEditGroup);
+            tvGroupSubjectsNumber = (TextView) view.findViewById(R.id.tvGroupSubjectsNumber);
+            ivPencil = (ImageView)view.findViewById(R.id.ivPencil);
         }
     }
 
@@ -51,29 +51,25 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-        final RadioButton radioButton = ((MyViewHolder)viewHolder).radioButton;
-        if(areRadioButtonsShown){
-            radioButton.setVisibility(View.VISIBLE);
+        final Button bEditGroup = ((MyViewHolder)viewHolder).bEditGroup;
+        final TextView tvGroupSubjectsNumber = ((MyViewHolder)viewHolder).tvGroupSubjectsNumber;
+        final ImageView ivPencil = ((MyViewHolder)viewHolder).ivPencil;
+        if(areEditButtonsShown){
+            bEditGroup.setVisibility(View.VISIBLE);
+            tvGroupSubjectsNumber.setVisibility(View.INVISIBLE);
+            ivPencil.setVisibility(View.INVISIBLE);
         }else{
-            radioButton.setVisibility(View.GONE);
+            bEditGroup.setVisibility(View.GONE);
+            tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
+            ivPencil.setVisibility(View.VISIBLE);
         }
         ((MyViewHolder)viewHolder).tvGroupName.setText(groupsList.get(position).getGroupName());
         ((MyViewHolder)viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Context context = view.getContext();
-//                Intent startSubjectsListActivityIntent = new Intent(context, SubjectsListActivity.class);
-//                context.startActivity(startSubjectsListActivityIntent);
-                //this.finish();
-                if(areRadioButtonsShown){
-                    if(radioButton.isChecked()){
-                        radioButton.setChecked(false);
-                    }else{
-                        radioButton.setChecked(true);
-                    }
-                }
 
-                if(!areRadioButtonsShown){
+
+                if(!areEditButtonsShown){
                     onGroupItemSelectedListener.onItemSelect(position);
                 }
 
@@ -91,11 +87,11 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
         this.onGroupItemSelectedListener = onGroupItemSelectedListener;
     }
 
-    public boolean isAreRadioButtonsShown() {
-        return areRadioButtonsShown;
+    public boolean isAreEditButtonsShown() {
+        return areEditButtonsShown;
     }
 
-    public void setAreRadioButtonsShown(boolean areRadioButtonsShown) {
-        this.areRadioButtonsShown = areRadioButtonsShown;
+    public void setAreEditButtonsShown(boolean areEditButtonsShown) {
+        this.areEditButtonsShown = areEditButtonsShown;
     }
 }

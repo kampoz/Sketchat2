@@ -105,10 +105,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         if (id == R.id.action_settings) {
         }
 
-        if (id == R.id.action_delete) {
-            areRadioButtonsShown = !areRadioButtonsShown;
-            groupsFragment.showRadioButtonsAndHideButtons(areRadioButtonsShown);
-        }
 
         if (id == R.id.action_about) {
             int versionCode = BuildConfig.VERSION_CODE;

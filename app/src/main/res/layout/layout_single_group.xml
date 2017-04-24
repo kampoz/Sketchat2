@@ -7,36 +7,41 @@
     android:padding="10dp"
     android:background="@color/colorMyPrimary">
 
+    <Button
+        android:id="@+id/bEditGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:textSize="10dp"
+        android:textColor="#000000"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_vertical"
+        android:textAllCaps="false"
+        android:visibility="invisible"/>
+
     <TextView
-        android:id="@+id/tvGroupMembersNumber"
+        android:id="@+id/tvGroupSubjectsNumber"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:text="5"
+        android:text="7"
         android:textSize="18dp"
         android:textColor="@android:color/black"
-        />
+        android:layout_centerVertical="true"/>
 
     <ImageView
-        android:layout_toLeftOf="@id/tvGroupMembersNumber"
+        android:id="@+id/ivPencil"
+        android:layout_toLeftOf="@id/tvGroupSubjectsNumber"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:background="@drawable/pencil"
-        android:layout_marginLeft="20dp"
-        />
-
-    <RadioButton
-        android:id="@+id/rbDelete"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:visibility="gone"/>
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/tvGroupName"
-        android:layout_toRightOf="@id/rbDelete"
+        android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -44,10 +49,6 @@
         android:textSize="18dp"
         android:maxLength="30"
         android:textColor="@android:color/black"
-        />
-
-
-
-
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>
