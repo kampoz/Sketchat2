@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,14 +15,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
+import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
+import com.kampoz.sketchat.realm.GroupRealm;
 
 public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener {
 
@@ -31,9 +31,8 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private FloatingActionButton fabCancel;
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
-//    private Button bEditGroup;
-//    private ImageView ivPencil;
-//    private TextView tvGroupSubjectsNumber;
+    private Context context;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,9 +41,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
         //fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
         fabCancel = (FloatingActionButton)view.findViewById(R.id.fabCancel);
-//        bEditGroup = (Button)view.findViewById(R.id.bEditGroup);
-//        ivPencil = (ImageView)view.findViewById(R.id.ivPencil);
-//        tvGroupSubjectsNumber = (TextView) view.findViewById(R.id.tvGroupSubjectsNumber);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -88,6 +84,16 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     @Override
     public void onItemSelect(int position) {
         listener.onItemSelected(position);
+    }
+
+    @Override
+    public void onEditItem(GroupRealm groupRealm) {
+        Toast.makeText(getContext(), "Group "+groupRealm.getGroupName()+" edit", Toast.LENGTH_SHORT).show();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        EditGroupDialogFragment myDialog = new EditGroupDialogFragment();
+        myDialog.setContext(context);
+        myDialog.show(fragmentManager, "tag");
     }
 
     public interface GroupsFragmentListener {

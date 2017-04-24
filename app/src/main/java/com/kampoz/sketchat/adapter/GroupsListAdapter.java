@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.GroupRealm;
 
@@ -16,6 +17,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
 
     public interface OnGroupItemSelectedListener{
         void onItemSelect(int position);
+        void onEditItem(GroupRealm groupRealm);
     }
 
     private OnGroupItemSelectedListener onGroupItemSelectedListener;
@@ -64,18 +66,23 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
             ivPencil.setVisibility(View.VISIBLE);
         }
         ((MyViewHolder)viewHolder).tvGroupName.setText(groupsList.get(position).getGroupName());
+        final String groupName = ((MyViewHolder)viewHolder).tvGroupName.getText().toString();
         ((MyViewHolder)viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 if(!areEditButtonsShown){
                     onGroupItemSelectedListener.onItemSelect(position);
                 }
-
                 //String groupName = groupsList.get(position).getGroupName();
             }
         });
+        bEditGroup.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      onGroupItemSelectedListener.onEditItem(groupsList.get(position));
+                  }
+              }
+        );
     }
 
     @Override
