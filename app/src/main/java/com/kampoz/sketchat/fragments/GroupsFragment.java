@@ -125,12 +125,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_delete_groups) {
-            areRadioButtonsShown = !areRadioButtonsShown;
-            showEditButtonsAndFabs(areRadioButtonsShown);
-            //Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
-            return true;
-        }
         if (id == R.id.action_edit_groups) {
             areRadioButtonsShown = !areRadioButtonsShown;
             showEditButtonsAndFabs(areRadioButtonsShown);
