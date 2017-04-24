@@ -35,7 +35,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_and_subjects);
 
-        fabDeleteGroups = (FloatingActionButton)findViewById(R.id.fabDeleteGroups);
+        //fabDeleteGroups = (FloatingActionButton)findViewById(R.id.fabDeleteGroups);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.activity_groups_list_toolbar_title);

@@ -27,7 +27,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
     private GroupsFragmentListener listener;
     private GroupsListAdapter adapter;
-    private FloatingActionButton fabDeleteGroups;
+    //private FloatingActionButton fabDeleteGroups;
     private FloatingActionButton fabCancel;
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
@@ -40,7 +40,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
-        fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
+        //fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
         fabCancel = (FloatingActionButton)view.findViewById(R.id.fabCancel);
 //        bEditGroup = (Button)view.findViewById(R.id.bEditGroup);
 //        ivPencil = (ImageView)view.findViewById(R.id.ivPencil);
@@ -90,7 +90,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         listener.onItemSelected(position);
     }
 
-        // interfejs, który będzie implementować aktywność
     public interface GroupsFragmentListener {
         void onItemSelected(int position);
     }
@@ -98,7 +97,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        //if (context instanceof GroupsFragmentListener) {
         try{
             listener = (GroupsFragmentListener) context;
         } catch (ClassCastException e){
@@ -109,19 +107,11 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     public void showEditButtonsAndFabs(boolean areRadioButtonsShown){
         adapter.setAreEditButtonsShown(areRadioButtonsShown);
         adapter.notifyDataSetChanged();
-        if((fabDeleteGroups.getVisibility())==View.VISIBLE) {
-//            bEditGroup.setVisibility(View.INVISIBLE);
-//            ivPencil.setVisibility(View.VISIBLE);
-//            tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
-            fabDeleteGroups.setVisibility(View.INVISIBLE);
+        if((fabCancel.getVisibility())==View.VISIBLE) {
             fabCancel.setVisibility(View.INVISIBLE);
         }
         else
         {
-//            bEditGroup.setVisibility(View.VISIBLE);
-//            ivPencil.setVisibility(View.INVISIBLE);
-//            tvGroupSubjectsNumber.setVisibility(View.INVISIBLE);
-            fabDeleteGroups.setVisibility(View.VISIBLE);
             fabCancel.setVisibility(View.VISIBLE);
         }
     }

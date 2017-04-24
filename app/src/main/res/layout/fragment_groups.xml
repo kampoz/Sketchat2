@@ -27,22 +27,12 @@
             android:layout_gravity="bottom|end">
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabDeleteGroups"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/trash"
-                android:theme="@style/DeleteButton"
-                android:visibility="invisible"
-                />
-
-            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fabCancel"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:src="@drawable/cancel"
                 android:theme="@style/DeleteButton"
-                android:visibility="invisible"
-                />
+                android:visibility="invisible"/>
 
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
