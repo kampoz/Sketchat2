@@ -19,12 +19,9 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
-import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 import com.kampoz.sketchat.realm.GroupRealm;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
 
 public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener,
         EditGroupDialogFragment.EditGroupDialogFragmentListener {
@@ -37,7 +34,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private boolean areRadioButtonsShown = false;
     private Context context;
     private EditGroupDialogFragment myDialog = new EditGroupDialogFragment();
-    ArrayList<GroupRealm> gropsList = new ArrayList<>();
+    ArrayList<GroupRealm> groupsList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,11 +52,11 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
             //pobranie danych z Realm i przekazanie ich do adaptera
         GroupRealm groupRealm = new GroupRealm();
-        gropsList.addAll(groupRealm.getAllfromGroupRealm());
+        groupsList.addAll(groupRealm.getAllfromGroupRealm());
             //drugi sposob pobrania wszystkiego z GroupRealm
-        //gropsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
+        //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
 
-        adapter = new GroupsListAdapter(gropsList, recyclerView);
+        adapter = new GroupsListAdapter(groupsList, recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
         recyclerView.setAdapter(adapter);
         return view;
@@ -96,8 +93,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
     @Override
     public void onEditItem(GroupRealm groupRealm) {
-        Toast.makeText(getContext(), "Group "+groupRealm.getGroupName()+" edit", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(getContext(), "Edit group: "+groupRealm.getGroupName(), Toast.LENGTH_SHORT).show();
         FragmentManager fragmentManager = getFragmentManager();
         myDialog = new EditGroupDialogFragment();
         myDialog.setEditGroupDialogFragmentListener(this);
@@ -105,6 +101,16 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         myDialog.setContext(context);
         myDialog.setCancelable(false);
         myDialog.show(fragmentManager, "tag");
+    }
+
+    @Override
+    public void onDeleteGroupClick() {
+        myDialog.dismiss();
+        GroupRealm groupRealm = new GroupRealm();
+        groupsList.clear();
+        groupsList.addAll(groupRealm.getAllfromGroupRealm());
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -117,6 +123,8 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         myDialog.dismiss();
         adapter.notifyDataSetChanged();
     }
+
+
 
     public interface GroupsFragmentListener {
         void onItemSelected(int position);

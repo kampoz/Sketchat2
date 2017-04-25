@@ -75,4 +75,15 @@ public class GroupRealm extends RealmObject{
         }
         return groups;
     }
+
+    public void deleteGroup(final int id){
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(GroupRealm.class).equalTo("id", id).findFirst().deleteFromRealm();
+            }
+        });
+    }
+
+
 }

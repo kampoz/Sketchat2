@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
 
@@ -33,6 +34,7 @@ public class EditGroupDialogFragment extends DialogFragment {
     public interface EditGroupDialogFragmentListener{
         void onCancelClick();
         void onOKclick();
+        void onDeleteGroupClick();
     }
 
     @Override
@@ -47,10 +49,13 @@ public class EditGroupDialogFragment extends DialogFragment {
         etGroupName = (EditText)  view.findViewById(R.id.etChangeGroupName);
         etGroupName.setText(groupRealmToEdit.getGroupName());
 
+
         bDeleteGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etGroupName.getText();
+                int position = groupRealmToEdit.getId();
+                groupRealmToEdit.deleteGroup(groupRealmToEdit.getId());
+                listener.onDeleteGroupClick();
             }
         });
 

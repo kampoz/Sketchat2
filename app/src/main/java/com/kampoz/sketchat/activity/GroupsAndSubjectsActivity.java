@@ -42,8 +42,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         //Generowanie 30 elementów do GroupRealm
-        generator.generateGroupsList(50);
-
+        //generator.generateGroupsList(50);
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
         setGroupsFragment();
