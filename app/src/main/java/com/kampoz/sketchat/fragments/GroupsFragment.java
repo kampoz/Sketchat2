@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
+import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
 
@@ -33,7 +34,8 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
     private Context context;
-    private EditGroupDialogFragment myDialog = new EditGroupDialogFragment();
+    private EditGroupDialogFragment editGroupDialog = new EditGroupDialogFragment();
+    private AddGroupDialogFragment addGroupDialog = new AddGroupDialogFragment();
     ArrayList<GroupRealm> groupsList = new ArrayList<>();
 
     @Override
@@ -96,17 +98,17 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     public void onEditItem(GroupRealm groupRealm) {
         Toast.makeText(getContext(), "Edit group: "+groupRealm.getGroupName(), Toast.LENGTH_SHORT).show();
         FragmentManager fragmentManager = getFragmentManager();
-        myDialog = new EditGroupDialogFragment();
-        myDialog.setEditGroupDialogFragmentListener(this);
-        myDialog.setGroupRealmToEdit(groupRealm);
-        myDialog.setContext(context);
-        myDialog.setCancelable(false);
-        myDialog.show(fragmentManager, "tag");
+        editGroupDialog = new EditGroupDialogFragment();
+        editGroupDialog.setEditGroupDialogFragmentListener(this);
+        editGroupDialog.setGroupRealmToEdit(groupRealm);
+        editGroupDialog.setContext(context);
+        editGroupDialog.setCancelable(false);
+        editGroupDialog.show(fragmentManager, "tag");
     }
 
     @Override
     public void onDeleteGroupClick() {
-        myDialog.dismiss();
+        editGroupDialog.dismiss();
         GroupRealm groupRealm = new GroupRealm();
         groupsList.clear();
         groupsList.addAll(groupRealm.getAllfromGroupRealm());
@@ -116,12 +118,12 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
     @Override
     public void onCancelClick() {
-        myDialog.dismiss();
+        editGroupDialog.dismiss();
     }
 
     @Override
     public void onOKclick() {
-        myDialog.dismiss();
+        editGroupDialog.dismiss();
         adapter.notifyDataSetChanged();
     }
 
@@ -152,8 +154,17 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         if (id == R.id.action_edit_groups) {
             areRadioButtonsShown = !areRadioButtonsShown;
             showEditButtonsAndFabs(areRadioButtonsShown);
-            item.setTitle(areRadioButtonsShown?"Cancel":"Edit");
+            item.setTitle(areRadioButtonsShown?"Back":"Edit");
             return true;
+        }
+        if(id==R.id.action_new_group){
+            FragmentManager fragmentManager = getFragmentManager();
+            addGroupDialog = new AddGroupDialogFragment();
+            addGroupDialog.setContext(context);
+            addGroupDialog.setCancelable(false);
+            addGroupDialog.show(fragmentManager, "tag");
+            return true;
+
         }
         else {
             return super.onOptionsItemSelected(item);

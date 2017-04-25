@@ -61,7 +61,6 @@ public class EditGroupDialogFragment extends DialogFragment {
         bCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //EditGroupDialogFragment.this.getDialog().dismiss();
                 listener.onCancelClick();
             }
         });
@@ -69,15 +68,8 @@ public class EditGroupDialogFragment extends DialogFragment {
         bOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-//                    @Override
-//                    public void execute(Realm realm) {
-//                        groupRealmToEdit.setGroupName(etGroupName.getText().toString());
-//                    }
-//                });
                 groupRealmToEdit.changeName(etGroupName.getText().toString());
                 listener.onOKclick();
-                //EditGroupDialogFragment.this.getDialog().dismiss();
             }
         });
 

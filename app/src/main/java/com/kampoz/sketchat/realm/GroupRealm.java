@@ -94,4 +94,26 @@ public class GroupRealm extends RealmObject{
         });
     }
 
+    public void addNewGroup(final GroupRealm groupRealm){
+//        Realm.getDefaultInstance().beginTransaction();
+//        GroupRealm groupRealm1 = Realm.getDefaultInstance().createObject(GroupRealm.class);
+//        groupRealm.setId(generateGroupId());
+//        Realm.getDefaultInstance().commitTransaction();
+        ///////////////////////
+        final GroupRealm groupRealm2 = new GroupRealm();
+        Realm defaultInstance = Realm.getDefaultInstance();
+        groupRealm2.setId(generateGroupId());
+        groupRealm2.setGroupName(groupRealm.getGroupName());
+        defaultInstance.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealmOrUpdate(groupRealm2);
+            }
+        });
+
+    }
+
+    private int generateGroupId() {
+        return Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
+    }
 }
