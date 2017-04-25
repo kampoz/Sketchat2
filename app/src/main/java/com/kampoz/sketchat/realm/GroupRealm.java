@@ -85,5 +85,13 @@ public class GroupRealm extends RealmObject{
         });
     }
 
+    public void changeName(final String newName){
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                setGroupName(newName);
+            }
+        });
+    }
 
 }

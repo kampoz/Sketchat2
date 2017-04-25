@@ -52,6 +52,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
             //pobranie danych z Realm i przekazanie ich do adaptera
         GroupRealm groupRealm = new GroupRealm();
+        groupsList.clear();
         groupsList.addAll(groupRealm.getAllfromGroupRealm());
             //drugi sposob pobrania wszystkiego z GroupRealm
         //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
