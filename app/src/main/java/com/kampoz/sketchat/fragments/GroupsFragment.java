@@ -22,6 +22,10 @@ import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 import com.kampoz.sketchat.realm.GroupRealm;
 
+import java.util.ArrayList;
+
+import io.realm.Realm;
+
 public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener {
 
     private GroupsFragmentListener listener;
@@ -31,7 +35,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
     private Context context;
-
+    ArrayList<GroupRealm> gropsList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,12 +47,14 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
-
         toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
         toolbar.setTitle("Groups");
 
-        adapter = new GroupsListAdapter(generator.generateGroupsList(30), recyclerView);
+        gropsList.addAll(
+                Realm.getDefaultInstance().where(GroupRealm.class).findAll()
+        );
+
+        adapter = new GroupsListAdapter(gropsList, recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
         recyclerView.setAdapter(adapter);
         return view;
@@ -89,7 +95,9 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
 
         FragmentManager fragmentManager = getFragmentManager();
         EditGroupDialogFragment myDialog = new EditGroupDialogFragment();
+        myDialog.setGroupRealmToEdit(groupRealm);
         myDialog.setContext(context);
+        myDialog.setCancelable(false);
         myDialog.show(fragmentManager, "tag");
     }
 

@@ -15,6 +15,7 @@ import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.fragments.GroupsFragment;
+import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         GroupsFragment.GroupsFragmentListener {
@@ -26,6 +27,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private boolean areRadioButtonsShown = false;
     private FloatingActionButton fabDeleteGroups;
 
+    MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
+
     // for Land only
     private SubjectsFragment subjectsFragment;
     private GroupsFragment groupsFragment;
@@ -34,12 +37,13 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_and_subjects);
-
-        //fabDeleteGroups = (FloatingActionButton)findViewById(R.id.fabDeleteGroups);
-
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
         setSupportActionBar(toolbar);
+
+        //Generowanie 30 elementów do GroupRealm
+        generator.generateGroupsList(50);
+
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
         setGroupsFragment();
@@ -47,10 +51,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     @Override
     public void onItemSelected(int position) {
-
             setSubjectsFragment();
             this.fragmentManager.executePendingTransactions();
-
     }
 
     private void setGroupsFragment() {

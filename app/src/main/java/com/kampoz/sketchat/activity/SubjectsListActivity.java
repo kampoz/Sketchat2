@@ -61,11 +61,7 @@ public class SubjectsListActivity extends AppCompatActivity {
 //            this.finish();
         }
 
-        if (id == R.id.action_groups_list) {
-            Intent startGroupsListActivityIntent = new Intent(this, GroupsListActivity.class);
-            this.startActivity(startGroupsListActivityIntent);
-            this.finish();
-        }
+
 
         if (id == R.id.action_settings) {
 //            Intent startSettingsActivityIntent = new Intent(this, SettingsActivity.class);

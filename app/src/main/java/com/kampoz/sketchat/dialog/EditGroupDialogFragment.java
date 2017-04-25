@@ -7,8 +7,13 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.realm.GroupRealm;
+
+import io.realm.Realm;
 
 /**
  * Created by wasili on 2017-04-24.
@@ -17,13 +22,50 @@ import com.kampoz.sketchat.R;
 public class EditGroupDialogFragment extends DialogFragment {
 
     private Context context;
+    private GroupRealm groupRealmToEdit;
+    private EditText etGroupName;
+    private Button bDeleteGroup;
+    private Button bCancel;
+    private Button bOK;
 
     @Override
-    public Dialog onCreateDialog(Bundle ssvadInstanceState) {
+    public Dialog onCreateDialog(Bundle ssvadInstanceState){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.group_edit_dialog, null);
+        bDeleteGroup = (Button) view.findViewById(R.id.bDeleteGroupinEditGroup);
+        bCancel = (Button) view.findViewById(R.id.bCancelinEditGroup);
+        bOK = (Button) view.findViewById(R.id.bOKinEditGroup);
+        etGroupName = (EditText)  view.findViewById(R.id.etChangeGroupName);
+        etGroupName.setText(groupRealmToEdit.getGroupName());
+
+        bDeleteGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etGroupName.getText();
+            }
+        });
+
+        bCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditGroupDialogFragment.this.getDialog().dismiss();
+            }
+        });
+
+        bOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        groupRealmToEdit.setGroupName(etGroupName.getText().toString());
+                    }
+                });
+                EditGroupDialogFragment.this.getDialog().dismiss();
+            }
+        });
 
         builder.setView(view);
         Dialog dialog = builder.create();
@@ -34,4 +76,11 @@ public class EditGroupDialogFragment extends DialogFragment {
         this.context = context;
     }
 
+    public GroupRealm getGroupRealmToEdit() {
+        return groupRealmToEdit;
+    }
+
+    public void setGroupRealmToEdit(GroupRealm groupRealm) {
+        this.groupRealmToEdit = groupRealm;
+    }
 }

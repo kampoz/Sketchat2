@@ -117,11 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
 //            this.finish();
         }
 
-        if (id == R.id.action_groups_list) {
-            Intent startGroupsListActivityIntent = new Intent(this, GroupsListActivity.class);
-            this.startActivity(startGroupsListActivityIntent);
-            this.finish();
-        }
+
 
         if (id == R.id.action_last_conversation) {
             Intent startLastConversationActivityIntent = new Intent(this, ConversationActivity.class);

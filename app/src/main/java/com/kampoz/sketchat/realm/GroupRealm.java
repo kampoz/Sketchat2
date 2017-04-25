@@ -3,9 +3,12 @@ package com.kampoz.sketchat.realm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -23,8 +26,9 @@ public class GroupRealm extends RealmObject{
     public GroupRealm(){
     }
 
-    public GroupRealm(String groupName){
+    public GroupRealm(int id, String groupName){
         this.groupName = groupName;
+        this.id = id;
     }
 
     public GroupRealm(String groupName, ArrayList<UserRealm> usersArrayList){
@@ -61,5 +65,15 @@ public class GroupRealm extends RealmObject{
 
     public void setUsersArrayList(RealmList<SubjectRealm> usersArrayList) {
         this.usersArrayList = usersArrayList;
+    }
+
+    public List<GroupRealm> getAllfromGroupRealm() {
+        List<GroupRealm> groups = new ArrayList<>();
+        RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).findAll();
+
+        for (GroupRealm groupRealm : all) {
+            groups.add(groupRealm);
+        }
+        return groups;
     }
 }

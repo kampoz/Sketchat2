@@ -7,11 +7,15 @@ import com.kampoz.sketchat.realm.SubjectRealm;
 import java.util.ArrayList;
 import java.util.Random;
 
+import io.realm.Realm;
+
 /**
  * Created by wasili on 2017-04-15.
  */
 
 public class MyRandomValuesGenerator {
+
+    ArrayList<GroupRealm> groupsList = new ArrayList<>();
 
     String[] messages = {
             "orem ipsum dolor sit amet, consectetur adipiscing elit. Praesent" +
@@ -75,14 +79,20 @@ public class MyRandomValuesGenerator {
     }
 
         //generuje losowe nazwy grup
-    public ArrayList<GroupRealm> generateGroupsList(int groupsNumber){
-        ArrayList<GroupRealm> groupsList = new ArrayList<>();
-        Random random = new Random();
+    public void generateGroupsList(int groupsNumber){
+        Realm realm = Realm.getDefaultInstance();
+
         for(int i=0; i<groupsNumber; i++){
-            GroupRealm group = new GroupRealm(groupsNames[random.nextInt(groupsNames.length)]);
-            groupsList.add(group);
+            Random random = new Random();
+            final GroupRealm groupRealm = new GroupRealm(i, groupsNames[random.nextInt(groupsNames.length)]);
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealmOrUpdate(groupRealm);
+                }
+            });
         }
-        return groupsList;
+        realm.close();
     }
 
     public ArrayList<SubjectRealm> generateSubjectsList(int subjectsNumber){

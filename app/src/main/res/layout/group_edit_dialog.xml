@@ -24,6 +24,7 @@
         android:layout_marginLeft="10dp"/>
 
     <EditText
+        android:id="@+id/etChangeGroupName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
@@ -38,6 +39,7 @@
         android:weightSum="3">
 
         <Button
+            android:id="@+id/bDeleteGroupinEditGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete group"
@@ -45,6 +47,7 @@
             android:textColor="@color/colorMyPrimaryDark"/>
 
         <Button
+            android:id="@+id/bCancelinEditGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
@@ -52,6 +55,7 @@
             android:textColor="@color/colorMyPrimaryDark"/>
 
         <Button
+            android:id="@+id/bOKinEditGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="OK"
