@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
@@ -39,8 +38,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
-        //fabDeleteGroups = (FloatingActionButton)view.findViewById(R.id.fabDeleteGroups);
-        fabCancel = (FloatingActionButton)view.findViewById(R.id.fabCancel);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -113,13 +110,6 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     public void showEditButtonsAndFabs(boolean areRadioButtonsShown){
         adapter.setAreEditButtonsShown(areRadioButtonsShown);
         adapter.notifyDataSetChanged();
-        if((fabCancel.getVisibility())==View.VISIBLE) {
-            fabCancel.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-            fabCancel.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -128,7 +118,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         if (id == R.id.action_edit_groups) {
             areRadioButtonsShown = !areRadioButtonsShown;
             showEditButtonsAndFabs(areRadioButtonsShown);
-            //Toast.makeText(getContext(), id, Toast.LENGTH_SHORT).show();
+            item.setTitle(areRadioButtonsShown?"Cancel":"Edit");
             return true;
         }
         else {
