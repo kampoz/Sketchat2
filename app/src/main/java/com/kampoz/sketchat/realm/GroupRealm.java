@@ -70,7 +70,6 @@ public class GroupRealm extends RealmObject{
     public List<GroupRealm> getAllfromGroupRealm() {
         List<GroupRealm> groups = new ArrayList<>();
         RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).findAll();
-
         for (GroupRealm groupRealm : all) {
             groups.add(groupRealm);
         }

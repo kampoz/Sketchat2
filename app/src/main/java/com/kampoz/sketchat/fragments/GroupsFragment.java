@@ -26,7 +26,8 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 
-public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener {
+public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener,
+        EditGroupDialogFragment.EditGroupDialogFragmentListener {
 
     private GroupsFragmentListener listener;
     private GroupsListAdapter adapter;
@@ -35,6 +36,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
     private Context context;
+    private EditGroupDialogFragment myDialog = new EditGroupDialogFragment();
     ArrayList<GroupRealm> gropsList = new ArrayList<>();
 
     @Override
@@ -50,9 +52,12 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
         toolbar.setTitle("Groups");
 
-        gropsList.addAll(
-                Realm.getDefaultInstance().where(GroupRealm.class).findAll()
-        );
+
+            //pobranie danych z Realm i przekazanie ich do adaptera
+        GroupRealm groupRealm = new GroupRealm();
+        gropsList.addAll(groupRealm.getAllfromGroupRealm());
+            //drugi sposob pobrania wszystkiego z GroupRealm
+        //gropsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
 
         adapter = new GroupsListAdapter(gropsList, recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
@@ -94,11 +99,23 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         Toast.makeText(getContext(), "Group "+groupRealm.getGroupName()+" edit", Toast.LENGTH_SHORT).show();
 
         FragmentManager fragmentManager = getFragmentManager();
-        EditGroupDialogFragment myDialog = new EditGroupDialogFragment();
+        myDialog = new EditGroupDialogFragment();
+        myDialog.setEditGroupDialogFragmentListener(this);
         myDialog.setGroupRealmToEdit(groupRealm);
         myDialog.setContext(context);
         myDialog.setCancelable(false);
         myDialog.show(fragmentManager, "tag");
+    }
+
+    @Override
+    public void onCancelClick() {
+        myDialog.dismiss();
+    }
+
+    @Override
+    public void onOKclick() {
+        myDialog.dismiss();
+        adapter.notifyDataSetChanged();
     }
 
     public interface GroupsFragmentListener {

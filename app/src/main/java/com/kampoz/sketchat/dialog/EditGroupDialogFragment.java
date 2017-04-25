@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
 
 import io.realm.Realm;
@@ -27,6 +28,12 @@ public class EditGroupDialogFragment extends DialogFragment {
     private Button bDeleteGroup;
     private Button bCancel;
     private Button bOK;
+    public EditGroupDialogFragmentListener listener;
+
+    public interface EditGroupDialogFragmentListener{
+        void onCancelClick();
+        void onOKclick();
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle ssvadInstanceState){
@@ -50,7 +57,8 @@ public class EditGroupDialogFragment extends DialogFragment {
         bCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditGroupDialogFragment.this.getDialog().dismiss();
+                //EditGroupDialogFragment.this.getDialog().dismiss();
+                listener.onCancelClick();
             }
         });
 
@@ -63,7 +71,8 @@ public class EditGroupDialogFragment extends DialogFragment {
                         groupRealmToEdit.setGroupName(etGroupName.getText().toString());
                     }
                 });
-                EditGroupDialogFragment.this.getDialog().dismiss();
+                listener.onOKclick();
+                //EditGroupDialogFragment.this.getDialog().dismiss();
             }
         });
 
@@ -82,5 +91,9 @@ public class EditGroupDialogFragment extends DialogFragment {
 
     public void setGroupRealmToEdit(GroupRealm groupRealm) {
         this.groupRealmToEdit = groupRealm;
+    }
+
+    public void setEditGroupDialogFragmentListener(EditGroupDialogFragmentListener listener) {
+        this.listener = listener;
     }
 }
