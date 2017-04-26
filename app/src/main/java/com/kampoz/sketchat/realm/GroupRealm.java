@@ -100,17 +100,17 @@ public class GroupRealm extends RealmObject{
 //        groupRealm.setId(generateGroupId());
 //        Realm.getDefaultInstance().commitTransaction();
         ///////////////////////
+        Realm realm = Realm.getDefaultInstance();
         final GroupRealm groupRealm2 = new GroupRealm();
-        Realm defaultInstance = Realm.getDefaultInstance();
         groupRealm2.setId(generateGroupId());
         groupRealm2.setGroupName(groupRealm.getGroupName());
-        defaultInstance.executeTransaction(new Realm.Transaction() {
+        realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.copyToRealmOrUpdate(groupRealm2);
             }
         });
-
+        realm.close();
     }
 
     private int generateGroupId() {

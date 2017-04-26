@@ -24,8 +24,10 @@ import com.kampoz.sketchat.realm.GroupRealm;
 
 import java.util.ArrayList;
 
-public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGroupItemSelectedListener,
-        EditGroupDialogFragment.EditGroupDialogFragmentListener {
+public class GroupsFragment extends Fragment implements
+        GroupsListAdapter.OnGroupItemSelectedListener,
+        EditGroupDialogFragment.EditGroupDialogFragmentListener,
+        AddGroupDialogFragment.AddGroupDialogFragmentListener{
 
     private GroupsFragmentListener listener;
     private GroupsListAdapter adapter;
@@ -34,8 +36,8 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
     private Context context;
-    private EditGroupDialogFragment editGroupDialog = new EditGroupDialogFragment();
-    private AddGroupDialogFragment addGroupDialog = new AddGroupDialogFragment();
+    private EditGroupDialogFragment editGroupDialog;
+    private AddGroupDialogFragment addGroupDialog;
     ArrayList<GroupRealm> groupsList = new ArrayList<>();
 
     @Override
@@ -160,6 +162,7 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         if(id==R.id.action_new_group){
             FragmentManager fragmentManager = getFragmentManager();
             addGroupDialog = new AddGroupDialogFragment();
+            addGroupDialog.setListener(this);
             addGroupDialog.setContext(context);
             addGroupDialog.setCancelable(false);
             addGroupDialog.show(fragmentManager, "tag");
@@ -169,5 +172,18 @@ public class GroupsFragment extends Fragment implements GroupsListAdapter.OnGrou
         else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCancelClickInAddGroup() {
+
+    }
+
+    @Override
+    public void onOKClickInAddGroup() {
+        GroupRealm groupRealm = new GroupRealm();
+        groupsList.clear();
+        groupsList.addAll(groupRealm.getAllfromGroupRealm());
+        adapter.notifyDataSetChanged();
     }
 }
