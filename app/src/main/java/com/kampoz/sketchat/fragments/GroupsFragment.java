@@ -57,7 +57,7 @@ public class GroupsFragment extends Fragment implements
             //pobranie danych z Realm i przekazanie ich do adaptera
         GroupRealm groupRealm = new GroupRealm();
         groupsList.clear();
-        groupsList.addAll(groupRealm.getAllfromGroupRealm());
+        groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
             //drugi sposob pobrania wszystkiego z GroupRealm
         //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
 
@@ -109,13 +109,13 @@ public class GroupsFragment extends Fragment implements
     }
 
     @Override
-    public void onDeleteGroupClick() {
+    public void onDeleteGroupClick(String groupName) {
         editGroupDialog.dismiss();
         GroupRealm groupRealm = new GroupRealm();
         groupsList.clear();
-        groupsList.addAll(groupRealm.getAllfromGroupRealm());
+        groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
-
+        Toast.makeText(getContext(), "Group deleted: "+groupName, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -167,7 +167,14 @@ public class GroupsFragment extends Fragment implements
             addGroupDialog.setCancelable(false);
             addGroupDialog.show(fragmentManager, "tag");
             return true;
-
+        }
+        if (id == R.id.action_renew) {
+            GroupRealm groupRealm = new GroupRealm();
+            groupsList.clear();
+            groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+            adapter.notifyDataSetChanged();
+            Toast.makeText(getContext(), "Groups renew", Toast.LENGTH_SHORT).show();
+            return true;
         }
         else {
             return super.onOptionsItemSelected(item);
@@ -180,10 +187,11 @@ public class GroupsFragment extends Fragment implements
     }
 
     @Override
-    public void onOKClickInAddGroup() {
+    public void onOKClickInAddGroup(String groupName) {
         GroupRealm groupRealm = new GroupRealm();
         groupsList.clear();
-        groupsList.addAll(groupRealm.getAllfromGroupRealm());
+        groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
+        Toast.makeText(getContext(), "Group added: "+groupName, Toast.LENGTH_SHORT).show();
     }
 }

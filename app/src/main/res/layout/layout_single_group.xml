@@ -48,7 +48,7 @@
         android:layout_marginLeft="10dp"
         android:text="Nazwa Grupy"
         android:textSize="18dp"
-        android:maxLength="30"
+        android:maxLength="50"
         android:textColor="@android:color/black"
         android:layout_centerVertical="true"/>
 

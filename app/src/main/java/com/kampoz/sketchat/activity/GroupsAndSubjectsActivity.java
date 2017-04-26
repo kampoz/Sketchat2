@@ -41,7 +41,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
         setSupportActionBar(toolbar);
 
-        //Generowanie 30 elementów do GroupRealm
+        /*  Generowanie 30 elementów do GroupRealm  */
         //generator.generateGroupsList(4);
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
@@ -122,7 +122,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
             android.app.AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

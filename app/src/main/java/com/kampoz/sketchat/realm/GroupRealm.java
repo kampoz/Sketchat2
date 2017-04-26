@@ -76,6 +76,16 @@ public class GroupRealm extends RealmObject{
         return groups;
     }
 
+        //zwraca wszystkie obiekty GroupRealm posortowane
+    public List<GroupRealm> getAllfromGroupRealmSorted() {
+        List<GroupRealm> groups = new ArrayList<>();
+        RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).findAllSorted("groupName");
+        for (GroupRealm groupRealm : all) {
+            groups.add(groupRealm);
+        }
+        return groups;
+    }
+
     public void deleteGroup(final int id){
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override

@@ -34,7 +34,7 @@ public class EditGroupDialogFragment extends DialogFragment {
     public interface EditGroupDialogFragmentListener{
         void onCancelClick();
         void onOKclick();
-        void onDeleteGroupClick();
+        void onDeleteGroupClick(String groupName);
     }
 
     @Override
@@ -53,8 +53,9 @@ public class EditGroupDialogFragment extends DialogFragment {
         bDeleteGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String groupName = groupRealmToEdit.getGroupName().toString();
                 groupRealmToEdit.deleteGroup(groupRealmToEdit.getId());
-                listener.onDeleteGroupClick();
+                listener.onDeleteGroupClick(groupName);
             }
         });
 

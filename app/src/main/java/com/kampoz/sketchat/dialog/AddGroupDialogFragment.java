@@ -27,7 +27,7 @@ public class AddGroupDialogFragment extends DialogFragment {
 
     public interface AddGroupDialogFragmentListener{
         void onCancelClickInAddGroup();
-        void onOKClickInAddGroup();
+        void onOKClickInAddGroup(String groupName);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AddGroupDialogFragment extends DialogFragment {
 //                groupRealmToEdit.changeName(etGroupName.getText().toString());
 //                listener.onOKclick();
                 getDialog().dismiss();
-                listener.onOKClickInAddGroup();
+                listener.onOKClickInAddGroup(etGroupName.getText().toString());
             }
         });
 
