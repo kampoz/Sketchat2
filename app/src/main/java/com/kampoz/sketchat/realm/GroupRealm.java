@@ -134,6 +134,13 @@ public class GroupRealm extends RealmObject{
     }
 
     private int generateGroupId() {
-        return Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
+        Realm defaultInstance = Realm.getDefaultInstance();
+        int newId = 0;
+        Number oldMaxId = defaultInstance.where(GroupRealm.class).max("id");
+        if(oldMaxId==null){
+            return newId;
+        }else
+            return oldMaxId.intValue()+1;
+                //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
     }
 }

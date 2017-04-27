@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <include android:id="@+id/groups_bar"
-        layout="@layout/groups_bar"/>
+    <include android:id="@+id/subjects_bar"
+        layout="@layout/subjects_bar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvGroupsList"

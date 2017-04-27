@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +24,8 @@ public class SubjectsFragment extends Fragment {
 
     private GroupsFragment.GroupsFragmentListener listener;
     private SubjectsListActivityAdapter adapter;
-    MyRandomValuesGenerator generator;
+    private MyRandomValuesGenerator generator;
+    private Toolbar toolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +37,9 @@ public class SubjectsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+        toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
+        toolbar.setTitle("Subjects");
 
         generator = new MyRandomValuesGenerator();
         adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(30), recyclerView);
@@ -55,5 +63,23 @@ public class SubjectsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_subjects, toolbar.getMenu());
+
+        Menu groupsMenu = toolbar.getMenu();
+        for (int i = 0; i < groupsMenu.size(); i++) {
+            MenuItem item = groupsMenu.getItem(i);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onOptionsItemSelected(item);
+                    return false;
+                }
+            });
+        }
+
+    }
 
 }
