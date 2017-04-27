@@ -1,13 +1,16 @@
 package com.kampoz.sketchat.fragments;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.adapter.GroupsListAdapter;
 import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
@@ -40,6 +44,7 @@ public class GroupsFragment extends Fragment implements
     private AddGroupDialogFragment addGroupDialog;
     ArrayList<GroupRealm> groupsList = new ArrayList<>();
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class GroupsFragment extends Fragment implements
 
         toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
         toolbar.setTitle("Groups");
+
 
 
             //pobranie danych z Realm i przekazanie ich do adaptera
@@ -83,6 +89,40 @@ public class GroupsFragment extends Fragment implements
                 }
             });
         }
+
+        MenuItem item = toolbar.getMenu().findItem(R.id.search);
+        SearchView searchView = new SearchView(getActivity());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                
+                return false;
+            }
+        });
+        searchView.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+                                              Toast.makeText(getContext(), "searchView Listener", Toast.LENGTH_SHORT).show();
+                                          }
+                                      }
+        );
+
+//        SearchView searchView = new SearchView(((GroupsAndSubjectsActivity)context).getSupportActionBar().getThemedContext());
+//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+//        MenuItemCompat.setActionView(item, searchView);
+
+//        SearchManager searchManager =
+//                (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView =
+//                (SearchView) menu.findItem(R.id.search).getActionView();
+//        searchView.setSearchableInfo(
+//                searchManager.getSearchableInfo(getActivity().getComponentName()));
     }
 
     @Override

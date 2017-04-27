@@ -10,6 +10,29 @@
     <include android:id="@+id/groups_bar"
         layout="@layout/groups_bar"/>
 
+    <LinearLayout
+        android:id="@+id/llSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:background="@color/colorMyAlmostWhite"
+            />
+
+        <Button
+            android:id="@+id/bSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:textColor="@color/colorMyPrimaryDark" />
+    </LinearLayout>
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
