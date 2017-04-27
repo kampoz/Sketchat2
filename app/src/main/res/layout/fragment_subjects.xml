@@ -5,13 +5,8 @@
     android:layout_height="match_parent"
     android:background="#000000">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Subjects"
-        android:textSize="30dp"
-        android:textColor="@color/colorMyAlmostWhite"
-        android:gravity="center_horizontal"/>
+    <include android:id="@+id/groups_bar"
+        layout="@layout/groups_bar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvGroupsList"

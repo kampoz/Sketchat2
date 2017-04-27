@@ -43,6 +43,7 @@ public class GroupsFragment extends Fragment implements
     private EditGroupDialogFragment editGroupDialog;
     private AddGroupDialogFragment addGroupDialog;
     ArrayList<GroupRealm> groupsList = new ArrayList<>();
+    GroupRealm groupRealm = new GroupRealm();
 
 
     @Override
@@ -61,7 +62,7 @@ public class GroupsFragment extends Fragment implements
 
 
             //pobranie danych z Realm i przekazanie ich do adaptera
-        GroupRealm groupRealm = new GroupRealm();
+        groupRealm = new GroupRealm();
         groupsList.clear();
         groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
             //drugi sposob pobrania wszystkiego z GroupRealm
@@ -101,7 +102,7 @@ public class GroupsFragment extends Fragment implements
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                GroupRealm groupRealm = new GroupRealm();
+                groupRealm = new GroupRealm();
                 groupsList.clear();
                 groupsList.addAll(groupRealm.searchELementsByName(newText));
                 adapter.notifyDataSetChanged();
@@ -154,7 +155,7 @@ public class GroupsFragment extends Fragment implements
     @Override
     public void onDeleteGroupClick(String groupName) {
         editGroupDialog.dismiss();
-        GroupRealm groupRealm = new GroupRealm();
+        groupRealm = new GroupRealm();
         groupsList.clear();
         groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
@@ -212,7 +213,7 @@ public class GroupsFragment extends Fragment implements
             return true;
         }
         if (id == R.id.action_renew) {
-            GroupRealm groupRealm = new GroupRealm();
+            groupRealm = new GroupRealm();
             groupsList.clear();
             groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
             adapter.notifyDataSetChanged();
@@ -231,7 +232,7 @@ public class GroupsFragment extends Fragment implements
 
     @Override
     public void onOKClickInAddGroup(String groupName) {
-        GroupRealm groupRealm = new GroupRealm();
+        groupRealm = new GroupRealm();
         groupsList.clear();
         groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
