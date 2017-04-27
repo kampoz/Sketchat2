@@ -5,6 +5,7 @@ import com.kampoz.sketchat.realm.SubjectRealm;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -80,6 +81,15 @@ public class GroupRealm extends RealmObject{
     public List<GroupRealm> getAllfromGroupRealmSorted() {
         List<GroupRealm> groups = new ArrayList<>();
         RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).findAllSorted("groupName");
+        for (GroupRealm groupRealm : all) {
+            groups.add(groupRealm);
+        }
+        return groups;
+    }
+
+    public List<GroupRealm> searchELementsByName(String newText) {
+        List<GroupRealm> groups = new ArrayList<>();
+        RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).contains("groupName", newText, Case.INSENSITIVE).findAllSorted("groupName");
         for (GroupRealm groupRealm : all) {
             groups.add(groupRealm);
         }

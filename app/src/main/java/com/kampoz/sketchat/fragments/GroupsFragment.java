@@ -101,7 +101,10 @@ public class GroupsFragment extends Fragment implements
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                
+                GroupRealm groupRealm = new GroupRealm();
+                groupsList.clear();
+                groupsList.addAll(groupRealm.searchELementsByName(newText));
+                adapter.notifyDataSetChanged();
                 return false;
             }
         });
