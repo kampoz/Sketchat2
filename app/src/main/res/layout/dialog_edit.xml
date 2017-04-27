@@ -15,7 +15,7 @@
         />
 
     <TextView
-        android:id="@+id/tvGroupsNameLabel"
+        android:id="@+id/tvNameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Change group's name"
@@ -24,7 +24,7 @@
         android:layout_marginLeft="10dp"/>
 
     <EditText
-        android:id="@+id/etChangeGroupName"
+        android:id="@+id/etChangeName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
@@ -39,7 +39,7 @@
         android:weightSum="3">
 
         <Button
-            android:id="@+id/bDeleteGroupinEditGroup"
+            android:id="@+id/bDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete group"
@@ -47,7 +47,7 @@
             android:textColor="@color/colorMyPrimaryDark"/>
 
         <Button
-            android:id="@+id/bCancelinEditGroup"
+            android:id="@+id/bCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
@@ -55,7 +55,7 @@
             android:textColor="@color/colorMyPrimaryDark"/>
 
         <Button
-            android:id="@+id/bOKinEditGroup"
+            android:id="@+id/bOK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="OK"

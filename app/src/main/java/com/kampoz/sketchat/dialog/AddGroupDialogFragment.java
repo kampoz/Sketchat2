@@ -35,7 +35,7 @@ public class AddGroupDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.group_add_dialog, null);
+        View view = inflater.inflate(R.layout.dialog_add, null);
 
         etGroupName = (EditText)view.findViewById(R.id.etGroupName);
         bCancel = (Button)view.findViewById(R.id.bCancelinAddGroup);

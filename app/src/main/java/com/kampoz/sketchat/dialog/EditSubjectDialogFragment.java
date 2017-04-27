@@ -12,25 +12,26 @@ import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.GroupRealm;
+import com.kampoz.sketchat.realm.SubjectRealm;
 
 /**
  * Created by wasili on 2017-04-24.
  */
 
-public class EditGroupDialogFragment extends DialogFragment {
+public class EditSubjectDialogFragment extends DialogFragment {
 
     private Context context;
-    private GroupRealm groupRealmToEdit;
-    private EditText etGroupName;
-    private Button bDeleteGroup;
+    private SubjectRealm subjectRealmToEdit;
+    private EditText etSubjectName;
+    private Button bDeleteSubject;
     private Button bCancel;
     private Button bOK;
-    public EditGroupDialogFragmentListener listener;
+    public EditSubjectDialogFragmentListener listener;
 
-    public interface EditGroupDialogFragmentListener{
+    public interface EditSubjectDialogFragmentListener{
         void onCancelClick();
         void onOKclick();
-        void onDeleteGroupClick(String groupName);
+        void onDeleteSubjectClick(String subjectName);
     }
 
     @Override
@@ -39,19 +40,19 @@ public class EditGroupDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit, null);
-        bDeleteGroup = (Button) view.findViewById(R.id.bDelete);
+        bDeleteSubject = (Button) view.findViewById(R.id.bDelete);
         bCancel = (Button) view.findViewById(R.id.bCancel);
         bOK = (Button) view.findViewById(R.id.bOK);
-        etGroupName = (EditText)  view.findViewById(R.id.etChangeName);
-        etGroupName.setText(groupRealmToEdit.getGroupName());
+        etSubjectName = (EditText)  view.findViewById(R.id.etChangeName);
+        etSubjectName.setText(subjectRealmToEdit.getSubject());
 
 
-        bDeleteGroup.setOnClickListener(new View.OnClickListener() {
+        bDeleteSubject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String groupName = groupRealmToEdit.getGroupName().toString();
-                groupRealmToEdit.deleteGroup(groupRealmToEdit.getId());
-                listener.onDeleteGroupClick(groupName);
+                String subjectName = subjectRealmToEdit.getSubject();
+                subjectRealmToEdit.deleteSubject(subjectRealmToEdit.getId());
+                listener.onDeleteSubjectClick(subjectName);
             }
         });
 
@@ -65,7 +66,7 @@ public class EditGroupDialogFragment extends DialogFragment {
         bOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupRealmToEdit.changeName(etGroupName.getText().toString());
+                subjectRealmToEdit.changeName(etSubjectName.getText().toString());
                 listener.onOKclick();
             }
         });
@@ -79,15 +80,15 @@ public class EditGroupDialogFragment extends DialogFragment {
         this.context = context;
     }
 
-    public GroupRealm getGroupRealmToEdit() {
-        return groupRealmToEdit;
+    public SubjectRealm getSubjectRealmToEdit() {
+        return subjectRealmToEdit;
     }
 
-    public void setGroupRealmToEdit(GroupRealm groupRealm) {
-        this.groupRealmToEdit = groupRealm;
+    public void setSubjectRealmToEdit(SubjectRealm subjectRealm) {
+        this.subjectRealmToEdit = subjectRealm;
     }
 
-    public void setEditGroupDialogFragmentListener(EditGroupDialogFragmentListener listener) {
+    public void setEditSubjectDialogFragmentListener(EditSubjectDialogFragmentListener listener) {
         this.listener = listener;
     }
 }
