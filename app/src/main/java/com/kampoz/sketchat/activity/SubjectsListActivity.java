@@ -11,13 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.adapter.SubjectsListActivityAdapter;
+import com.kampoz.sketchat.adapter.SubjectsAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class SubjectsListActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private SubjectsListActivityAdapter adapter;
+    private SubjectsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class SubjectsListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
-        adapter = new SubjectsListActivityAdapter(generator.generateSubjectsList(30), recyclerView);
+        adapter = new SubjectsAdapter(generator.generateSubjectsList(30), recyclerView);
         recyclerView.setAdapter(adapter);
     }
 

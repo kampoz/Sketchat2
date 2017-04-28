@@ -13,7 +13,7 @@ import com.kampoz.sketchat.realm.GroupRealm;
 
 import java.util.ArrayList;
 
-public class GroupsListAdapter extends RecyclerView.Adapter{
+public class GroupsAdapter extends RecyclerView.Adapter{
 
     public interface OnGroupItemSelectedListener{
         void onItemSelect(int position);
@@ -40,7 +40,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
         }
     }
 
-    public GroupsListAdapter(ArrayList<GroupRealm> groupsList, RecyclerView recyclerView){
+    public GroupsAdapter(ArrayList<GroupRealm> groupsList, RecyclerView recyclerView){
         this.groupsList = groupsList;
         this.recyclerView = recyclerView;
     }
@@ -48,7 +48,7 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_single_group, viewGroup, false);
-        return new GroupsListAdapter.MyViewHolder(view);
+        return new GroupsAdapter.MyViewHolder(view);
     }
 
     @Override
@@ -65,8 +65,9 @@ public class GroupsListAdapter extends RecyclerView.Adapter{
             tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
             ivPencil.setVisibility(View.VISIBLE);
         }
+
         ((MyViewHolder)viewHolder).tvGroupName.setText(groupsList.get(position).getGroupName());
-        final String groupName = ((MyViewHolder)viewHolder).tvGroupName.getText().toString();
+
         ((MyViewHolder)viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

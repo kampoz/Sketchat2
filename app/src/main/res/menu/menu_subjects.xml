@@ -13,11 +13,11 @@
         android:title="Renew"
         app:showAsAction="collapseActionView|ifRoom"/>
     <item
-        android:id="@+id/action_new_group"
+        android:id="@+id/action_new_subject"
         android:title="New"
         app:showAsAction="collapseActionView|ifRoom"/>
     <item
-        android:id="@+id/action_edit_groups"
+        android:id="@+id/action_edit_subject"
         android:title="Edit"
         app:showAsAction="collapseActionView|ifRoom"/>
 </menu>

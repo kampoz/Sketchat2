@@ -1,10 +1,8 @@
 package com.kampoz.sketchat.fragments;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -20,25 +18,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
-import com.kampoz.sketchat.adapter.GroupsListAdapter;
+import com.kampoz.sketchat.adapter.GroupsAdapter;
 import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
-
 import java.util.ArrayList;
 
 public class GroupsFragment extends Fragment implements
-        GroupsListAdapter.OnGroupItemSelectedListener,
+        GroupsAdapter.OnGroupItemSelectedListener,
         EditGroupDialogFragment.EditGroupDialogFragmentListener,
         AddGroupDialogFragment.AddGroupDialogFragmentListener{
 
     private GroupsFragmentListener listener;
-    private GroupsListAdapter adapter;
+    private GroupsAdapter adapter;
     //private FloatingActionButton fabDeleteGroups;
-    private FloatingActionButton fabCancel;
+    //private FloatingActionButton fabCancel;
     private Toolbar toolbar;
-    private boolean areRadioButtonsShown = false;
+    private boolean areEditButtonsShown = false;
     private Context context;
     private EditGroupDialogFragment editGroupDialog;
     private AddGroupDialogFragment addGroupDialog;
@@ -68,7 +64,7 @@ public class GroupsFragment extends Fragment implements
             //drugi sposob pobrania wszystkiego z GroupRealm
         //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
 
-        adapter = new GroupsListAdapter(groupsList, recyclerView);
+        adapter = new GroupsAdapter(groupsList, recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
         recyclerView.setAdapter(adapter);
         return view;
@@ -189,8 +185,8 @@ public class GroupsFragment extends Fragment implements
         }
     }
 
-    public void showEditButtonsAndFabs(boolean areRadioButtonsShown){
-        adapter.setAreEditButtonsShown(areRadioButtonsShown);
+    public void showEditButtonsAndFabs(boolean areEditButtonsShown){
+        adapter.setAreEditButtonsShown(areEditButtonsShown);
         adapter.notifyDataSetChanged();
     }
 
@@ -198,9 +194,9 @@ public class GroupsFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_edit_groups) {
-            areRadioButtonsShown = !areRadioButtonsShown;
-            showEditButtonsAndFabs(areRadioButtonsShown);
-            item.setTitle(areRadioButtonsShown?"Back":"Edit");
+            areEditButtonsShown = !areEditButtonsShown;
+            showEditButtonsAndFabs(areEditButtonsShown);
+            item.setTitle(areEditButtonsShown ?"Back":"Edit");
             return true;
         }
         if(id==R.id.action_new_group){

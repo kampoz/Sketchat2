@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by wasili on 2017-04-15.
  */
 
-public class ConversationActivityAdapter extends RecyclerView.Adapter {
+public class ConversationAdapter extends RecyclerView.Adapter {
 
     private RecyclerView recyclerView;
     private ArrayList<MessageRealm> messages; // = myGenerator.generateMessagesArrayList(10);
@@ -34,7 +34,7 @@ public class ConversationActivityAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public ConversationActivityAdapter(ArrayList<MessageRealm> messages, RecyclerView recyclerView){
+    public ConversationAdapter(ArrayList<MessageRealm> messages, RecyclerView recyclerView){
         this.messages = messages;
         this.recyclerView = recyclerView;
     }

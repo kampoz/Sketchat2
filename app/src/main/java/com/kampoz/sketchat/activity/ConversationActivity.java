@@ -14,13 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.adapter.ConversationActivityAdapter;
+import com.kampoz.sketchat.adapter.ConversationAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class ConversationActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private ConversationActivityAdapter adapter;
+    private ConversationAdapter adapter;
     private EditText etToWriteMessage;
     private Button bSend;
 
@@ -41,7 +41,7 @@ public class ConversationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
-        adapter = new ConversationActivityAdapter(generator.generateMessagesArrayList(30), recyclerView);
+        adapter = new ConversationAdapter(generator.generateMessagesArrayList(30), recyclerView);
         recyclerView.setAdapter(adapter);
 
         bSend.setOnClickListener(new View.OnClickListener() {
