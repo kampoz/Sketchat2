@@ -29,7 +29,11 @@ public class GroupsFragment extends Fragment implements
         EditGroupDialogFragment.EditGroupDialogFragmentListener,
         AddGroupDialogFragment.AddGroupDialogFragmentListener{
 
-    private GroupsFragmentListener listener;
+    public interface FragmentListener {
+        void onGroupItemSelected(int position);
+    }
+
+    private FragmentListener listener;
     private GroupsAdapter adapter;
     //private FloatingActionButton fabDeleteGroups;
     //private FloatingActionButton fabCancel;
@@ -40,6 +44,7 @@ public class GroupsFragment extends Fragment implements
     private AddGroupDialogFragment addGroupDialog;
     ArrayList<GroupRealm> groupsList = new ArrayList<>();
     GroupRealm groupRealm = new GroupRealm();
+
 
 
     @Override
@@ -131,14 +136,16 @@ public class GroupsFragment extends Fragment implements
         setHasOptionsMenu(true);
     }
 
+
+            /***z interfejsu GroupsAdapter.OnGroupItemSelectedListener:***/
     @Override
     public void onItemSelect(int position) {
-        listener.onItemSelected(position);
+        listener.onGroupItemSelected(position);
     }
 
     @Override
     public void onEditItem(GroupRealm groupRealm) {
-        Toast.makeText(getContext(), "Edit group: "+groupRealm.getGroupName(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "Edit group: "+groupRealm.getGroupName(), Toast.LENGTH_SHORT).show();
         FragmentManager fragmentManager = getFragmentManager();
         editGroupDialog = new EditGroupDialogFragment();
         editGroupDialog.setEditGroupDialogFragmentListener(this);
@@ -148,6 +155,8 @@ public class GroupsFragment extends Fragment implements
         editGroupDialog.show(fragmentManager, "tag");
     }
 
+
+        /*** z interfejsu EditGroupDialogFragment.EditGroupDialogFragmentListener**/
     @Override
     public void onDeleteGroupClick(String groupName) {
         editGroupDialog.dismiss();
@@ -168,20 +177,14 @@ public class GroupsFragment extends Fragment implements
         editGroupDialog.dismiss();
         adapter.notifyDataSetChanged();
     }
-
-
-
-    public interface GroupsFragmentListener {
-        void onItemSelected(int position);
-    }
-
+            /***koniec  interfejsu EditGroupDialogFragment.EditGroupDialogFragmentListener**/
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try{
-            listener = (GroupsFragmentListener) context;
+            listener = (FragmentListener) context;
         } catch (ClassCastException e){
-            throw new ClassCastException(context.toString()+" must implements GroupsFragmentListener!!!!!");
+            throw new ClassCastException(context.toString()+" must implements FragmentListener!!!!!");
         }
     }
 
@@ -220,6 +223,7 @@ public class GroupsFragment extends Fragment implements
             return super.onOptionsItemSelected(item);
         }
     }
+
 
     @Override
     public void onCancelClickInAddGroup() {

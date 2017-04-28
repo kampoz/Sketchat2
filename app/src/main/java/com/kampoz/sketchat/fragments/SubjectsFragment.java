@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.SubjectsAdapter;
 import com.kampoz.sketchat.dialog.AddSubjectDialogFragment;
+import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditSubjectDialogFragment;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 import com.kampoz.sketchat.realm.SubjectRealm;
@@ -29,9 +30,16 @@ import java.util.ArrayList;
  * Created by wasili on 2017-04-18.
  */
 
-public class SubjectsFragment extends Fragment implements AddSubjectDialogFragment.AddSubjectDialogFragmentListener {
+public class SubjectsFragment extends Fragment implements
+        AddSubjectDialogFragment.AddSubjectDialogFragmentListener,
+        SubjectsAdapter.OnSubjectItemSelectedListener,
+        EditSubjectDialogFragment.EditSubjectDialogFragmentListener{
 
-    private GroupsFragment.GroupsFragmentListener listener;
+    public interface FragmentListener {
+        void onSubjectItemSelected(int position);
+    }
+
+    private FragmentListener listener;
     private SubjectsAdapter adapter;
     private MyRandomValuesGenerator generator;
     private Toolbar toolbar;
@@ -42,6 +50,13 @@ public class SubjectsFragment extends Fragment implements AddSubjectDialogFragme
     SubjectRealm groupRealm = new SubjectRealm();
     private Context context;
     SubjectRealm subjectRealm;
+
+
+
+    public interface SubjectFragmentListener {
+        void onItemSelected(int position);
+    }
+    //////////////////
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +74,7 @@ public class SubjectsFragment extends Fragment implements AddSubjectDialogFragme
 
         generator = new MyRandomValuesGenerator();
         adapter = new SubjectsAdapter(generator.generateSubjectsList(30), recyclerView);
+        adapter.setOnSubjectItemSelectedListener(this);
         recyclerView.setAdapter(adapter);
         return view;
     }
@@ -146,6 +162,42 @@ public class SubjectsFragment extends Fragment implements AddSubjectDialogFragme
 
     @Override
     public void onOKClickInAddSubject(String groupName) {
+
+    }
+
+
+    //z interfejsu SubjectsAdapter.OnSubjectItemSelectedListener
+    @Override
+    public void onItemSelect(int position) {
+
+    }
+
+    @Override
+    public void onEditItem(SubjectRealm subjectRealm) {
+        Toast.makeText(getContext(), "Edit subject: "+subjectRealm.getSubject(), Toast.LENGTH_SHORT).show();
+        FragmentManager fragmentManager = getFragmentManager();
+        editGroupDialog = new EditSubjectDialogFragment();
+        editGroupDialog.setEditSubjectDialogFragmentListener(this);
+        editGroupDialog.setSubjectRealmToEdit(subjectRealm);
+        editGroupDialog.setContext(context);
+        editGroupDialog.setCancelable(false);
+        editGroupDialog.show(fragmentManager, "edit subject");
+    }
+
+
+
+    @Override
+    public void onCancelClick() {
+
+    }
+
+    @Override
+    public void onDeleteSubjectClick(String subjectName) {
+
+    }
+
+    @Override
+    public void onOKclick() {
 
     }
 }

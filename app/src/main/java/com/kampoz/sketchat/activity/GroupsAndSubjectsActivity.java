@@ -18,7 +18,8 @@ import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
-        GroupsFragment.GroupsFragmentListener {
+        GroupsFragment.FragmentListener,
+        SubjectsFragment.FragmentListener{
 
     private boolean isLand = false;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -48,10 +49,18 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         setGroupsFragment();
     }
 
+
+        //z interfejsu GroupsFragment.FragmentListener
     @Override
-    public void onItemSelected(int position) {
+    public void onGroupItemSelected(int position) {
             setSubjectsFragment();
             this.fragmentManager.executePendingTransactions();
+    }
+
+        //z interfejsu SubjectsFragment.FragmentListener
+    @Override
+    public void onSubjectItemSelected(int position) {
+
     }
 
     private void setGroupsFragment() {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.GroupRealm;
@@ -26,6 +27,8 @@ public class EditSubjectDialogFragment extends DialogFragment {
     private Button bDeleteSubject;
     private Button bCancel;
     private Button bOK;
+    private TextView tvNameLabel;
+    private TextView tvEditDialogLabel;
     public EditSubjectDialogFragmentListener listener;
 
     public interface EditSubjectDialogFragmentListener{
@@ -40,7 +43,12 @@ public class EditSubjectDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit, null);
+        tvEditDialogLabel = (TextView)view.findViewById(R.id.tvEditDialogLabel);
+        tvEditDialogLabel.setText("Subject edit");
+        tvNameLabel = (TextView)view.findViewById(R.id.tvNameLabel);
+        tvNameLabel.setText("Change subject's name");
         bDeleteSubject = (Button) view.findViewById(R.id.bDelete);
+        bDeleteSubject.setText("Delete subject");
         bCancel = (Button) view.findViewById(R.id.bCancel);
         bOK = (Button) view.findViewById(R.id.bOK);
         etSubjectName = (EditText)  view.findViewById(R.id.etChangeName);

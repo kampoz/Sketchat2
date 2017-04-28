@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
 import java.util.ArrayList;
@@ -18,6 +19,12 @@ import java.util.ArrayList;
 
 public class SubjectsAdapter extends RecyclerView.Adapter{
 
+    public interface OnSubjectItemSelectedListener{
+        void onItemSelect(int position);
+        void onEditItem(SubjectRealm subjectRealm);
+    }
+
+    private OnSubjectItemSelectedListener onSubjectItemSelectedListener;
     private RecyclerView recyclerView;
     private ArrayList<SubjectRealm> subjectsList;
     private boolean areEditButtonsShown;
@@ -74,6 +81,14 @@ public class SubjectsAdapter extends RecyclerView.Adapter{
 
 
         ((MyViewHolder)viewHolder).tvSubject.setText(subjectsList.get(position).getSubject());
+
+        bEditSubject.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+                                              onSubjectItemSelectedListener.onEditItem(subjectsList.get(position));
+                                          }
+                                      }
+        );
     }
 
     @Override
@@ -91,5 +106,9 @@ public class SubjectsAdapter extends RecyclerView.Adapter{
 
     public void setAreEditButtonsShown(boolean areEditButtonsShown) {
         this.areEditButtonsShown = areEditButtonsShown;
+    }
+
+    public void setOnSubjectItemSelectedListener(OnSubjectItemSelectedListener onSubjectItemSelectedListener) {
+        this.onSubjectItemSelectedListener = onSubjectItemSelectedListener;
     }
 }
