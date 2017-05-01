@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -110,7 +112,38 @@ public class SubjectsFragment extends Fragment implements
         }
       });
     }
+
+    MenuItem item = toolbar.getMenu().findItem(R.id.search);
+    SearchView searchView = new SearchView(getActivity());
+    MenuItemCompat.setShowAsAction(item,
+        MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+    MenuItemCompat.setActionView(item, searchView);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+        return false;
+      }
+
+      @Override
+      public boolean onQueryTextChange(String newText) {
+        subjectRealm = new SubjectRealm();
+        subjectsList.clear();
+        subjectsList.addAll(subjectRealm.searchELementsByName(newText));
+        adapter.notifyDataSetChanged();
+        return false;
+      }
+    });
+    searchView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                      Toast.makeText(getContext(), "searchView Listener",
+                                          Toast.LENGTH_SHORT).show();
+                                    }
+                                  }
+    );
   }
+
+
 
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

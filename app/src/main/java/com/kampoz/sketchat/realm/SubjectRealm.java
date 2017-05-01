@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.realm;
 
+import io.realm.Case;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,5 +101,15 @@ public class SubjectRealm extends RealmObject{
             subjects.add(subjectRealm);
         }
         return subjects;
+    }
+
+    public List<SubjectRealm> searchELementsByName(String newText) {
+        List<SubjectRealm> groups = new ArrayList<>();
+        RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class)
+            .contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
+        for (SubjectRealm subjectRealm : all) {
+            groups.add(subjectRealm);
+        }
+        return groups;
     }
 }
