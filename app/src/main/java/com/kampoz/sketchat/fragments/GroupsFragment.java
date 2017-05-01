@@ -46,7 +46,6 @@ public class GroupsFragment extends Fragment implements
   GroupRealm groupRealm = new GroupRealm();
   private Context context;
 
-
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class GroupsFragment extends Fragment implements
     groupRealm = new GroupRealm();
     groupsList.clear();
     groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
-    //drugi sposob pobrania wszystkiego z GroupRealm
+    /*** drugi sposob pobrania wszystkiego z GroupRealm */
     //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
 
     adapter = new GroupsAdapter(groupsList, recyclerView);
@@ -112,7 +111,8 @@ public class GroupsFragment extends Fragment implements
     searchView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                      Toast.makeText(getContext(), "searchView Listener", Toast.LENGTH_SHORT).show();
+                                      Toast.makeText(getContext(), "searchView Listener",
+                                          Toast.LENGTH_SHORT).show();
                                     }
                                   }
     );
