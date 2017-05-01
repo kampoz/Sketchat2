@@ -27,7 +27,6 @@ public class AddSubjectDialogFragment extends DialogFragment {
     public AddSubjectDialogFragmentListener listener;
 
     public interface AddSubjectDialogFragmentListener {
-        void onCancelClickInAddSubject();
         void onOKClickInAddSubject(String groupName);
     }
 
@@ -56,7 +55,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
                 subjectRealm.setSubject(etSubjectName.getText().toString());
                 subjectRealm.addNewSubject(subjectRealm);
 //                groupRealmToEdit.changeName(etSubjectName.getText().toString());
-//                listener.onOKclick();
+//                listener.onOKClickInEdit();
                 getDialog().dismiss();
                 listener.onOKClickInAddSubject(etSubjectName.getText().toString());
             }

@@ -26,8 +26,8 @@ public class GroupsAdapter extends RecyclerView.Adapter{
     private boolean areEditButtonsShown;
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvGroupName;
-        public Button bEditGroup;
+        private TextView tvGroupName;
+        private Button bEditGroup;
         private TextView tvGroupSubjectsNumber;
         private ImageView ivPencil;
 

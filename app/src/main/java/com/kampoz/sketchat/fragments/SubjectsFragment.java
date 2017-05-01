@@ -15,13 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.SubjectsAdapter;
 import com.kampoz.sketchat.dialog.AddSubjectDialogFragment;
-import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditSubjectDialogFragment;
-import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
+import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
 import java.util.ArrayList;
@@ -31,173 +29,182 @@ import java.util.ArrayList;
  */
 
 public class SubjectsFragment extends Fragment implements
-        AddSubjectDialogFragment.AddSubjectDialogFragmentListener,
-        SubjectsAdapter.OnSubjectItemSelectedListener,
-        EditSubjectDialogFragment.EditSubjectDialogFragmentListener{
+    AddSubjectDialogFragment.AddSubjectDialogFragmentListener,
+    SubjectsAdapter.OnSubjectItemSelectedListener,
+    EditSubjectDialogFragment.EditSubjectDialogFragmentListener {
 
-    public interface FragmentListener {
-        void onSubjectItemSelected(int position);
-    }
+  public interface FragmentListener {
 
-    private FragmentListener listener;
-    private SubjectsAdapter adapter;
-    private MyRandomValuesGenerator generator;
-    private Toolbar toolbar;
-    private boolean areEditButtonsShown = false;
-    private EditSubjectDialogFragment editGroupDialog;
-    private AddSubjectDialogFragment addSubjectDialog;
-    ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
-    SubjectRealm groupRealm = new SubjectRealm();
-    private Context context;
-    SubjectRealm subjectRealm;
+    void onSubjectItemSelected(int position);
+  }
+
+  private FragmentListener listener;
+  private SubjectsAdapter adapter;
+  //private MyRandomValuesGenerator generator;
+  private Toolbar toolbar;
+  private boolean areEditButtonsShown = false;
+  private EditSubjectDialogFragment editSubjectDialog;
+  private AddSubjectDialogFragment addSubjectDialog;
+  ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
+  SubjectRealm subjectRealm = new SubjectRealm();
+  private Context context;
 
 
+  public interface SubjectFragmentListener {
 
-    public interface SubjectFragmentListener {
-        void onItemSelected(int position);
-    }
-    //////////////////
+    void onItemSelected(int position);
+  }
+  //////////////////
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater
-                .inflate(R.layout.fragment_subjects, container, false);
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_subjects, container, false);
+    RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvSubjectsList);
+    recyclerView.setHasFixedSize(true);
+    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+    toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
+    toolbar.setTitle("Subjects");
 
-        toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
-        toolbar.setTitle("Subjects");
+    subjectRealm = new SubjectRealm();
+    subjectsList.clear();
+    subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
 
-        generator = new MyRandomValuesGenerator();
-        adapter = new SubjectsAdapter(generator.generateSubjectsList(30), recyclerView);
-        adapter.setOnSubjectItemSelectedListener(this);
-        recyclerView.setAdapter(adapter);
-        return view;
-    }
+    adapter = new SubjectsAdapter(subjectsList, recyclerView);
+    adapter.setOnSubjectItemSelectedListener(this);
+    recyclerView.setAdapter(adapter);
+    return view;
+  }
 
-    public SubjectsAdapter getAdapter() {
-        return adapter;
-    }
+  public SubjectsAdapter getAdapter() {
+    return adapter;
+  }
 
-    public void setAdapter(SubjectsAdapter adapter) {
-        this.adapter = adapter;
-    }
+  public void setAdapter(SubjectsAdapter adapter) {
+    this.adapter = adapter;
+  }
 
-    //seedowanie tematów
-    public void seedSubjectsAndReload(){
-        generator = new MyRandomValuesGenerator();
-        adapter.getSubjectsList().clear();
-        adapter.getSubjectsList().addAll(generator.generateSubjectsList(30));
-        adapter.notifyDataSetChanged();
-    }
+  //seedowanie tematów
+//    public void seedSubjectsAndReload(){
+//        generator = new MyRandomValuesGenerator();
+//        adapter.getSubjectsList().clear();
+//        adapter.getSubjectsList().addAll(generator.generateSubjectsList(30));
+//        adapter.notifyDataSetChanged();
+//    }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_subjects, toolbar.getMenu());
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.menu_subjects, toolbar.getMenu());
 
-        Menu groupsMenu = toolbar.getMenu();
-        for (int i = 0; i < groupsMenu.size(); i++) {
-            MenuItem item = groupsMenu.getItem(i);
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    onOptionsItemSelected(item);
-                    return false;
-                }
-            });
+    Menu groupsMenu = toolbar.getMenu();
+    for (int i = 0; i < groupsMenu.size(); i++) {
+      MenuItem item = groupsMenu.getItem(i);
+      item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+          onOptionsItemSelected(item);
+          return false;
         }
+      });
     }
+  }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setHasOptionsMenu(true);
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    setHasOptionsMenu(true);
+  }
+
+  public void showEditButtonsAndFabs(boolean areEditButtonsShown) {
+    adapter.setAreEditButtonsShown(areEditButtonsShown);
+    adapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+    if (id == R.id.action_edit_subject) {
+      areEditButtonsShown = !areEditButtonsShown;
+      showEditButtonsAndFabs(areEditButtonsShown);
+      item.setTitle(areEditButtonsShown ? "Back" : "Edit");
+      return true;
     }
-
-    public void showEditButtonsAndFabs(boolean areEditButtonsShown){
-        adapter.setAreEditButtonsShown(areEditButtonsShown);
-        adapter.notifyDataSetChanged();
+    if (id == R.id.action_new_subject) {
+      FragmentManager fragmentManager = getFragmentManager();
+      addSubjectDialog = new AddSubjectDialogFragment();
+      addSubjectDialog.setListener(this);
+      addSubjectDialog.setContext(context);
+      addSubjectDialog.setCancelable(false);
+      addSubjectDialog.show(fragmentManager, "tag");
+      return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_edit_subject) {
-            areEditButtonsShown = !areEditButtonsShown;
-            showEditButtonsAndFabs(areEditButtonsShown);
-            item.setTitle(areEditButtonsShown ?"Back":"Edit");
-            return true;
-        }
-        if(id==R.id.action_new_subject){
-            FragmentManager fragmentManager = getFragmentManager();
-            addSubjectDialog = new AddSubjectDialogFragment();
-            addSubjectDialog.setListener(this);
-            addSubjectDialog.setContext(context);
-            addSubjectDialog.setCancelable(false);
-            addSubjectDialog.show(fragmentManager, "tag");
-            return true;
-        }
-        if (id == R.id.action_renew) {
-            subjectRealm = new SubjectRealm();
-            subjectsList.clear();
-            subjectsList.addAll(groupRealm.getAllfromSubjectRealmSorted());
-            adapter.notifyDataSetChanged();
-            Toast.makeText(getContext(), "Subjects renew", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        else {
-            return super.onOptionsItemSelected(item);
-        }
+    if (id == R.id.action_renew) {
+      subjectRealm = new SubjectRealm();
+      subjectsList.clear();
+      subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+      adapter.notifyDataSetChanged();
+      Toast.makeText(getContext(), "Subjects renew", Toast.LENGTH_SHORT).show();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
     }
+  }
 
-    @Override
-    public void onCancelClickInAddSubject() {
+  /*** Interfaces methods: ***/
 
-    }
+  /*** 1) From interfece SubjectsAdapter.OnSubjectItemSelectedListener (2 methods)**/
+  @Override
+  public void onItemSelect(int position) {
+  }
 
-    @Override
-    public void onOKClickInAddSubject(String groupName) {
+  @Override
+  public void onEditItem(SubjectRealm subjectRealm) {
+    Toast.makeText(getContext(), "Edit subject: " + subjectRealm.getSubject(), Toast.LENGTH_SHORT)
+        .show();
+    FragmentManager fragmentManager = getFragmentManager();
+    editSubjectDialog = new EditSubjectDialogFragment();
+    editSubjectDialog.setEditSubjectDialogFragmentListener(this);
+    editSubjectDialog.setSubjectRealmToEdit(subjectRealm);
+    editSubjectDialog.setContext(context);
+    editSubjectDialog.setCancelable(false);
+    editSubjectDialog.show(fragmentManager, "edit subject");
+  }
+  /** End of interfece SubjectsAdapter.OnSubjectItemSelectedListener**/
 
-    }
+  /*** 2) From interface AddSubjectDialogFragment.AddSubjectDialogFragmentListener (1 method)**/
+  @Override
+  public void onOKClickInAddSubject(String subjectName) {
+    subjectRealm = new SubjectRealm();
+    subjectsList.clear();
+    subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+    adapter.notifyDataSetChanged();
+    Toast.makeText(getContext(), "Subject added: " + subjectName, Toast.LENGTH_SHORT).show();
+  }
+  /** End of interface AddSubjectDialogFragment.AddSubjectDialogFragmentListener */
 
+  /*** 3) From Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener (3 methods) **/
+  @Override
+  public void onDeleteSubjectClickInEdit(String subjectName) {
+    editSubjectDialog.dismiss();
+    subjectRealm = new SubjectRealm();
+    subjectsList.clear();
+    subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+    adapter.notifyDataSetChanged();
+    Toast.makeText(getContext(), "Group deleted: " + subjectName, Toast.LENGTH_SHORT).show();
+  }
 
-    //z interfejsu SubjectsAdapter.OnSubjectItemSelectedListener
-    @Override
-    public void onItemSelect(int position) {
+  @Override
+  public void onCancelClickInEdit() {
+    editSubjectDialog.dismiss();
+  }
 
-    }
-
-    @Override
-    public void onEditItem(SubjectRealm subjectRealm) {
-        Toast.makeText(getContext(), "Edit subject: "+subjectRealm.getSubject(), Toast.LENGTH_SHORT).show();
-        FragmentManager fragmentManager = getFragmentManager();
-        editGroupDialog = new EditSubjectDialogFragment();
-        editGroupDialog.setEditSubjectDialogFragmentListener(this);
-        editGroupDialog.setSubjectRealmToEdit(subjectRealm);
-        editGroupDialog.setContext(context);
-        editGroupDialog.setCancelable(false);
-        editGroupDialog.show(fragmentManager, "edit subject");
-    }
-
-
-
-    @Override
-    public void onCancelClick() {
-
-    }
-
-    @Override
-    public void onDeleteSubjectClick(String subjectName) {
-
-    }
-
-    @Override
-    public void onOKclick() {
-
-    }
+  @Override
+  public void onOKClickInEdit() {
+    editSubjectDialog.dismiss();
+    adapter.notifyDataSetChanged();
+  }
+  /** End of Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener**/
 }

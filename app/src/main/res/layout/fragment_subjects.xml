@@ -9,7 +9,7 @@
         layout="@layout/subjects_bar"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvGroupsList"
+        android:id="@+id/rvSubjectsList"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"

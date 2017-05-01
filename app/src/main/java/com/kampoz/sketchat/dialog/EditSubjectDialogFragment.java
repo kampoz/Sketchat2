@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
 /**
@@ -32,9 +31,9 @@ public class EditSubjectDialogFragment extends DialogFragment {
     public EditSubjectDialogFragmentListener listener;
 
     public interface EditSubjectDialogFragmentListener{
-        void onCancelClick();
-        void onOKclick();
-        void onDeleteSubjectClick(String subjectName);
+        void onCancelClickInEdit();
+        void onOKClickInEdit();
+        void onDeleteSubjectClickInEdit(String subjectName);
     }
 
     @Override
@@ -60,14 +59,14 @@ public class EditSubjectDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 String subjectName = subjectRealmToEdit.getSubject();
                 subjectRealmToEdit.deleteSubject(subjectRealmToEdit.getId());
-                listener.onDeleteSubjectClick(subjectName);
+                listener.onDeleteSubjectClickInEdit(subjectName);
             }
         });
 
         bCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onCancelClick();
+                listener.onCancelClickInEdit();
             }
         });
 
@@ -75,7 +74,7 @@ public class EditSubjectDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 subjectRealmToEdit.changeName(etSubjectName.getText().toString());
-                listener.onOKclick();
+                listener.onOKClickInEdit();
             }
         });
 

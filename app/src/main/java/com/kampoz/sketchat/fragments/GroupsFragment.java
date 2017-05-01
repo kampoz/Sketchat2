@@ -25,98 +25,97 @@ import com.kampoz.sketchat.realm.GroupRealm;
 import java.util.ArrayList;
 
 public class GroupsFragment extends Fragment implements
-        GroupsAdapter.OnGroupItemSelectedListener,
-        EditGroupDialogFragment.EditGroupDialogFragmentListener,
-        AddGroupDialogFragment.AddGroupDialogFragmentListener{
+    GroupsAdapter.OnGroupItemSelectedListener,
+    EditGroupDialogFragment.EditGroupDialogFragmentListener,
+    AddGroupDialogFragment.AddGroupDialogFragmentListener {
 
-    public interface FragmentListener {
-        void onGroupItemSelected(int position);
+  public interface FragmentListener {
+
+    void onGroupItemSelected(int position);
+  }
+
+  private FragmentListener listener;
+  private GroupsAdapter adapter;
+  //private FloatingActionButton fabDeleteGroups;
+  //private FloatingActionButton fabCancel;
+  private Toolbar toolbar;
+  private boolean areEditButtonsShown = false;
+  private EditGroupDialogFragment editGroupDialog;
+  private AddGroupDialogFragment addGroupDialog;
+  ArrayList<GroupRealm> groupsList = new ArrayList<>();
+  GroupRealm groupRealm = new GroupRealm();
+  private Context context;
+
+
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.fragment_groups, container, false);
+    RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
+    recyclerView.setHasFixedSize(true);
+    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+    toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
+    toolbar.setTitle("Groups");
+
+    /*** pobranie danych z Realm i przekazanie ich do adaptera */
+    groupRealm = new GroupRealm();
+    groupsList.clear();
+    groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+    //drugi sposob pobrania wszystkiego z GroupRealm
+    //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
+
+    adapter = new GroupsAdapter(groupsList, recyclerView);
+    adapter.setOnGroupItemSelectedListener(this);
+    recyclerView.setAdapter(adapter);
+    return view;
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.menu_groups, toolbar.getMenu());
+
+    Menu groupsMenu = toolbar.getMenu();
+    for (int i = 0; i < groupsMenu.size(); i++) {
+      MenuItem item = groupsMenu.getItem(i);
+      item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+          onOptionsItemSelected(item);
+          return false;
+        }
+      });
     }
 
-    private FragmentListener listener;
-    private GroupsAdapter adapter;
-    //private FloatingActionButton fabDeleteGroups;
-    //private FloatingActionButton fabCancel;
-    private Toolbar toolbar;
-    private boolean areEditButtonsShown = false;
-    private Context context;
-    private EditGroupDialogFragment editGroupDialog;
-    private AddGroupDialogFragment addGroupDialog;
-    ArrayList<GroupRealm> groupsList = new ArrayList<>();
-    GroupRealm groupRealm = new GroupRealm();
+    MenuItem item = toolbar.getMenu().findItem(R.id.search);
+    SearchView searchView = new SearchView(getActivity());
+    MenuItemCompat.setShowAsAction(item,
+        MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+    MenuItemCompat.setActionView(item, searchView);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+        return false;
+      }
 
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_groups, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvGroupsList);
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
-        toolbar.setTitle("Groups");
-
-
-
-            //pobranie danych z Realm i przekazanie ich do adaptera
+      @Override
+      public boolean onQueryTextChange(String newText) {
         groupRealm = new GroupRealm();
         groupsList.clear();
-        groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
-            //drugi sposob pobrania wszystkiego z GroupRealm
-        //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
-
-        adapter = new GroupsAdapter(groupsList, recyclerView);
-        adapter.setOnGroupItemSelectedListener(this);
-        recyclerView.setAdapter(adapter);
-        return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_groups, toolbar.getMenu());
-
-        Menu groupsMenu = toolbar.getMenu();
-        for(int i=0; i<groupsMenu.size(); i++) {
-            MenuItem item = groupsMenu.getItem(i);
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    onOptionsItemSelected(item);
-                    return false;
-                }
-            });
-        }
-
-        MenuItem item = toolbar.getMenu().findItem(R.id.search);
-        SearchView searchView = new SearchView(getActivity());
-        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-        MenuItemCompat.setActionView(item, searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                groupRealm = new GroupRealm();
-                groupsList.clear();
-                groupsList.addAll(groupRealm.searchELementsByName(newText));
-                adapter.notifyDataSetChanged();
-                return false;
-            }
-        });
-        searchView.setOnClickListener(new View.OnClickListener() {
-                                          @Override
-                                          public void onClick(View v) {
-                                              Toast.makeText(getContext(), "searchView Listener", Toast.LENGTH_SHORT).show();
-                                          }
-                                      }
-        );
+        groupsList.addAll(groupRealm.searchELementsByName(newText));
+        adapter.notifyDataSetChanged();
+        return false;
+      }
+    });
+    searchView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                      Toast.makeText(getContext(), "searchView Listener", Toast.LENGTH_SHORT).show();
+                                    }
+                                  }
+    );
 
 //        SearchView searchView = new SearchView(((GroupsAndSubjectsActivity)context).getSupportActionBar().getThemedContext());
 //        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
@@ -128,114 +127,110 @@ public class GroupsFragment extends Fragment implements
 //                (SearchView) menu.findItem(R.id.search).getActionView();
 //        searchView.setSearchableInfo(
 //                searchManager.getSearchableInfo(getActivity().getComponentName()));
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    setHasOptionsMenu(true);
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    try {
+      listener = (FragmentListener) context;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(context.toString() + " must implements FragmentListener!!!!!");
     }
+  }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setHasOptionsMenu(true);
+  public void showEditButtonsAndFabs(boolean areEditButtonsShown) {
+    adapter.setAreEditButtonsShown(areEditButtonsShown);
+    adapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+    if (id == R.id.action_edit_groups) {
+      areEditButtonsShown = !areEditButtonsShown;
+      showEditButtonsAndFabs(areEditButtonsShown);
+      item.setTitle(areEditButtonsShown ? "Back" : "Edit");
+      return true;
     }
-
-
-            /***z interfejsu GroupsAdapter.OnGroupItemSelectedListener:***/
-    @Override
-    public void onItemSelect(int position) {
-        listener.onGroupItemSelected(position);
+    if (id == R.id.action_new_group) {
+      FragmentManager fragmentManager = getFragmentManager();
+      addGroupDialog = new AddGroupDialogFragment();
+      addGroupDialog.setListener(this);
+      addGroupDialog.setContext(context);
+      addGroupDialog.setCancelable(false);
+      addGroupDialog.show(fragmentManager, "tag");
+      return true;
     }
-
-    @Override
-    public void onEditItem(GroupRealm groupRealm) {
-        //Toast.makeText(getContext(), "Edit group: "+groupRealm.getGroupName(), Toast.LENGTH_SHORT).show();
-        FragmentManager fragmentManager = getFragmentManager();
-        editGroupDialog = new EditGroupDialogFragment();
-        editGroupDialog.setEditGroupDialogFragmentListener(this);
-        editGroupDialog.setGroupRealmToEdit(groupRealm);
-        editGroupDialog.setContext(context);
-        editGroupDialog.setCancelable(false);
-        editGroupDialog.show(fragmentManager, "tag");
+    if (id == R.id.action_renew) {
+      groupRealm = new GroupRealm();
+      groupsList.clear();
+      groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+      adapter.notifyDataSetChanged();
+      Toast.makeText(getContext(), "Groups renew", Toast.LENGTH_SHORT).show();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
     }
+  }
 
+  /*** Interfaces methods: ***/
 
-        /*** z interfejsu EditGroupDialogFragment.EditGroupDialogFragmentListener**/
-    @Override
-    public void onDeleteGroupClick(String groupName) {
-        editGroupDialog.dismiss();
-        groupRealm = new GroupRealm();
-        groupsList.clear();
-        groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
-        adapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "Group deleted: "+groupName, Toast.LENGTH_SHORT).show();
-    }
+  /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
+  @Override
+  public void onItemSelect(int position) {
+    listener.onGroupItemSelected(position);
+  }
 
-    @Override
-    public void onCancelClick() {
-        editGroupDialog.dismiss();
-    }
+  @Override
+  public void onEditItem(GroupRealm groupRealm) {
+    FragmentManager fragmentManager = getFragmentManager();
+    editGroupDialog = new EditGroupDialogFragment();
+    editGroupDialog.setEditGroupDialogFragmentListener(this);
+    editGroupDialog.setGroupRealmToEdit(groupRealm);
+    editGroupDialog.setContext(context);
+    editGroupDialog.setCancelable(false);
+    editGroupDialog.show(fragmentManager, "tag");
+  }
+  /** End of interfece GroupsAdapter.OnGroupItemSelectedListener **/
 
-    @Override
-    public void onOKclick() {
-        editGroupDialog.dismiss();
-        adapter.notifyDataSetChanged();
-    }
-            /***koniec  interfejsu EditGroupDialogFragment.EditGroupDialogFragmentListener**/
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try{
-            listener = (FragmentListener) context;
-        } catch (ClassCastException e){
-            throw new ClassCastException(context.toString()+" must implements FragmentListener!!!!!");
-        }
-    }
+  /*** 2) From interface AddGroupDialogFragment.AddGroupDialogFragmentListener (1 method) */
+  @Override
+  public void onOKClickInAddGroup(String groupName) {
+    groupRealm = new GroupRealm();
+    groupsList.clear();
+    groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+    adapter.notifyDataSetChanged();
+    Toast.makeText(getContext(), "Group added: " + groupName, Toast.LENGTH_SHORT).show();
+  }
+  /** End of interface'u AddGroupDialogFragment.AddGroupDialogFragmentListener  **/
 
-    public void showEditButtonsAndFabs(boolean areEditButtonsShown){
-        adapter.setAreEditButtonsShown(areEditButtonsShown);
-        adapter.notifyDataSetChanged();
-    }
+  /*** 3) From interface EditGroupDialogFragment.EditGroupDialogFragmentListener (3 methods)**/
+  @Override
+  public void onDeleteGroupClickInEdit(String groupName) {
+    editGroupDialog.dismiss();
+    groupRealm = new GroupRealm();
+    groupsList.clear();
+    groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+    adapter.notifyDataSetChanged();
+    Toast.makeText(getContext(), "Group deleted: " + groupName, Toast.LENGTH_SHORT).show();
+  }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_edit_groups) {
-            areEditButtonsShown = !areEditButtonsShown;
-            showEditButtonsAndFabs(areEditButtonsShown);
-            item.setTitle(areEditButtonsShown ?"Back":"Edit");
-            return true;
-        }
-        if(id==R.id.action_new_group){
-            FragmentManager fragmentManager = getFragmentManager();
-            addGroupDialog = new AddGroupDialogFragment();
-            addGroupDialog.setListener(this);
-            addGroupDialog.setContext(context);
-            addGroupDialog.setCancelable(false);
-            addGroupDialog.show(fragmentManager, "tag");
-            return true;
-        }
-        if (id == R.id.action_renew) {
-            groupRealm = new GroupRealm();
-            groupsList.clear();
-            groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
-            adapter.notifyDataSetChanged();
-            Toast.makeText(getContext(), "Groups renew", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
+  @Override
+  public void onCancelClickInEdit() {
+    editGroupDialog.dismiss();
+  }
 
-
-    @Override
-    public void onCancelClickInAddGroup() {
-
-    }
-
-    @Override
-    public void onOKClickInAddGroup(String groupName) {
-        groupRealm = new GroupRealm();
-        groupsList.clear();
-        groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
-        adapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "Group added: "+groupName, Toast.LENGTH_SHORT).show();
-    }
+  @Override
+  public void onOKClickInEdit() {
+    editGroupDialog.dismiss();
+    adapter.notifyDataSetChanged();
+  }
+  /** End of interfece EditGroupDialogFragment.EditGroupDialogFragmentListener */
 }

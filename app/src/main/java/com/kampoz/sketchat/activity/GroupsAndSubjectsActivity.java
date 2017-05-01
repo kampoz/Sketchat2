@@ -44,6 +44,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
         /*  Generowanie 30 elementów do GroupRealm  */
         //generator.generateGroupsList(4);
+        generator.generateSubjectsList(5);
 
         this.isLand = getResources().getBoolean(R.bool.isLand);
         setGroupsFragment();

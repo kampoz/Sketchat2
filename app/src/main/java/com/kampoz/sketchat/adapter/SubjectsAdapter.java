@@ -13,10 +13,6 @@ import com.kampoz.sketchat.realm.SubjectRealm;
 
 import java.util.ArrayList;
 
-/**
- * Created by wasili on 2017-04-16.
- */
-
 public class SubjectsAdapter extends RecyclerView.Adapter{
 
     public interface OnSubjectItemSelectedListener{
