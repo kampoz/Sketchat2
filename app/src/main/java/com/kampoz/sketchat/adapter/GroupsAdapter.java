@@ -56,6 +56,8 @@ public class GroupsAdapter extends RecyclerView.Adapter{
         final Button bEditGroup = ((MyViewHolder)viewHolder).bEditGroup;
         final TextView tvGroupSubjectsNumber = ((MyViewHolder)viewHolder).tvGroupSubjectsNumber;
         final ImageView ivPencil = ((MyViewHolder)viewHolder).ivPencil;
+      GroupRealm groupRealm = groupsList.get(position);
+      tvGroupSubjectsNumber.setText(String.valueOf(groupRealm.getSubjectsList().size()));
         if(areEditButtonsShown){
             bEditGroup.setVisibility(View.VISIBLE);
             tvGroupSubjectsNumber.setVisibility(View.INVISIBLE);

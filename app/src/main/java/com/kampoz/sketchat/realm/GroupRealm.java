@@ -105,10 +105,9 @@ public class GroupRealm extends RealmObject {
     });
   }
 
-//  public RealmList<SubjectRealm> getSubjectsForGroup(int id) {
-//    RealmList<SubjectRealm> subjectsList = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", id).findFirst().getSubjectsList();
-//    return subjectsList;
-//  }
+  public static String getGroupNameForId(final int id) {
+    return Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", id).findFirst().getGroupName();
+  }
 
   public void changeName(final String newName) {
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {

@@ -68,7 +68,7 @@ public class SubjectsFragment extends Fragment implements
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
-    toolbar.setTitle("Subjects");
+    toolbar.setTitle(GroupRealm.getGroupNameForId(groupId)+" subjects");
 
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
