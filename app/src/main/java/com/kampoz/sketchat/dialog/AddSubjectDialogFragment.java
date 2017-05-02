@@ -30,7 +30,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
     public AddSubjectDialogFragmentListener listener;
 
     public interface AddSubjectDialogFragmentListener {
-        void onOKClickInAddSubject(String groupName);
+        void onOKClickInAddSubject(String groupName, int groupId);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
 //                groupRealmToEdit.changeName(etSubjectName.getText().toString());
 //                listener.onOKClickInEdit();
                 getDialog().dismiss();
-                listener.onOKClickInAddSubject(etSubjectName.getText().toString());
+                listener.onOKClickInAddSubject(etSubjectName.getText().toString(), idOfGroupToAddSubject);
             }
         });
         builder.setView(view);

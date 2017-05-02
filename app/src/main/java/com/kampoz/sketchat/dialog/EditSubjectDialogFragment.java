@@ -28,12 +28,13 @@ public class EditSubjectDialogFragment extends DialogFragment {
     private Button bOK;
     private TextView tvNameLabel;
     private TextView tvEditDialogLabel;
+    private int groupId;
     public EditSubjectDialogFragmentListener listener;
 
     public interface EditSubjectDialogFragmentListener{
         void onCancelClickInEdit();
         void onOKClickInEdit();
-        void onDeleteSubjectClickInEdit(String subjectName);
+        void onDeleteSubjectClickInEdit(String subjectName, int groupId);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class EditSubjectDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 String subjectName = subjectRealmToEdit.getSubject();
                 subjectRealmToEdit.deleteSubject(subjectRealmToEdit.getId());
-                listener.onDeleteSubjectClickInEdit(subjectName);
+                listener.onDeleteSubjectClickInEdit(subjectName, groupId);
             }
         });
 
@@ -97,5 +98,9 @@ public class EditSubjectDialogFragment extends DialogFragment {
 
     public void setEditSubjectDialogFragmentListener(EditSubjectDialogFragmentListener listener) {
         this.listener = listener;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 }

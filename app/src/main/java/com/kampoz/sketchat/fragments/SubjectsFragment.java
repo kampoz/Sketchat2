@@ -72,13 +72,10 @@ public class SubjectsFragment extends Fragment implements
 
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
+    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
 
-    //subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
-    RealmList<SubjectRealm> subjectsFromThisGroupList = new RealmList<>();
-    subjectsFromThisGroupList = groupRealm.getSubjectsForGroup(groupId);
-
-    if(subjectsFromThisGroupList!=null)
-    subjectsList.addAll(groupRealm.getSubjectsForGroup(groupId));
+//    if(subjectsFromThisGroupList!=null)
+//    subjectsList.addAll(groupRealm.getSubjectsForGroup(groupId));
 
     adapter = new SubjectsAdapter(subjectsList, recyclerView);
     adapter.setOnSubjectItemSelectedListener(this);
@@ -214,10 +211,10 @@ public class SubjectsFragment extends Fragment implements
 
   /*** 2) From interface AddSubjectDialogFragment.AddSubjectDialogFragmentListener (1 method)**/
   @Override
-  public void onOKClickInAddSubject(String subjectName) {
+  public void onOKClickInAddSubject(String subjectName, int groupId) {
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Subject added: " + subjectName, Toast.LENGTH_SHORT).show();
   }
@@ -225,13 +222,13 @@ public class SubjectsFragment extends Fragment implements
 
   /*** 3) From Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener (3 methods) **/
   @Override
-  public void onDeleteSubjectClickInEdit(String subjectName) {
+  public void onDeleteSubjectClickInEdit(String subjectName, int groupId) {
     editSubjectDialog.dismiss();
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
     adapter.notifyDataSetChanged();
-    Toast.makeText(getContext(), "Group deleted: " + subjectName, Toast.LENGTH_SHORT).show();
+    Toast.makeText(getContext(), "Subject deleted: " + subjectName, Toast.LENGTH_SHORT).show();
   }
 
   @Override

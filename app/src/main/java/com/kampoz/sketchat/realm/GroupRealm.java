@@ -105,11 +105,10 @@ public class GroupRealm extends RealmObject {
     });
   }
 
-  public RealmList<SubjectRealm> getSubjectsForGroup(int id) {
-
-    RealmList<SubjectRealm> subjectsList = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", id).findFirst().getSubjectsList();
-    return subjectsList;
-  }
+//  public RealmList<SubjectRealm> getSubjectsForGroup(int id) {
+//    RealmList<SubjectRealm> subjectsList = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", id).findFirst().getSubjectsList();
+//    return subjectsList;
+//  }
 
   public void changeName(final String newName) {
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
@@ -160,5 +159,15 @@ public class GroupRealm extends RealmObject {
       return oldMaxId.intValue() + 1;
     }
     //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
+  }
+
+  public static List<SubjectRealm> getSubjectsFromGroupSorted(int groupId) {
+    List<SubjectRealm> subjects = new ArrayList<>();
+    //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).findAllSorted("subject");
+    RealmResults<SubjectRealm> subjectsFromGroup = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().sort("subject");
+    for (SubjectRealm subjectRealm : subjectsFromGroup) {
+      subjects.add(subjectRealm);
+    }
+    return subjects;
   }
 }
