@@ -192,8 +192,7 @@ public class SubjectsFragment extends Fragment implements
 
   /*** 1) From interfece SubjectsAdapter.OnSubjectItemSelectedListener (2 methods)**/
   @Override
-  public void onItemSelect(int position) {
-  }
+  public void onItemSelect(int position) {}
 
   @Override
   public void onEditItem(SubjectRealm subjectRealm) {
@@ -205,6 +204,7 @@ public class SubjectsFragment extends Fragment implements
     editSubjectDialog.setSubjectRealmToEdit(subjectRealm);
     editSubjectDialog.setContext(context);
     editSubjectDialog.setCancelable(false);
+    editSubjectDialog.setGroupId(groupId);
     editSubjectDialog.show(fragmentManager, "edit subject");
   }
   /** End of interfece SubjectsAdapter.OnSubjectItemSelectedListener**/
@@ -226,7 +226,7 @@ public class SubjectsFragment extends Fragment implements
     editSubjectDialog.dismiss();
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
+    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(editSubjectDialog.getGroupId()));
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Subject deleted: " + subjectName, Toast.LENGTH_SHORT).show();
   }
@@ -239,7 +239,10 @@ public class SubjectsFragment extends Fragment implements
   @Override
   public void onOKClickInEdit() {
     editSubjectDialog.dismiss();
+    subjectsList.clear();
+    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(editSubjectDialog.getGroupId()));
     adapter.notifyDataSetChanged();
+    Toast.makeText(getContext(), "Name changed", Toast.LENGTH_SHORT).show();
   }
   /** End of Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener**/
 

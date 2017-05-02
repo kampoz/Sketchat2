@@ -103,4 +103,8 @@ public class EditSubjectDialogFragment extends DialogFragment {
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
+
+    public int getGroupId() {
+        return groupId;
+    }
 }

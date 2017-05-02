@@ -89,4 +89,6 @@ public class EditGroupDialogFragment extends DialogFragment {
     public void setEditGroupDialogFragmentListener(EditGroupDialogFragmentListener listener) {
         this.listener = listener;
     }
+
+
 }

@@ -77,6 +77,7 @@ public class GroupsAdapter extends RecyclerView.Adapter{
                 //String groupName = groupsList.get(position).getGroupName();
             }
         });
+
         bEditGroup.setOnClickListener(new View.OnClickListener() {
                   @Override
                   public void onClick(View v) {
