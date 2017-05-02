@@ -43,7 +43,7 @@ public class EditSubjectDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit, null);
-        tvEditDialogLabel = (TextView)view.findViewById(R.id.tvEditDialogLabel);
+        tvEditDialogLabel = (TextView)view.findViewById(R.id.tvTitle);
         tvEditDialogLabel.setText("Subject edit");
         tvNameLabel = (TextView)view.findViewById(R.id.tvNameLabel);
         tvNameLabel.setText("Change subject's name");

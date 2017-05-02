@@ -37,6 +37,9 @@ public class SubjectsFragment extends Fragment implements
   public interface FragmentListener {
     void onSubjectItemSelected(int position);
   }
+  public interface SubjectFragmentListener {
+    void onItemSelected(int position);
+  }
 
   private FragmentListener listener;
   private SubjectsAdapter adapter;
@@ -51,13 +54,6 @@ public class SubjectsFragment extends Fragment implements
   private int groupId;
   private Context context;
 
-
-  public interface SubjectFragmentListener {
-
-    void onItemSelected(int position);
-  }
-  //////////////////
-
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
@@ -68,7 +64,7 @@ public class SubjectsFragment extends Fragment implements
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
-    toolbar.setTitle(GroupRealm.getGroupNameForId(groupId)+" subjects");
+    toolbar.setTitle("gr. "+GroupRealm.getGroupNameForId(groupId));
 
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
@@ -124,9 +120,11 @@ public class SubjectsFragment extends Fragment implements
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
+//        subjectsList.clear();
+//        subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
+//        adapter.notifyDataSetChanged();
         return false;
       }
-
       @Override
       public boolean onQueryTextChange(String newText) {
         subjectRealm = new SubjectRealm();
@@ -135,6 +133,7 @@ public class SubjectsFragment extends Fragment implements
         adapter.notifyDataSetChanged();
         return false;
       }
+
     });
     searchView.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -144,6 +143,16 @@ public class SubjectsFragment extends Fragment implements
                                     }
                                   }
     );
+    searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+      @Override
+      public boolean onClose() {
+        Toast.makeText(getContext(), "OnCloseListener", Toast.LENGTH_SHORT);
+        subjectsList.clear();
+        subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
+        adapter.notifyDataSetChanged();
+        return false;
+      }
+    });
   }
 
   @Override
@@ -173,6 +182,8 @@ public class SubjectsFragment extends Fragment implements
       addSubjectDialog.setContext(context);
       addSubjectDialog.setCancelable(false);
       addSubjectDialog.setIdOfGroupToAddSubject(groupId);
+//      addSubjectDialog.getTvTitle().setText("New subject");
+//      addSubjectDialog.getEtSubjectName().setHint("Subject's name");
       addSubjectDialog.show(fragmentManager, "tag");
       return true;
     }

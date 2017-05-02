@@ -27,9 +27,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private boolean areRadioButtonsShown = false;
     private FloatingActionButton fabDeleteGroups;
-
-    MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
-
     // for Land only
     private SubjectsFragment subjectsFragment;
     private GroupsFragment groupsFragment;
@@ -41,15 +38,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
         setSupportActionBar(toolbar);
-
-        /**  Generowanie elementów do GroupRealm  */
-        //generator.generateGroupsList(4);
-        //generator.generateSubjectsList(5);
-
         this.isLand = getResources().getBoolean(R.bool.isLand);
         setGroupsFragment();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,7 +51,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_register) {
             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
             alertDialogBuilder.setMessage("Action Register");
@@ -74,20 +64,15 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
             android.app.AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
-
         if (id == R.id.action_login) {
 //            Intent startSettingsActivityIntent = new Intent(this, SettingsActivity.class);
 //            this.startActivity(startSettingsActivityIntent);
 //            this.finish();
         }
-
         if (id == R.id.action_last_conversation) {
         }
-
         if (id == R.id.action_settings) {
         }
-
-
         if (id == R.id.action_about) {
             int versionCode = BuildConfig.VERSION_CODE;
             String versionName = BuildConfig.VERSION_NAME;

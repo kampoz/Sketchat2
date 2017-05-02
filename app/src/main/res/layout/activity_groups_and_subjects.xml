@@ -23,7 +23,7 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/fl_other_things"
+        android:id="@+id/fl_second_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">

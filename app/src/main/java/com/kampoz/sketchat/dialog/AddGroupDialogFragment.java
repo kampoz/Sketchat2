@@ -36,7 +36,7 @@ public class AddGroupDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add, null);
 
-        etGroupName = (EditText)view.findViewById(R.id.etGroupName);
+        etGroupName = (EditText)view.findViewById(R.id.etName);
         bCancel = (Button)view.findViewById(R.id.bCancelinAddGroup);
         bOK = (Button)view.findViewById(R.id.bOKinAddGroup);
 
