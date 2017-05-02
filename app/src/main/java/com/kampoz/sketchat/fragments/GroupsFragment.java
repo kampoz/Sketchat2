@@ -30,7 +30,6 @@ public class GroupsFragment extends Fragment implements
     AddGroupDialogFragment.AddGroupDialogFragmentListener {
 
   public interface FragmentListener {
-
     void onGroupItemSelected(int position);
   }
 
@@ -116,17 +115,6 @@ public class GroupsFragment extends Fragment implements
                                     }
                                   }
     );
-
-//        SearchView searchView = new SearchView(((GroupsAndSubjectsActivity)context).getSupportActionBar().getThemedContext());
-//        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-//        MenuItemCompat.setActionView(item, searchView);
-
-//        SearchManager searchManager =
-//                (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView =
-//                (SearchView) menu.findItem(R.id.search).getActionView();
-//        searchView.setSearchableInfo(
-//                searchManager.getSearchableInfo(getActivity().getComponentName()));
   }
 
   @Override
@@ -184,8 +172,8 @@ public class GroupsFragment extends Fragment implements
 
   /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
   @Override
-  public void onItemSelect(int position) {
-    listener.onGroupItemSelected(position);
+  public void onItemSelect(int groupId) {
+    listener.onGroupItemSelected(groupId);
   }
 
   @Override

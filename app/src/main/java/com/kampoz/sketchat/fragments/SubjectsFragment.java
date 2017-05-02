@@ -24,11 +24,10 @@ import com.kampoz.sketchat.dialog.EditSubjectDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import java.security.acl.Group;
 import java.util.ArrayList;
-
-/*
- * Created by wasili on 2017-04-18.
- */
 
 public class SubjectsFragment extends Fragment implements
     AddSubjectDialogFragment.AddSubjectDialogFragmentListener,
@@ -36,7 +35,6 @@ public class SubjectsFragment extends Fragment implements
     EditSubjectDialogFragment.EditSubjectDialogFragmentListener {
 
   public interface FragmentListener {
-
     void onSubjectItemSelected(int position);
   }
 
@@ -47,8 +45,10 @@ public class SubjectsFragment extends Fragment implements
   private boolean areEditButtonsShown = false;
   private EditSubjectDialogFragment editSubjectDialog;
   private AddSubjectDialogFragment addSubjectDialog;
-  ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
-  SubjectRealm subjectRealm = new SubjectRealm();
+  private ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
+  private SubjectRealm subjectRealm = new SubjectRealm();
+  private GroupRealm groupRealm = new GroupRealm();
+  private int groupId;
   private Context context;
 
 
@@ -72,7 +72,13 @@ public class SubjectsFragment extends Fragment implements
 
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+
+    //subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
+    RealmList<SubjectRealm> subjectsFromThisGroupList = new RealmList<>();
+    subjectsFromThisGroupList = groupRealm.getSubjectsForGroup(groupId);
+
+    if(subjectsFromThisGroupList!=null)
+    subjectsList.addAll(groupRealm.getSubjectsForGroup(groupId));
 
     adapter = new SubjectsAdapter(subjectsList, recyclerView);
     adapter.setOnSubjectItemSelectedListener(this);
@@ -143,8 +149,6 @@ public class SubjectsFragment extends Fragment implements
     );
   }
 
-
-
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
@@ -171,6 +175,7 @@ public class SubjectsFragment extends Fragment implements
       addSubjectDialog.setListener(this);
       addSubjectDialog.setContext(context);
       addSubjectDialog.setCancelable(false);
+      addSubjectDialog.setIdOfGroupToAddSubject(groupId);
       addSubjectDialog.show(fragmentManager, "tag");
       return true;
     }
@@ -240,4 +245,8 @@ public class SubjectsFragment extends Fragment implements
     adapter.notifyDataSetChanged();
   }
   /** End of Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener**/
+
+  public void setGroupId(int groupId) {
+    this.groupId = groupId;
+  }
 }

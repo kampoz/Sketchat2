@@ -1,7 +1,5 @@
 package com.kampoz.sketchat.realm;
 
-import com.kampoz.sketchat.realm.SubjectRealm;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class GroupRealm extends RealmObject {
   private int id;
   private int ownersId;
   private String groupName;
-  private RealmList<SubjectRealm> usersArrayList;
+  private RealmList<SubjectRealm> subjectsList;
 
   public GroupRealm() {
   }
@@ -60,12 +58,12 @@ public class GroupRealm extends RealmObject {
     this.groupName = groupName;
   }
 
-  public RealmList<SubjectRealm> getUsersArrayList() {
-    return usersArrayList;
+  public RealmList<SubjectRealm> getSubjectsList() {
+    return subjectsList;
   }
 
-  public void setUsersArrayList(RealmList<SubjectRealm> usersArrayList) {
-    this.usersArrayList = usersArrayList;
+  public void setSubjectsList(RealmList<SubjectRealm> subjectsList) {
+    this.subjectsList = subjectsList;
   }
 
   public List<GroupRealm> getAllfromGroupRealm() {
@@ -107,11 +105,28 @@ public class GroupRealm extends RealmObject {
     });
   }
 
+  public RealmList<SubjectRealm> getSubjectsForGroup(int id) {
+
+    RealmList<SubjectRealm> subjectsList = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", id).findFirst().getSubjectsList();
+    return subjectsList;
+  }
+
   public void changeName(final String newName) {
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
         setGroupName(newName);
+      }
+    });
+  }
+
+  public void addSubjectToGroup(final int groupId, final SubjectRealm subjectRealm){
+    Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        subjectRealm.setId(subjectRealm.generateSubjectId());
+        realm.copyToRealm(subjectRealm);
+        realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().add(subjectRealm);
       }
     });
   }

@@ -45,7 +45,6 @@ public class EditGroupDialogFragment extends DialogFragment {
         etGroupName = (EditText)  view.findViewById(R.id.etChangeName);
         etGroupName.setText(groupRealmToEdit.getGroupName());
 
-
         bDeleteGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

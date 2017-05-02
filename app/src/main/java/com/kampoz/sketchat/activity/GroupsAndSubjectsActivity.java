@@ -51,35 +51,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     }
 
 
-        //z interfejsu GroupsFragment.FragmentListener
-    @Override
-    public void onGroupItemSelected(int position) {
-            setSubjectsFragment();
-            this.fragmentManager.executePendingTransactions();
-    }
-
-        //z interfejsu SubjectsFragment.FragmentListener
-    @Override
-    public void onSubjectItemSelected(int position) {
-
-    }
-
-    private void setGroupsFragment() {
-        FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-        //this.currentFragment = new GroupsFragment();
-        groupsFragment = new GroupsFragment();
-        fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, groupsFragment);
-        fragmentTransaction.commit();
-    }
-
-    private void setSubjectsFragment() {
-        FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-        this.currentFragment = new SubjectsFragment();
-        fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, this.currentFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_groups_and_subjects, menu);
@@ -134,4 +105,38 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void setGroupsFragment() {
+        FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+        //this.currentFragment = new GroupsFragment();
+        groupsFragment = new GroupsFragment();
+        fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, groupsFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void setSubjectsFragment(int groupId) {
+        FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+        this.currentFragment = new SubjectsFragment();
+        ((SubjectsFragment)this.currentFragment).setGroupId(groupId);
+        fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, this.currentFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+
+    /*** Interfaces methods overwrited: **/
+    /*** interface GroupsFragment.FragmentListener **/
+    @Override
+    public void onGroupItemSelected(int groupId) {
+        setSubjectsFragment(groupId);
+        this.fragmentManager.executePendingTransactions();
+    }
+    /** end of interface methods */
+
+    /*** interface SubjectsFragment.FragmentListener **/
+    @Override
+    public void onSubjectItemSelected(int position) {
+        // Zrobić metodę odpalającą Activity z rysowaniem synchronicznym - zdefiniowac w tej klasie i odpalić tutaj
+    }
+    /** end of interface methods */
 }

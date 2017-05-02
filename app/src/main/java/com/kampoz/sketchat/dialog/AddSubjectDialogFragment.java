@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
+import io.realm.Realm;
 
 /**
  * Created by wasili on 2017-04-24.
@@ -24,6 +25,8 @@ public class AddSubjectDialogFragment extends DialogFragment {
     private EditText etSubjectName;
     private Button bCancel;
     private Button bOK;
+    private int idOfGroupToAddSubject;
+    private GroupRealm groupRealm = new GroupRealm();
     public AddSubjectDialogFragmentListener listener;
 
     public interface AddSubjectDialogFragmentListener {
@@ -40,28 +43,24 @@ public class AddSubjectDialogFragment extends DialogFragment {
         etSubjectName = (EditText)view.findViewById(R.id.etGroupName);
         bCancel = (Button)view.findViewById(R.id.bCancelinAddGroup);
         bOK = (Button)view.findViewById(R.id.bOKinAddGroup);
-
         bCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDialog().dismiss();
             }
         });
-
         bOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SubjectRealm subjectRealm = new SubjectRealm();
                 subjectRealm.setSubject(etSubjectName.getText().toString());
-                subjectRealm.addNewSubject(subjectRealm);
+                groupRealm.addSubjectToGroup(idOfGroupToAddSubject, subjectRealm);
 //                groupRealmToEdit.changeName(etSubjectName.getText().toString());
 //                listener.onOKClickInEdit();
                 getDialog().dismiss();
                 listener.onOKClickInAddSubject(etSubjectName.getText().toString());
             }
         });
-
-
         builder.setView(view);
         Dialog dialog = builder.create();
         return dialog;
@@ -73,5 +72,9 @@ public class AddSubjectDialogFragment extends DialogFragment {
 
     public void setListener(AddSubjectDialogFragmentListener listener) {
         this.listener = listener;
+    }
+
+    public void setIdOfGroupToAddSubject(int idOfGroupToAddSubject) {
+        this.idOfGroupToAddSubject = idOfGroupToAddSubject;
     }
 }

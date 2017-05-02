@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class GroupsAdapter extends RecyclerView.Adapter{
 
     public interface OnGroupItemSelectedListener{
-        void onItemSelect(int position);
+        void onItemSelect(int groupId);
         void onEditItem(GroupRealm groupRealm);
     }
 
@@ -72,7 +72,7 @@ public class GroupsAdapter extends RecyclerView.Adapter{
             @Override
             public void onClick(View view) {
                 if(!areEditButtonsShown){
-                    onGroupItemSelectedListener.onItemSelect(position);
+                    onGroupItemSelectedListener.onItemSelect(groupsList.get(position).getId());
                 }
                 //String groupName = groupsList.get(position).getGroupName();
             }

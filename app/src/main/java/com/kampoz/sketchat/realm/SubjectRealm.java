@@ -69,7 +69,7 @@ public class SubjectRealm extends RealmObject{
         });
     }
 
-    public void addNewSubject(final SubjectRealm subjectRealm1){
+    public static void addNewSubject(final SubjectRealm subjectRealm1){
         Realm realm = Realm.getDefaultInstance();
         final SubjectRealm subjectRealm = new SubjectRealm();
         subjectRealm.setId(generateSubjectId());
@@ -83,7 +83,7 @@ public class SubjectRealm extends RealmObject{
         realm.close();
     }
 
-    private int generateSubjectId() {
+    public static int generateSubjectId() {
         Realm defaultInstance = Realm.getDefaultInstance();
         int newId = 0;
         Number oldMaxId = defaultInstance.where(SubjectRealm.class).max("id");
