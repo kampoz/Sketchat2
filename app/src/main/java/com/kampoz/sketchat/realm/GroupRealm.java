@@ -123,6 +123,7 @@ public class GroupRealm extends RealmObject {
       @Override
       public void execute(Realm realm) {
         subjectRealm.setId(subjectRealm.generateSubjectId());
+        subjectRealm.setGroupId(groupId);
         realm.copyToRealm(subjectRealm);
         realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().add(subjectRealm);
       }
@@ -169,4 +170,5 @@ public class GroupRealm extends RealmObject {
     }
     return subjects;
   }
+
 }

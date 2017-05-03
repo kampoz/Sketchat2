@@ -9,12 +9,14 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnCloseListener;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
@@ -117,6 +119,7 @@ public class SubjectsFragment extends Fragment implements
     MenuItemCompat.setShowAsAction(item,
         MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
     MenuItemCompat.setActionView(item, searchView);
+
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
@@ -129,30 +132,12 @@ public class SubjectsFragment extends Fragment implements
       public boolean onQueryTextChange(String newText) {
         subjectRealm = new SubjectRealm();
         subjectsList.clear();
-        subjectsList.addAll(subjectRealm.searchELementsByName(newText));
+        subjectsList.addAll(subjectRealm.searchELementsByName(newText, groupId));
         adapter.notifyDataSetChanged();
         return false;
       }
+    });
 
-    });
-    searchView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                      Toast.makeText(getContext(), "searchView Listener",
-                                          Toast.LENGTH_SHORT).show();
-                                    }
-                                  }
-    );
-    searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-      @Override
-      public boolean onClose() {
-        Toast.makeText(getContext(), "OnCloseListener", Toast.LENGTH_SHORT);
-        subjectsList.clear();
-        subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
-        adapter.notifyDataSetChanged();
-        return false;
-      }
-    });
   }
 
   @Override
@@ -182,8 +167,6 @@ public class SubjectsFragment extends Fragment implements
       addSubjectDialog.setContext(context);
       addSubjectDialog.setCancelable(false);
       addSubjectDialog.setIdOfGroupToAddSubject(groupId);
-//      addSubjectDialog.getTvTitle().setText("New subject");
-//      addSubjectDialog.getEtSubjectName().setHint("Subject's name");
       addSubjectDialog.show(fragmentManager, "tag");
       return true;
     }

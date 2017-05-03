@@ -17,6 +17,7 @@ public class SubjectRealm extends RealmObject{
 
     @PrimaryKey
     private int id;
+    private int groupId;
     private String subject;
     private int interlocutorsNumber;
 
@@ -33,6 +34,14 @@ public class SubjectRealm extends RealmObject{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public int getInterlocutorsNumber() {
@@ -103,13 +112,11 @@ public class SubjectRealm extends RealmObject{
         return subjects;
     }
 
-    public List<SubjectRealm> searchELementsByName(String newText) {
-        List<SubjectRealm> groups = new ArrayList<>();
-        RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class)
-            .contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
-        for (SubjectRealm subjectRealm : all) {
-            groups.add(subjectRealm);
-        }
-        return groups;
+    public List<SubjectRealm> searchELementsByName(String newText, int groupId) {
+        RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", groupId).
+            findFirst().getSubjectsList().where().contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
+        /*** ta metoda tez działa, ale prawd. jest wolniejsza: **/
+        //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).equalTo("groupId", groupId).contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
+        return new ArrayList<>(all);
     }
 }
