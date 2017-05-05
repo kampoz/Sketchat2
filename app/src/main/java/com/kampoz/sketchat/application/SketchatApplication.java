@@ -39,6 +39,7 @@ public class SketchatApplication extends Application {
                         .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
 
+
         final File file =  new File(Realm.getDefaultInstance().getPath()).getParentFile();
 
         Log.d("SketchatApplication", file.toString());

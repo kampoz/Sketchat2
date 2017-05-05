@@ -8,11 +8,6 @@
         app:showAsAction="collapseActionView|ifRoom"
         android:actionViewClass="android.widget.SearchView"/>
     <item
-        android:id="@+id/action_renew"
-        android:icon="@drawable/ic_autorenew_white_24dp"
-        android:title="Renew"
-        app:showAsAction="collapseActionView|ifRoom"/>
-    <item
         android:id="@+id/action_new_subject"
         android:title="New"
         app:showAsAction="collapseActionView|ifRoom"/>

@@ -1,17 +1,5 @@
 package com.kampoz.sketchat.activity;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-
-import com.kampoz.sketchat.R;
-
-import java.util.HashMap;
-
-import io.realm.Realm;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,20 +14,21 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.model.DrawPath;
+import com.kampoz.sketchat.model.DrawPoint;
+import com.kampoz.sketchat.model.PencilView;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
+import java.util.HashMap;
+import java.util.Iterator;
 
-public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.Callback, View.OnClickListener{
+public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener{
     private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/~/Draw";
     private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
     private static final String ID = "kampoz@kaseka.net";
@@ -51,15 +40,15 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
     private double marginLeft;
     private double marginTop;
     private DrawThread drawThread;
+    private DrawPath currentPath;
     private String currentColor = "Charcoal";
-    private io.realm.draw.models.DrawPath currentPath;
     private PencilView currentPencil;
     private HashMap<String, Integer> nameToColorMap = new HashMap<>();
     private HashMap<Integer, String> colorIdToName = new HashMap<>();
 
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
-    private io.realm.draw.sensor.ShakeSensorEventListener shakeSensorEventListener;
+    //private io.realm.draw.sensor.ShakeSensorEventListener shakeSensorEventListener;
 
 
     @Override
@@ -84,52 +73,42 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
         });
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        surfaceView.getHolder().addCallback(MainActivity.this);
+        surfaceView.getHolder().addCallback(DrawActivity.this);
 
         generateColorMap();
         bindButtons();
-        initializeShakeSensor();
+        //initializeShakeSensor();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(shakeSensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_UI);
+        //sensorManager.registerListener(shakeSensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(shakeSensorEventListener);
+        //sensorManager.unregisterListener(shakeSensorEventListener);
     }
 
-    private void initializeShakeSensor() {
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        shakeSensorEventListener = new io.realm.draw.sensor.ShakeSensorEventListener();
-        shakeSensorEventListener.setOnShakeListener(new io.realm.draw.sensor.ShakeSensorEventListener.OnShakeListener() {
-
-            @Override
-            public void onShake(int count) {
-                wipeCanvas();
-            }
-        });
-    }
+//    private void initializeShakeSensor() {
+//
+//        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+//        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//        shakeSensorEventListener = new io.realm.draw.sensor.ShakeSensorEventListener();
+//        shakeSensorEventListener.setOnShakeListener(new io.realm.draw.sensor.ShakeSensorEventListener.OnShakeListener() {
+//
+//            @Override
+//            public void onShake(int count) {
+//                wipeCanvas();
+//            }
+//        });
+//    }
 
     private void bindButtons() {
         int[] buttonIds = {
-                R.id.charcoal,
-                R.id.elephant,
-                R.id.dove,
-                R.id.ultramarine,
-                R.id.indigo,
-                R.id.grape_jelly,
-                R.id.mulberry,
-                R.id.flamingo,
-                R.id.sexy_salmon,
-                R.id.peach,
-                R.id.melon
+
         };
 
         for (int id : buttonIds) {
@@ -154,16 +133,16 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
         nameToColorMap.put("Peach", 0xfffc9f95);
         nameToColorMap.put("Melon", 0xfffcc397);
         colorIdToName.put(R.id.charcoal, "Charcoal");
-        colorIdToName.put(R.id.elephant, "Elephant");
-        colorIdToName.put(R.id.dove, "Dove");
-        colorIdToName.put(R.id.ultramarine, "Ultramarine");
-        colorIdToName.put(R.id.indigo, "Indigo");
-        colorIdToName.put(R.id.grape_jelly, "GrapeJelly");
-        colorIdToName.put(R.id.mulberry, "Mulberry");
-        colorIdToName.put(R.id.flamingo, "Flamingo");
-        colorIdToName.put(R.id.sexy_salmon, "SexySalmon");
-        colorIdToName.put(R.id.peach, "Peach");
-        colorIdToName.put(R.id.melon, "Melon");
+//        colorIdToName.put(R.id.elephant, "Elephant");
+//        colorIdToName.put(R.id.dove, "Dove");
+//        colorIdToName.put(R.id.ultramarine, "Ultramarine");
+//        colorIdToName.put(R.id.indigo, "Indigo");
+//        colorIdToName.put(R.id.grape_jelly, "GrapeJelly");
+//        colorIdToName.put(R.id.mulberry, "Mulberry");
+//        colorIdToName.put(R.id.flamingo, "Flamingo");
+//        colorIdToName.put(R.id.sexy_salmon, "SexySalmon");
+//        colorIdToName.put(R.id.peach, "Peach");
+//        colorIdToName.put(R.id.melon, "Melon");
     }
 
     private void wipeCanvas() {
@@ -207,16 +186,16 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
 
             if (action == MotionEvent.ACTION_DOWN) {
                 realm.beginTransaction();
-                currentPath = realm.createObject(io.realm.draw.models.DrawPath.class);
+                currentPath = realm.createObject(DrawPath.class);
                 currentPath.setColor(currentColor);
-                io.realm.draw.models.DrawPoint point = realm.createObject(io.realm.draw.models.DrawPoint.class);
+                DrawPoint point = realm.createObject(DrawPoint.class);
                 point.setX(pointX);
                 point.setY(pointY);
                 currentPath.getPoints().add(point);
                 realm.commitTransaction();
             } else if (action == MotionEvent.ACTION_MOVE) {
                 realm.beginTransaction();
-                io.realm.draw.models.DrawPoint point = realm.createObject(io.realm.draw.models.DrawPoint.class);
+                DrawPoint point = realm.createObject(DrawPoint.class);
                 point.setX(pointX);
                 point.setY(pointY);
                 currentPath.getPoints().add(point);
@@ -224,7 +203,7 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
             } else if (action == MotionEvent.ACTION_UP) {
                 realm.beginTransaction();
                 currentPath.setCompleted(true);
-                io.realm.draw.models.DrawPoint point = realm.createObject(io.realm.draw.models.DrawPoint.class);
+                DrawPoint point = realm.createObject(DrawPoint.class);
                 point.setX(pointX);
                 point.setY(pointY);
                 currentPath.getPoints().add(point);
@@ -334,7 +313,7 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
 
             bgRealm = Realm.getDefaultInstance();
 
-            final RealmResults<io.realm.draw.models.DrawPath> results = bgRealm.where(io.realm.draw.models.DrawPath.class).findAll();
+            final RealmResults<DrawPath> results = bgRealm.where(DrawPath.class).findAll();
 
             while (!isInterrupted()) {
                 try {
@@ -344,8 +323,8 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
                     synchronized (holder) {
                         canvas.drawColor(Color.WHITE);
                         final Paint paint = new Paint();
-                        for (io.realm.draw.models.DrawPath drawPath : results) {
-                            final RealmList<io.realm.draw.models.DrawPoint> points = drawPath.getPoints();
+                        for (DrawPath drawPath : results) {
+                            final RealmList<DrawPoint> points = drawPath.getPoints();
                             final Integer color = nameToColorMap.get(drawPath.getColor());
                             if (color != null) {
                                 paint.setColor(color);
@@ -354,14 +333,14 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
                             }
                             paint.setStyle(Paint.Style.STROKE);
                             paint.setStrokeWidth((float) (4 / ratio));
-                            final Iterator<io.realm.draw.models.DrawPoint> iterator = points.iterator();
-                            final io.realm.draw.models.DrawPoint firstPoint = iterator.next();
+                            final Iterator<DrawPoint> iterator = points.iterator();
+                            final DrawPoint firstPoint = iterator.next();
                             final Path path = new Path();
                             final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
                             final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
                             path.moveTo(firstX, firstY);
                             while(iterator.hasNext()) {
-                                io.realm.draw.models.DrawPoint point = iterator.next();
+                                DrawPoint point = iterator.next();
                                 final float x = (float) ((point.getX() / ratio) + marginLeft);
                                 final float y = (float) ((point.getY() / ratio) + marginTop);
                                 path.lineTo(x, y);
@@ -381,6 +360,6 @@ public class DrawActivity extends AppCompatActivity{/* implements SurfaceHolder.
                 bgRealm.close();
             }
         }
-    }*/
+    }
 }
 

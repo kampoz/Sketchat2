@@ -66,7 +66,7 @@ public class SubjectsFragment extends Fragment implements
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
-    toolbar.setTitle("gr. "+GroupRealm.getGroupNameForId(groupId));
+    toolbar.setTitle("Group: "+GroupRealm.getGroupNameForId(groupId));
 
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
@@ -168,14 +168,6 @@ public class SubjectsFragment extends Fragment implements
       addSubjectDialog.setCancelable(false);
       addSubjectDialog.setIdOfGroupToAddSubject(groupId);
       addSubjectDialog.show(fragmentManager, "tag");
-      return true;
-    }
-    if (id == R.id.action_renew) {
-      subjectRealm = new SubjectRealm();
-      subjectsList.clear();
-      subjectsList.addAll(subjectRealm.getAllfromSubjectRealmSorted());
-      adapter.notifyDataSetChanged();
-      Toast.makeText(getContext(), "Subjects renew", Toast.LENGTH_SHORT).show();
       return true;
     } else {
       return super.onOptionsItemSelected(item);

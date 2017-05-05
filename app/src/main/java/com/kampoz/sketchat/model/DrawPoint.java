@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.realm.draw.models;
+package com.kampoz.sketchat.model;
 
 import io.realm.RealmObject;
 
