@@ -11,12 +11,11 @@
   android:background="@color/colorBallYellowLight"
   tools:context="com.kampoz.sketchat.activity.DrawActivity">
 
-  <SurfaceView
-    android:id="@+id/surface_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="60dp" />
-
+    <SurfaceView
+      android:id="@+id/surface_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginBottom="60dp" />
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -24,18 +23,32 @@
 
     <LinearLayout
       android:layout_width="fill_parent"
-      android:layout_height="100dp"
+      android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_centerHorizontal="true"
-      android:orientation="horizontal"
-      android:background="@color/colorMyAlmostWhite">
+      android:background="@color/colorMyAlmostWhite"
+      android:orientation="horizontal">
 
-      <com.kampoz.sketchat.model.PencilView
-        android:id="@+id/charcoal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="1dp"
-        android:src="@drawable/charcoal" />
+      <ImageButton
+        android:id="@+id/bColor1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <ImageButton
+        android:id="@+id/bColor2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <ImageButton
+        android:id="@+id/bColor3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
 
       <View
         android:layout_width="0dp"
@@ -48,7 +61,6 @@
         android:layout_height="fill_parent"
         android:text="Clean"
         android:textColor="#000000" />
-
     </LinearLayout>
 
   </RelativeLayout>

@@ -1,16 +1,15 @@
 package com.kampoz.sketchat.activity;
 
-import static java.security.AccessController.getContext;
-
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.content.SharedPreferencesCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,6 +18,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.model.DrawPath;
@@ -26,13 +26,11 @@ import com.kampoz.sketchat.model.DrawPoint;
 import com.kampoz.sketchat.model.PencilView;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -54,6 +52,9 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private HashMap<String, Integer> nameToColorMap = new HashMap<>();
     private HashMap<Integer, String> colorIdToName = new HashMap<>();
     private Button bWipeCanvas;
+    private ImageButton ibColor1;
+    private ImageButton ibColor2;
+    private ImageButton ibColor3;
     SharedPreferences preferences;
 
     //private SensorManager sensorManager;
@@ -106,6 +107,9 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         surfaceView.getHolder().addCallback(DrawActivity.this);
         bWipeCanvas = (Button)findViewById(R.id.bWipeCanvas);
+        ibColor1 = (ImageButton)findViewById(R.id.bColor1);
+        ibColor2 = (ImageButton)findViewById(R.id.bColor2);
+        ibColor3 = (ImageButton)findViewById(R.id.bColor3);
 
         generateColorMap();
         bindButtons();
@@ -117,6 +121,18 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 wipeCanvas();
             }
         });
+
+        Drawable background1 = ibColor1.getBackground();
+        GradientDrawable gradientDrawable = (GradientDrawable) background1;
+        gradientDrawable.setColor(ContextCompat.getColor(this,R.color.colorBlack));
+
+        Drawable background2 = ibColor2.getBackground();
+        GradientDrawable gradientDrawable2 = (GradientDrawable) background2;
+        gradientDrawable2.setColor(ContextCompat.getColor(this,R.color.colorMyRedDark));
+
+        Drawable background3 = ibColor3.getBackground();
+        GradientDrawable gradientDrawable3 = (GradientDrawable) background3;
+        gradientDrawable3.setColor(ContextCompat.getColor(this,R.color.colorBallYellowDark));
     }
 
     @Override
@@ -147,7 +163,9 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private void bindButtons() {
         int[] buttonIds = {
-
+            R.id.bColor1,
+            R.id.bColor2,
+            R.id.bColor3
         };
 
         for (int id : buttonIds) {
@@ -155,8 +173,8 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
             view.setOnClickListener(this);
         }
 
-        currentPencil = (PencilView) findViewById(R.id.charcoal);
-        currentPencil.setSelected(true);
+        //currentPencil = (PencilView) findViewById(R.id.charcoal);
+        //currentPencil.setSelected(true);
     }
 
     private void generateColorMap() {
@@ -171,17 +189,10 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         nameToColorMap.put("SexySalmon", 0xfff77c88);
         nameToColorMap.put("Peach", 0xfffc9f95);
         nameToColorMap.put("Melon", 0xfffcc397);
-        colorIdToName.put(R.id.charcoal, "Charcoal");
-//        colorIdToName.put(R.id.elephant, "Elephant");
-//        colorIdToName.put(R.id.dove, "Dove");
-//        colorIdToName.put(R.id.ultramarine, "Ultramarine");
-//        colorIdToName.put(R.id.indigo, "Indigo");
-//        colorIdToName.put(R.id.grape_jelly, "GrapeJelly");
-//        colorIdToName.put(R.id.mulberry, "Mulberry");
-//        colorIdToName.put(R.id.flamingo, "Flamingo");
-//        colorIdToName.put(R.id.sexy_salmon, "SexySalmon");
-//        colorIdToName.put(R.id.peach, "Peach");
-//        colorIdToName.put(R.id.melon, "Melon");
+        colorIdToName.put(R.id.bColor1, "Charcoal");
+        colorIdToName.put(R.id.bColor2,"Peach");
+        colorIdToName.put(R.id.bColor3, "Melon");
+
     }
 
     private void wipeCanvas() {
