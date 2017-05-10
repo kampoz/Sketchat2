@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kampoz.sketchat">
-
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".application.SketchatApplication"
         android:allowBackup="true"
@@ -9,7 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.DrawActivity">
+        <activity android:name=".activity.GroupsAndSubjectsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -21,7 +23,6 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConversationActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.SubjectsListActivity" />
-        <activity android:name=".activity.GroupsAndSubjectsActivity"></activity>
+        <activity android:name=".activity.DrawActivity"></activity>
     </application>
 </manifest>

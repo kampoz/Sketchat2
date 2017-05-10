@@ -1,6 +1,8 @@
 package com.kampoz.sketchat.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
@@ -11,10 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.widget.Toast;
 import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.fragments.GroupsFragment;
+import com.kampoz.sketchat.helper.MyConnectionChecker;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
@@ -30,6 +34,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     // for Land only
     private SubjectsFragment subjectsFragment;
     private GroupsFragment groupsFragment;
+    private MyConnectionChecker myConnectionChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         this.isLand = getResources().getBoolean(R.bool.isLand);
         setGroupsFragment();
+        myConnectionChecker = new MyConnectionChecker();
     }
 
     @Override
@@ -71,7 +77,15 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         }
         if (id == R.id.action_last_conversation) {
         }
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_draw_activity) {
+            if(!myConnectionChecker.isOnline(this)){
+                Toast.makeText(this, "No connection", Toast.LENGTH_LONG).show();
+            }else{
+                Intent startDrawActivityIntent = new Intent(this, DrawActivity.class);
+                this.startActivity(startDrawActivityIntent);
+            }
+
+
         }
         if (id == R.id.action_about) {
             int versionCode = BuildConfig.VERSION_CODE;

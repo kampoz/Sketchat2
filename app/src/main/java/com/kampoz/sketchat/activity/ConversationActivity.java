@@ -75,9 +75,7 @@ public class ConversationActivity extends AppCompatActivity {
 //            this.finish();
         }
 
-
-
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_draw_activity) {
 //            Intent startSettingsActivityIntent = new Intent(this, SettingsActivity.class);
 //            this.startActivity(startSettingsActivityIntent);
 //            this.finish();

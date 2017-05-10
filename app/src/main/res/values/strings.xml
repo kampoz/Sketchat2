@@ -9,4 +9,5 @@
     <string name="userNameRegisterHint">Username</string>
     <string name="activity_subjects_toolbar_title">Subjects</string>
     <string name="action_delete">Delete</string>
+    <string name="draw_activity">Draw Activity</string>
 </resources>

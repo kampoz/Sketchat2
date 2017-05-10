@@ -1,35 +1,43 @@
 package com.kampoz.sketchat.activity;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.model.DrawPath;
 import com.kampoz.sketchat.model.DrawPoint;
 import com.kampoz.sketchat.model.PencilView;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener{
-    private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/~/Draw";
+    private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw2";
     private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
     private static final String ID = "kampoz@kaseka.net";
     private static final String PASSWORD = "Murzyn1!";
@@ -45,9 +53,11 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private PencilView currentPencil;
     private HashMap<String, Integer> nameToColorMap = new HashMap<>();
     private HashMap<Integer, String> colorIdToName = new HashMap<>();
+    private Button bWipeCanvas;
+    SharedPreferences preferences;
 
-    private SensorManager sensorManager;
-    private Sensor accelerometerSensor;
+    //private SensorManager sensorManager;
+    //private Sensor accelerometerSensor;
     //private io.realm.draw.sensor.ShakeSensorEventListener shakeSensorEventListener;
 
 
@@ -56,28 +66,57 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
 
+        preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
+        final SharedPreferences.Editor editor = preferences.edit();
+
         final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
         SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
             @Override
             public void onSuccess(SyncUser user) {
-                final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).build();
-                Log.d("SyncConfiguration", syncConfiguration.getRealmFileName());
+                final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).directory(DrawActivity.this.getFilesDir()).build();
+                Log.d("SyncConfiguration", "..1)getRealmFileName() "+syncConfiguration.getRealmFileName());
+                Log.d("SyncConfiguration", "..2)getRealmDirectory() "+syncConfiguration.getRealmDirectory().toString());
+                Log.d("SyncConfiguration", "..3)getPath() "+syncConfiguration.getPath());
+                Log.d("SyncConfiguration", "..4)getUser() "+syncConfiguration.getUser());
+                Log.d("SyncConfiguration", "..5)getServerUrl() "+syncConfiguration.getServerUrl());
+                Log.d("SyncConfiguration", "..6)getRealmObjectClasses() "+syncConfiguration.getRealmObjectClasses());
+
                 Realm.setDefaultConfiguration(syncConfiguration);
                 realm = Realm.getDefaultInstance();
+                editor.putString("dbLocalPath",syncConfiguration.getRealmDirectory().toString());
+                editor.apply();
+                Log.d("SyncConfiguration", preferences.getString("dbLocalPath","default value"));
             }
 
             @Override
             public void onError(ObjectServerError error) {
-                Log.d("Error", "To wina wasyla");
+//                File file = new File(preferences.getString("dbLocalPath","default value"));
+//                RealmConfiguration conf = new RealmConfiguration.Builder().directory(file).name("Draw").build();
+                //final SyncConfiguration conf = new SyncConfiguration.Builder(null, REALM_URL).build();
+//                Realm.setDefaultConfiguration(conf);
+//                realm = Realm.getDefaultInstance();
+//                Log.d("RealmConfiguration", "...1) Brak połaczenia");
+//                Log.d("RealmConfiguration", "...2) RealmConfiguration.getPath(): "+conf.getPath());
+                Toast.makeText(DrawActivity.this, "No connection", Toast.LENGTH_LONG).show();
+                Log.d("Connection error", "...1) Brak połaczenia");
+                Log.d("Connection error", "...1) Brak połaczenia");
             }
         });
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         surfaceView.getHolder().addCallback(DrawActivity.this);
+        bWipeCanvas = (Button)findViewById(R.id.bWipeCanvas);
 
         generateColorMap();
         bindButtons();
         //initializeShakeSensor();
+
+        bWipeCanvas.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wipeCanvas();
+            }
+        });
     }
 
     @Override

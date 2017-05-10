@@ -23,6 +23,7 @@ import io.realm.SyncUser;
 
 public class SketchatApplication extends Application {
 
+
     private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Test";
     private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
     private static final String ID = "kampoz@kaseka.net";
@@ -39,7 +40,6 @@ public class SketchatApplication extends Application {
                         .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
 
-
         final File file =  new File(Realm.getDefaultInstance().getPath()).getParentFile();
 
         Log.d("SketchatApplication", file.toString());
@@ -54,7 +54,6 @@ public class SketchatApplication extends Application {
                                 .directory(file).build();
                     Realm.setDefaultConfiguration(syncConfiguration);
                     Log.d("Error", "Success CONNECTION");
-
                 }
 
                 @Override
