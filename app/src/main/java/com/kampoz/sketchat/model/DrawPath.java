@@ -21,7 +21,7 @@ import io.realm.RealmObject;
 
 public class DrawPath extends RealmObject {
     private boolean completed;
-    private String color;
+    private int color;
     private RealmList<DrawPoint> points;
 
     public boolean isCompleted() {
@@ -32,11 +32,11 @@ public class DrawPath extends RealmObject {
         this.completed = completed;
     }
 
-    public String getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         this.color = color;
     }
 

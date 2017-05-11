@@ -29,21 +29,21 @@
       android:background="@color/colorMyAlmostWhite"
       android:orientation="horizontal">
 
-      <ImageButton
+      <com.kampoz.sketchat.button.ColorButton
         android:id="@+id/bColor1"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="3dp"
         android:background="@drawable/shape_color_circle" />
 
-      <ImageButton
+      <com.kampoz.sketchat.button.ColorButton
         android:id="@+id/bColor2"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="3dp"
         android:background="@drawable/shape_color_circle" />
 
-      <ImageButton
+      <com.kampoz.sketchat.button.ColorButton
         android:id="@+id/bColor3"
         android:layout_width="50dp"
         android:layout_height="50dp"

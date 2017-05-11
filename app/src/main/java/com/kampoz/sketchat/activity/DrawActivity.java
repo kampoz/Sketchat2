@@ -5,9 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +15,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.button.ColorButton;
+import com.kampoz.sketchat.button.ColorButton.PaintColorListener;
 import com.kampoz.sketchat.model.DrawPath;
 import com.kampoz.sketchat.model.DrawPoint;
 import com.kampoz.sketchat.model.PencilView;
@@ -34,8 +32,9 @@ import io.realm.SyncUser;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener{
-    private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw2";
+public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Callback,
+     PaintColorListener {
+    private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw3";
     private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
     private static final String ID = "kampoz@kaseka.net";
     private static final String PASSWORD = "Murzyn1!";
@@ -47,26 +46,23 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private double marginTop;
     private DrawThread drawThread;
     private DrawPath currentPath;
-    private String currentColor = "Charcoal";
+    //private String currentColor = "Charcoal";
+    private int currentColor;
     private PencilView currentPencil;
     private HashMap<String, Integer> nameToColorMap = new HashMap<>();
     private HashMap<Integer, String> colorIdToName = new HashMap<>();
     private Button bWipeCanvas;
-    private ImageButton ibColor1;
-    private ImageButton ibColor2;
-    private ImageButton ibColor3;
+    private ColorButton ibColor1;
+    private ColorButton ibColor2;
+    private ColorButton ibColor3;
     SharedPreferences preferences;
-
-    //private SensorManager sensorManager;
-    //private Sensor accelerometerSensor;
-    //private io.realm.draw.sensor.ShakeSensorEventListener shakeSensorEventListener;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)   {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
 
+        currentColor = 0x000000;
         preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
         final SharedPreferences.Editor editor = preferences.edit();
 
@@ -107,11 +103,17 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         surfaceView.getHolder().addCallback(DrawActivity.this);
         bWipeCanvas = (Button)findViewById(R.id.bWipeCanvas);
-        ibColor1 = (ImageButton)findViewById(R.id.bColor1);
-        ibColor2 = (ImageButton)findViewById(R.id.bColor2);
-        ibColor3 = (ImageButton)findViewById(R.id.bColor3);
 
-        generateColorMap();
+        ibColor1 = (ColorButton)findViewById(R.id.bColor1);
+        ibColor2 = (ColorButton)findViewById(R.id.bColor2);
+        ibColor3 = (ColorButton)findViewById(R.id.bColor3);
+        ibColor1.setUpColor(R.color.colorBlack);
+        ibColor2.setUpColor(R.color.colorMyRedDark);
+        ibColor3.setUpColor(R.color.colorBallYellowDark);
+//        ibColor1.setListener(this);
+//        ibColor2.setListener(this);
+//        ibColor3.setListener(this);
+
         bindButtons();
         //initializeShakeSensor();
 
@@ -122,17 +124,17 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
 
-        Drawable background1 = ibColor1.getBackground();
-        GradientDrawable gradientDrawable = (GradientDrawable) background1;
-        gradientDrawable.setColor(ContextCompat.getColor(this,R.color.colorBlack));
-
-        Drawable background2 = ibColor2.getBackground();
-        GradientDrawable gradientDrawable2 = (GradientDrawable) background2;
-        gradientDrawable2.setColor(ContextCompat.getColor(this,R.color.colorMyRedDark));
-
-        Drawable background3 = ibColor3.getBackground();
-        GradientDrawable gradientDrawable3 = (GradientDrawable) background3;
-        gradientDrawable3.setColor(ContextCompat.getColor(this,R.color.colorBallYellowDark));
+//        Drawable background1 = ibColor1.getBackground();
+//        GradientDrawable gradientDrawable = (GradientDrawable) background1;
+//        gradientDrawable.setColor(ContextCompat.getColor(this,R.color.colorBlack));
+//
+//        Drawable background2 = ibColor2.getBackground();
+//        GradientDrawable gradientDrawable2 = (GradientDrawable) background2;
+//        gradientDrawable2.setColor(ContextCompat.getColor(this,R.color.colorMyRedDark));
+//
+//        Drawable background3 = ibColor3.getBackground();
+//        GradientDrawable gradientDrawable3 = (GradientDrawable) background3;
+//        gradientDrawable3.setColor(ContextCompat.getColor(this,R.color.colorBallYellowDark));
     }
 
     @Override
@@ -169,31 +171,31 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         };
 
         for (int id : buttonIds) {
-            View view = findViewById(id);
-            view.setOnClickListener(this);
+            ColorButton colorButton = (ColorButton) findViewById(id);
+            colorButton.setListener(this);
         }
 
         //currentPencil = (PencilView) findViewById(R.id.charcoal);
         //currentPencil.setSelected(true);
     }
 
-    private void generateColorMap() {
-        nameToColorMap.put("Charcoal", 0xff1c283f);
-        nameToColorMap.put("Elephant", 0xff9a9ba5);
-        nameToColorMap.put("Dove", 0xffebebf2);
-        nameToColorMap.put("Ultramarine", 0xff39477f);
-        nameToColorMap.put("Indigo", 0xff59569e);
-        nameToColorMap.put("GrapeJelly", 0xff9a50a5);
-        nameToColorMap.put("Mulberry", 0xffd34ca3);
-        nameToColorMap.put("Flamingo", 0xfffe5192);
-        nameToColorMap.put("SexySalmon", 0xfff77c88);
-        nameToColorMap.put("Peach", 0xfffc9f95);
-        nameToColorMap.put("Melon", 0xfffcc397);
-        colorIdToName.put(R.id.bColor1, "Charcoal");
-        colorIdToName.put(R.id.bColor2,"Peach");
-        colorIdToName.put(R.id.bColor3, "Melon");
-
-    }
+//    private void generateColorMap() {
+//        nameToColorMap.put("Charcoal", 0xff1c283f);
+//        nameToColorMap.put("Elephant", 0xff9a9ba5);
+//        nameToColorMap.put("Dove", 0xffebebf2);
+//        nameToColorMap.put("Ultramarine", 0xff39477f);
+//        nameToColorMap.put("Indigo", 0xff59569e);
+//        nameToColorMap.put("GrapeJelly", 0xff9a50a5);
+//        nameToColorMap.put("Mulberry", 0xffd34ca3);
+//        nameToColorMap.put("Flamingo", 0xfffe5192);
+//        nameToColorMap.put("SexySalmon", 0xfff77c88);
+//        nameToColorMap.put("Peach", 0xfffc9f95);
+//        nameToColorMap.put("Melon", 0xfffcc397);
+//        colorIdToName.put(R.id.bColor1, "Charcoal");
+//        colorIdToName.put(R.id.bColor2,"Peach");
+//        colorIdToName.put(R.id.bColor3, "Melon");
+//
+//    }
 
     private void wipeCanvas() {
         if(realm != null) {
@@ -266,7 +268,6 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 currentPath = null;
             }
             return true;
-
         }
         return false;
     }
@@ -305,21 +306,28 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ratio = -1;
     }
 
+//    @Override
+//    public void onClick(View view) {
+//        String colorName = colorIdToName.get(view.getId());
+//        if (colorName == null) {
+//            return;
+//        }
+//        //currentColor = colorName;
+//        if (view instanceof PencilView) {
+//            currentPencil.setSelected(false);
+//            currentPencil.invalidate();
+//            PencilView pencil = (PencilView) view;
+//            pencil.setSelected(true);
+//            pencil.invalidate();
+//            currentPencil = pencil;
+//        }
+//    }
+
     @Override
-    public void onClick(View view) {
-        String colorName = colorIdToName.get(view.getId());
-        if (colorName == null) {
-            return;
-        }
-        currentColor = colorName;
-        if (view instanceof PencilView) {
-            currentPencil.setSelected(false);
-            currentPencil.invalidate();
-            PencilView pencil = (PencilView) view;
-            pencil.setSelected(true);
-            pencil.invalidate();
-            currentPencil = pencil;
-        }
+    public void onClick(int color) {
+        String strColor = String.format("#%06X", 0xFFFFFF & color);
+        Log.d("onClick", strColor);
+        currentColor = color;
     }
 
     class DrawThread extends Thread {
@@ -375,11 +383,11 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         final Paint paint = new Paint();
                         for (DrawPath drawPath : results) {
                             final RealmList<DrawPoint> points = drawPath.getPoints();
-                            final Integer color = nameToColorMap.get(drawPath.getColor());
+                            final Integer color = drawPath.getColor();//nameToColorMap.get(drawPath.getColor());
                             if (color != null) {
                                 paint.setColor(color);
                             } else {
-                                paint.setColor(nameToColorMap.get(currentColor));
+                                paint.setColor(currentColor);
                             }
                             paint.setStyle(Paint.Style.STROKE);
                             paint.setStrokeWidth((float) (4 / ratio));
