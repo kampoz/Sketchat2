@@ -11,4 +11,7 @@
     <color name="colorBallYellowDark">#F5BF51</color>
     <color name="colorMyRedDark">#800000</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorMyBlue">#0066ff</color>
+    <color name="colorMyRed">#ee0000</color>
+    <color name="colorMyGReen">#009900</color>
 </resources>

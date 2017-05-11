@@ -55,6 +55,9 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private ColorButton ibColor1;
     private ColorButton ibColor2;
     private ColorButton ibColor3;
+    private ColorButton ibColor4;
+    private ColorButton ibColor5;
+    private ColorButton ibColor6;
     SharedPreferences preferences;
 
     @Override
@@ -107,12 +110,15 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ibColor1 = (ColorButton)findViewById(R.id.bColor1);
         ibColor2 = (ColorButton)findViewById(R.id.bColor2);
         ibColor3 = (ColorButton)findViewById(R.id.bColor3);
+        ibColor4 = (ColorButton)findViewById(R.id.bColor4);
+        ibColor5 = (ColorButton)findViewById(R.id.bColor5);
+        ibColor6 = (ColorButton)findViewById(R.id.bColor6);
         ibColor1.setUpColor(R.color.colorBlack);
         ibColor2.setUpColor(R.color.colorMyRedDark);
         ibColor3.setUpColor(R.color.colorBallYellowDark);
-//        ibColor1.setListener(this);
-//        ibColor2.setListener(this);
-//        ibColor3.setListener(this);
+        ibColor4.setUpColor(R.color.colorMyRed);
+        ibColor5.setUpColor(R.color.colorMyGReen);
+        ibColor6.setUpColor(R.color.colorMyBlue);
 
         bindButtons();
         //initializeShakeSensor();
@@ -167,7 +173,10 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         int[] buttonIds = {
             R.id.bColor1,
             R.id.bColor2,
-            R.id.bColor3
+            R.id.bColor3,
+            R.id.bColor4,
+            R.id.bColor5,
+            R.id.bColor6
         };
 
         for (int id : buttonIds) {

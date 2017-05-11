@@ -8,14 +8,14 @@
   android:paddingBottom="@dimen/activity_vertical_margin"
   android:paddingLeft="@dimen/activity_horizontal_margin"
   android:paddingRight="@dimen/activity_horizontal_margin"
-  android:background="@color/colorBallYellowLight"
+  android:background="@color/colorMyPrimary"
   tools:context="com.kampoz.sketchat.activity.DrawActivity">
 
-    <SurfaceView
-      android:id="@+id/surface_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginBottom="60dp" />
+  <SurfaceView
+    android:id="@+id/surface_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="60dp" />
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -26,29 +26,66 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_centerHorizontal="true"
-      android:background="@color/colorMyAlmostWhite"
+      android:background="@color/colorMyPrimary"
       android:orientation="horizontal">
 
-      <com.kampoz.sketchat.button.ColorButton
-        android:id="@+id/bColor1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="3dp"
-        android:background="@drawable/shape_color_circle" />
+      <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-      <com.kampoz.sketchat.button.ColorButton
-        android:id="@+id/bColor2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="3dp"
-        android:background="@drawable/shape_color_circle" />
+        <LinearLayout
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:padding="3dp"
+          android:orientation="horizontal">
 
-      <com.kampoz.sketchat.button.ColorButton
-        android:id="@+id/bColor3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="3dp"
-        android:background="@drawable/shape_color_circle" />
+          <com.kampoz.sketchat.button.ColorButton
+            android:id="@+id/bColor1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/shape_color_circle" />
+
+          <com.kampoz.sketchat.button.ColorButton
+            android:id="@+id/bColor2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/shape_color_circle" />
+
+          <com.kampoz.sketchat.button.ColorButton
+            android:id="@+id/bColor3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/shape_color_circle" />
+
+          <com.kampoz.sketchat.button.ColorButton
+            android:id="@+id/bColor4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/shape_color_circle" />
+
+          <com.kampoz.sketchat.button.ColorButton
+            android:id="@+id/bColor5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/shape_color_circle" />
+
+          <com.kampoz.sketchat.button.ColorButton
+            android:id="@+id/bColor6"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/shape_color_circle" />
+
+        </LinearLayout>
+
+      </HorizontalScrollView>
 
       <View
         android:layout_width="0dp"
