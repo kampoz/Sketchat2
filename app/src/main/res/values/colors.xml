@@ -13,5 +13,6 @@
     <color name="colorBlack">#000000</color>
     <color name="colorMyBlue">#0066ff</color>
     <color name="colorMyRed">#ee0000</color>
-    <color name="colorMyGReen">#009900</color>
+    <color name="colorMyGreen">#009900</color>
+    <color name="colorMyViolet">#993366</color>
 </resources>

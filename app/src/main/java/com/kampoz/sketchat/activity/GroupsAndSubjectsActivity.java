@@ -84,8 +84,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
                 Intent startDrawActivityIntent = new Intent(this, DrawActivity.class);
                 this.startActivity(startDrawActivityIntent);
             }
-
-
         }
         if (id == R.id.action_about) {
             int versionCode = BuildConfig.VERSION_CODE;

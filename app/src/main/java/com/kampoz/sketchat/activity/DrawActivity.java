@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -119,7 +118,7 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ibColor2.setUpColor(R.color.colorMyRedDark);
         ibColor3.setUpColor(R.color.colorBallYellowDark);
         ibColor4.setUpColor(R.color.colorMyRed);
-        ibColor5.setUpColor(R.color.colorMyGReen);
+        ibColor5.setUpColor(R.color.colorMyGreen);
         ibColor6.setUpColor(R.color.colorMyBlue);
 
         bindButtons();
