@@ -73,7 +73,9 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
             @Override
             public void onSuccess(SyncUser user) {
-                final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).directory(DrawActivity.this.getFilesDir()).build();
+                final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
+                    REALM_URL).directory(DrawActivity.this.getFilesDir()).build();
+
                 Log.d("SyncConfiguration", "..1)getRealmFileName() "+syncConfiguration.getRealmFileName());
                 Log.d("SyncConfiguration", "..2)getRealmDirectory() "+syncConfiguration.getRealmDirectory().toString());
                 Log.d("SyncConfiguration", "..3)getPath() "+syncConfiguration.getPath());
@@ -121,7 +123,6 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ibColor6.setUpColor(R.color.colorMyBlue);
 
         bindButtons();
-        //initializeShakeSensor();
 
         bWipeCanvas.setOnClickListener(new OnClickListener() {
             @Override
@@ -129,18 +130,6 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 wipeCanvas();
             }
         });
-
-//        Drawable background1 = ibColor1.getBackground();
-//        GradientDrawable gradientDrawable = (GradientDrawable) background1;
-//        gradientDrawable.setColor(ContextCompat.getColor(this,R.color.colorBlack));
-//
-//        Drawable background2 = ibColor2.getBackground();
-//        GradientDrawable gradientDrawable2 = (GradientDrawable) background2;
-//        gradientDrawable2.setColor(ContextCompat.getColor(this,R.color.colorMyRedDark));
-//
-//        Drawable background3 = ibColor3.getBackground();
-//        GradientDrawable gradientDrawable3 = (GradientDrawable) background3;
-//        gradientDrawable3.setColor(ContextCompat.getColor(this,R.color.colorBallYellowDark));
     }
 
     @Override
@@ -152,22 +141,7 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
     @Override
     protected void onPause() {
         super.onPause();
-        //sensorManager.unregisterListener(shakeSensorEventListener);
     }
-
-//    private void initializeShakeSensor() {
-//
-//        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//        shakeSensorEventListener = new io.realm.draw.sensor.ShakeSensorEventListener();
-//        shakeSensorEventListener.setOnShakeListener(new io.realm.draw.sensor.ShakeSensorEventListener.OnShakeListener() {
-//
-//            @Override
-//            public void onShake(int count) {
-//                wipeCanvas();
-//            }
-//        });
-//    }
 
     private void bindButtons() {
         int[] buttonIds = {
@@ -183,28 +157,7 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
             ColorButton colorButton = (ColorButton) findViewById(id);
             colorButton.setListener(this);
         }
-
-        //currentPencil = (PencilView) findViewById(R.id.charcoal);
-        //currentPencil.setSelected(true);
     }
-
-//    private void generateColorMap() {
-//        nameToColorMap.put("Charcoal", 0xff1c283f);
-//        nameToColorMap.put("Elephant", 0xff9a9ba5);
-//        nameToColorMap.put("Dove", 0xffebebf2);
-//        nameToColorMap.put("Ultramarine", 0xff39477f);
-//        nameToColorMap.put("Indigo", 0xff59569e);
-//        nameToColorMap.put("GrapeJelly", 0xff9a50a5);
-//        nameToColorMap.put("Mulberry", 0xffd34ca3);
-//        nameToColorMap.put("Flamingo", 0xfffe5192);
-//        nameToColorMap.put("SexySalmon", 0xfff77c88);
-//        nameToColorMap.put("Peach", 0xfffc9f95);
-//        nameToColorMap.put("Melon", 0xfffcc397);
-//        colorIdToName.put(R.id.bColor1, "Charcoal");
-//        colorIdToName.put(R.id.bColor2,"Peach");
-//        colorIdToName.put(R.id.bColor3, "Melon");
-//
-//    }
 
     private void wipeCanvas() {
         if(realm != null) {
@@ -226,11 +179,11 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
+    // if we are in the middle of a rotation, realm may be null.
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         if(realm == null) {
-            return false; // if we are in the middle of a rotation, realm may be null.
+            return false;
         }
 
         int[] viewLocation = new int[2];

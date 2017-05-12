@@ -57,8 +57,7 @@ public class ColorButton extends ImageButton {
 //
 //  public void setListener(ColorListener listener) {
 //    this.listener = listener;
-//  }
-
+//
 
   public int getColor() {
     return color;
