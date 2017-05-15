@@ -28,6 +28,7 @@ import com.kampoz.sketchat.model.PencilView;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
@@ -329,8 +330,9 @@ public class DrawActivity extends AppCompatActivity
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
-        if((realm.where(DrawPath.class).equalTo("id", idOfLastDrawPath).findFirst() != null))
-          realm.where(DrawPath.class).equalTo("id", idOfLastDrawPath).findFirst().deleteFromRealm();
+        DrawPath lastDrawPath = realm.where(DrawPath.class).equalTo("id", idOfLastDrawPath).findFirst();
+        if(lastDrawPath != null)
+        lastDrawPath.deleteFromRealm();
       }
     });
   }
