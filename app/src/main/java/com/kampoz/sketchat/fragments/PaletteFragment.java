@@ -29,10 +29,10 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
 
   public interface PaletteCallback{
     void wipeCanvas();
+    void onColorChange(int color);
   }
 
   private PaletteCallback paletteCallback;
-  private int currentColor;
   private Button bWipeCanvas;
   private ColorButton ibColor1;
   private ColorButton ibColor2;
@@ -47,7 +47,6 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
       Bundle savedInstanceState) {
     view = inflater.inflate(R.layout.fragment_palette, container, false);
 
-    currentColor = 0x000000;
     preferences = getActivity().getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
 
@@ -98,7 +97,6 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     }
   }
 
-
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
@@ -109,7 +107,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   public void onClick(int color) {
     String strColor = String.format("#%06X", 0xFFFFFF & color);
     Log.d("onClick", strColor);
-    currentColor = color;
+    paletteCallback.onColorChange(color);
   }
 
   public void setPaletteCallback(
