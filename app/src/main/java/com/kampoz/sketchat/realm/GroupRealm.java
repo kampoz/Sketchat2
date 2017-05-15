@@ -133,7 +133,7 @@ public class GroupRealm extends RealmObject {
   public void addNewGroup(final GroupRealm groupRealm) {
 //        Realm.getDefaultInstance().beginTransaction();
 //        GroupRealm groupRealm1 = Realm.getDefaultInstance().createObject(GroupRealm.class);
-//        groupRealm.setId(generateGroupId());
+//        groupRealm.generateId(generateGroupId());
 //        Realm.getDefaultInstance().commitTransaction();
     ///////////////////////
     Realm realm = Realm.getDefaultInstance();

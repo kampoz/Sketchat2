@@ -18,6 +18,7 @@ import com.kampoz.sketchat.R;
 import android.content.SharedPreferences;
 import com.kampoz.sketchat.activity.DrawActivity;
 import com.kampoz.sketchat.button.ColorButton;
+import com.kampoz.sketchat.model.DrawPath;
 import io.realm.Realm;
 
 /**
@@ -30,16 +31,19 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   public interface PaletteCallback{
     void wipeCanvas();
     void onColorChange(int color);
+    void undo();
   }
 
   private PaletteCallback paletteCallback;
-  private Button bWipeCanvas;
+
   private ColorButton ibColor1;
   private ColorButton ibColor2;
   private ColorButton ibColor3;
   private ColorButton ibColor4;
   private ColorButton ibColor5;
   private ColorButton ibColor6;
+  private Button bWipeCanvas;
+  private Button bUndo;
   View view;
 
   @Override
@@ -57,6 +61,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     ibColor5 = (ColorButton)view.findViewById(R.id.bColor5);
     ibColor6 = (ColorButton)view.findViewById(R.id.bColor6);
     bWipeCanvas = (Button)view.findViewById(R.id.bWipeCanvas);
+    bUndo = (Button)view.findViewById(R.id.bUndo);
     ibColor1.setUpColor(R.color.colorBlack);
     ibColor2.setUpColor(R.color.colorMyRedDark);
     ibColor3.setUpColor(R.color.colorBallYellowDark);
@@ -68,6 +73,13 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
       @Override
       public void onClick(View v) {
         paletteCallback.wipeCanvas();
+      }
+    });
+
+    bUndo.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        paletteCallback.undo();
       }
     });
 

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -37,7 +38,7 @@ import java.util.Iterator;
 public class DrawActivity extends AppCompatActivity
     implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback {
 
-  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw3";
+  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw4";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -49,6 +50,8 @@ public class DrawActivity extends AppCompatActivity
   private double marginTop;
   private DrawThread drawThread;
   private DrawPath currentPath;
+  private long idOfLastDrawPath;
+  //private DrawPath pathToDelete;
   //private String currentColor = "Charcoal";
   private int currentColor;
   private PencilView currentPencil;
@@ -176,11 +179,13 @@ public class DrawActivity extends AppCompatActivity
         point.setY(pointY);
         currentPath.getPoints().add(point);
         realm.commitTransaction();
+        idOfLastDrawPath = currentPath.getId();
         currentPath = null;
       } else {
         realm.beginTransaction();
         currentPath.setCompleted(true);
         realm.commitTransaction();
+        idOfLastDrawPath = currentPath.getId();
         currentPath = null;
       }
       return true;
@@ -273,7 +278,7 @@ public class DrawActivity extends AppCompatActivity
               } else {
                 paint.setColor(currentColor);
               }
-              paint.setStyle(Paint.Style.STROKE);
+              paint.setStyle(Style.STROKE);
               paint.setStrokeWidth((float) (4 / ratio));
               final Iterator<DrawPoint> iterator = points.iterator();
               final DrawPoint firstPoint = iterator.next();
@@ -303,9 +308,7 @@ public class DrawActivity extends AppCompatActivity
     }
   }
 
-  /***
-   * Interface PaletteFragment.PaletteCallback
-   **/
+  /*** Interface PaletteFragment.PaletteCallback **/
   @Override
   public void wipeCanvas() {
     if (realm != null) {
@@ -317,15 +320,21 @@ public class DrawActivity extends AppCompatActivity
       });
     }
   }
-
   @Override
   public void onColorChange(int color) {
     currentColor = color;
   }
-
-  /**
-   * End Interface PaletteFragment.PaletteCallback
-   **/
+  @Override
+  public void undo() {
+    Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        if((realm.where(DrawPath.class).equalTo("id", idOfLastDrawPath).findFirst() != null))
+          realm.where(DrawPath.class).equalTo("id", idOfLastDrawPath).findFirst().deleteFromRealm();
+      }
+    });
+  }
+  /** End Interface PaletteFragment.PaletteCallback**/
 
   private void setPaletteFragment() {
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();

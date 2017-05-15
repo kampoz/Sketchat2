@@ -8,11 +8,11 @@
     <color name="colorMyAccent">#A80429</color>
     <color name="colorMyAlmostWhite">#f5f5f5</color>
     <color name="colorBallYellowLight">#F7F795</color>
-    <color name="colorBallYellowDark">#F5BF51</color>
-    <color name="colorMyRedDark">#800000</color>
+    <color name="colorBallYellowDark">#FFEB3B</color>
+    <color name="colorMyRedDark">#A1887F</color>
     <color name="colorBlack">#000000</color>
-    <color name="colorMyBlue">#0066ff</color>
-    <color name="colorMyRed">#ee0000</color>
-    <color name="colorMyGreen">#009900</color>
-    <color name="colorMyViolet">#993366</color>
+    <color name="colorMyBlue">#2196F3</color>
+    <color name="colorMyRed">#EF5350</color>
+    <color name="colorMyGreen">#00E676</color>
+    <color name="colorMyViolet">#9C27B0</color>
 </resources>

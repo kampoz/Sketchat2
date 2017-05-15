@@ -16,35 +16,63 @@
 
 package com.kampoz.sketchat.model;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class DrawPath extends RealmObject {
-    private boolean completed;
-    private int color;
-    private RealmList<DrawPoint> points;
 
-    public boolean isCompleted() {
-        return completed;
-    }
+  private long id;
+  private boolean completed;
+  private int color;
+  private RealmList<DrawPoint> points;
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
+  public DrawPath() {
+    setId(generateId());
+  }
 
-    public int getColor() {
-        return color;
-    }
+  public boolean isCompleted() {
+    return completed;
+  }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
+  public void setCompleted(boolean completed) {
+    this.completed = completed;
+  }
 
-    public RealmList<DrawPoint> getPoints() {
-        return points;
-    }
+  public int getColor() {
+    return color;
+  }
 
-    public void setPoints(RealmList<DrawPoint> points) {
-        this.points = points;
+  public void setColor(int color) {
+    this.color = color;
+  }
+
+  public RealmList<DrawPoint> getPoints() {
+    return points;
+  }
+
+  public void setPoints(RealmList<DrawPoint> points) {
+    this.points = points;
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public long generateId() {
+    long newId;
+    Realm defaultInstance = Realm.getDefaultInstance();
+    Number oldMaxIdNumber = defaultInstance.where(DrawPath.class).max("id");
+    Long oldMaxId = oldMaxIdNumber.longValue();
+    if (oldMaxId == null) {
+      newId = 1;
+    } else {
+      newId = oldMaxId.intValue() + 1;
     }
+    return newId;
+  }
 }
