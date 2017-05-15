@@ -14,7 +14,6 @@ import android.widget.ImageButton;
  */
 
 public class ColorButton extends ImageButton {
-
   public interface PaintColorListener {
     void onClick(int color);
   };

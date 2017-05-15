@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.button.ColorButton;
 import com.kampoz.sketchat.button.ColorButton.PaintColorListener;
+import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.model.DrawPath;
 import com.kampoz.sketchat.model.DrawPoint;
 import com.kampoz.sketchat.model.PencilView;
@@ -31,8 +34,9 @@ import io.realm.SyncUser;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Callback,
-     PaintColorListener {
+public class DrawActivity extends AppCompatActivity
+    implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback {
+
     private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw3";
     private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
     private static final String ID = "kampoz@kaseka.net";
@@ -50,23 +54,21 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private PencilView currentPencil;
     private HashMap<String, Integer> nameToColorMap = new HashMap<>();
     private HashMap<Integer, String> colorIdToName = new HashMap<>();
-    private Button bWipeCanvas;
-    private ColorButton ibColor1;
-    private ColorButton ibColor2;
-    private ColorButton ibColor3;
-    private ColorButton ibColor4;
-    private ColorButton ibColor5;
-    private ColorButton ibColor6;
+    private PaletteFragment paletteFragment;
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
+
     SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)   {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
-
+        setPaletteFragment();
         currentColor = 0x000000;
         preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
         final SharedPreferences.Editor editor = preferences.edit();
+        paletteFragment = new PaletteFragment();
+        //paletteFragment.setPaletteCallback(this);
 
         final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
         SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
@@ -106,29 +108,18 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         surfaceView.getHolder().addCallback(DrawActivity.this);
-        bWipeCanvas = (Button)findViewById(R.id.bWipeCanvas);
+    }
 
-        ibColor1 = (ColorButton)findViewById(R.id.bColor1);
-        ibColor2 = (ColorButton)findViewById(R.id.bColor2);
-        ibColor3 = (ColorButton)findViewById(R.id.bColor3);
-        ibColor4 = (ColorButton)findViewById(R.id.bColor4);
-        ibColor5 = (ColorButton)findViewById(R.id.bColor5);
-        ibColor6 = (ColorButton)findViewById(R.id.bColor6);
-        ibColor1.setUpColor(R.color.colorBlack);
-        ibColor2.setUpColor(R.color.colorMyRedDark);
-        ibColor3.setUpColor(R.color.colorBallYellowDark);
-        ibColor4.setUpColor(R.color.colorMyRed);
-        ibColor5.setUpColor(R.color.colorMyGreen);
-        ibColor6.setUpColor(R.color.colorMyBlue);
-
-        bindButtons();
-
-        bWipeCanvas.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wipeCanvas();
-            }
-        });
+    @Override
+    public void wipeCanvas() {
+        if(realm != null) {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm r) {
+                    r.deleteAll();
+                }
+            });
+        }
     }
 
     @Override
@@ -142,32 +133,7 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onPause();
     }
 
-    private void bindButtons() {
-        int[] buttonIds = {
-            R.id.bColor1,
-            R.id.bColor2,
-            R.id.bColor3,
-            R.id.bColor4,
-            R.id.bColor5,
-            R.id.bColor6
-        };
 
-        for (int id : buttonIds) {
-            ColorButton colorButton = (ColorButton) findViewById(id);
-            colorButton.setListener(this);
-        }
-    }
-
-    private void wipeCanvas() {
-        if(realm != null) {
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm r) {
-                    r.deleteAll();
-                }
-            });
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -267,30 +233,6 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
         ratio = -1;
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        String colorName = colorIdToName.get(view.getId());
-//        if (colorName == null) {
-//            return;
-//        }
-//        //currentColor = colorName;
-//        if (view instanceof PencilView) {
-//            currentPencil.setSelected(false);
-//            currentPencil.invalidate();
-//            PencilView pencil = (PencilView) view;
-//            pencil.setSelected(true);
-//            pencil.invalidate();
-//            currentPencil = pencil;
-//        }
-//    }
-
-    @Override
-    public void onClick(int color) {
-        String strColor = String.format("#%06X", 0xFFFFFF & color);
-        Log.d("onClick", strColor);
-        currentColor = color;
-    }
-
     class DrawThread extends Thread {
         private Realm bgRealm;
 
@@ -379,6 +321,19 @@ public class DrawActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 bgRealm.close();
             }
         }
+    }
+
+    /*** Interface PaletteFragment.PaletteCallback **/
+//    @Override
+//    public void wipe() {
+//        wipeCanvas();
+//    }
+
+    private void setPaletteFragment() {
+        FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+        paletteFragment = new PaletteFragment();
+        fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
+        fragmentTransaction.commit();
     }
 }
 

@@ -29,8 +29,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment currentFragment = null;
     private Toolbar toolbar;
-    private boolean areRadioButtonsShown = false;
-    private FloatingActionButton fabDeleteGroups;
+    //private boolean areRadioButtonsShown = false;
+    //private FloatingActionButton fabDeleteGroups;
     // for Land only
     private SubjectsFragment subjectsFragment;
     private GroupsFragment groupsFragment;

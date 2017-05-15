@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:padding="10dp">
+
+  <HorizontalScrollView
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
+
+    <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:padding="3dp"
+      android:orientation="horizontal">
+
+      <com.kampoz.sketchat.button.ColorButton
+        android:id="@+id/bColor1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <com.kampoz.sketchat.button.ColorButton
+        android:id="@+id/bColor2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <com.kampoz.sketchat.button.ColorButton
+        android:id="@+id/bColor3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <com.kampoz.sketchat.button.ColorButton
+        android:id="@+id/bColor4"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <com.kampoz.sketchat.button.ColorButton
+        android:id="@+id/bColor5"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+      <com.kampoz.sketchat.button.ColorButton
+        android:id="@+id/bColor6"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/shape_color_circle" />
+
+    </LinearLayout>
+
+  </HorizontalScrollView>
+
+  <Button
+    android:id="@+id/bWipeCanvas"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Clean"
+    android:textColor="#000000" />
+
+</LinearLayout>
+
