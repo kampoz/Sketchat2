@@ -23,6 +23,7 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConversationActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.DrawActivity"></activity>
+        <activity android:name=".activity.DrawActivity"
+          android:screenOrientation="landscape"/>
     </application>
 </manifest>
