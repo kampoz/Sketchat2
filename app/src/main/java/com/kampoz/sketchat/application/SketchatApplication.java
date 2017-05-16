@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
+import com.facebook.stetho.inspector.protocol.ChromeDevtoolsDomain;
 import com.kampoz.sketchat.activity.RegisterActivity;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
@@ -40,27 +41,27 @@ public class SketchatApplication extends Application {
                         .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
 
-        final File file =  new File(Realm.getDefaultInstance().getPath()).getParentFile();
-
-        Log.d("SketchatApplication", file.toString());
+//        final File file =  new File(Realm.getDefaultInstance().getPath()).getParentFile();
+//
+//        Log.d("SketchatApplication", file.toString());
 //        RealmLog.setLevel(Log.VERBOSE);
 
-            final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
-            SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
-                @Override
-                public void onSuccess(SyncUser user) {
-                    SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL)
-                                .name("default.realm")
-                                .directory(file).build();
-                    Realm.setDefaultConfiguration(syncConfiguration);
-                    Log.d("Error", "Success CONNECTION");
-                }
-
-                @Override
-                public void onError(ObjectServerError error) {
-                    Log.d("Error", "To wina wasyla");
-                }
-            });
+//            final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
+//            SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
+//                @Override
+//                public void onSuccess(SyncUser user) {
+//                    SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL)
+//                                .name("default.realm")
+//                                .directory(file).build();
+//                    Realm.setDefaultConfiguration(syncConfiguration);
+//                    Log.d("Error", "Success CONNECTION");
+//                }
+//
+//                @Override
+//                public void onError(ObjectServerError error) {
+//                    Log.d("Error", "To wina wasyla");
+//                }
+//            });
 
     }
 

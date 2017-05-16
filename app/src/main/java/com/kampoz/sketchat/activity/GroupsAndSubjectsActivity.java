@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -36,6 +37,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private GroupsFragment groupsFragment;
     private MyConnectionChecker myConnectionChecker;
 
+    private int mCurrentGroupId = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +49,68 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         this.isLand = getResources().getBoolean(R.bool.isLand);
         setGroupsFragment();
         myConnectionChecker = new MyConnectionChecker();
+        Log.d("Cykl życia", "...onCreate()...");
+
+        if(savedInstanceState != null) {
+            mCurrentGroupId = savedInstanceState.getInt("GROUP_ID");
+            if(mCurrentGroupId != 0) {
+                onGroupItemSelected(mCurrentGroupId);
+            }
+        }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("Cykl życia", "...onDestroy()...");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("Cykl życia", "...onStop()...");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("Cykl życia", "...onStart()...");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Cykl życia", "...onResume()...");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("Cykl życia", "...onPause()...");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        mCurrentGroupId = 0;
+        Log.d("Cykl życia", "...onBackPressed()...");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("Cykl życia", "...onRestart()...");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putInt("GROUP_ID", mCurrentGroupId);
+
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,6 +189,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     /*** interface GroupsFragment.FragmentListener **/
     @Override
     public void onGroupItemSelected(int groupId) {
+        mCurrentGroupId = groupId;
         setSubjectsFragment(groupId);
         this.fragmentManager.executePendingTransactions();
     }

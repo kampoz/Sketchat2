@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,7 @@ import java.util.Iterator;
 public class DrawActivity extends AppCompatActivity
     implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback {
 
-  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw4";
+  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw5";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -52,8 +53,6 @@ public class DrawActivity extends AppCompatActivity
   private DrawThread drawThread;
   private DrawPath currentPath;
   private long idOfLastDrawPath;
-  //private DrawPath pathToDelete;
-  //private String currentColor = "Charcoal";
   private int currentColor;
   private PencilView currentPencil;
   private HashMap<String, Integer> nameToColorMap = new HashMap<>();
@@ -73,7 +72,9 @@ public class DrawActivity extends AppCompatActivity
     final SharedPreferences.Editor editor = preferences.edit();
     paletteFragment = new PaletteFragment();
     //paletteFragment.setPaletteCallback(this);
+    realm = Realm.getDefaultInstance();
 
+    /*
     final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
     SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
       @Override
@@ -96,6 +97,7 @@ public class DrawActivity extends AppCompatActivity
         editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
         editor.apply();
         Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
+        Log.d("Cykl życia DA", "...onCreate()...");
       }
 
       @Override
@@ -112,22 +114,47 @@ public class DrawActivity extends AppCompatActivity
         Log.d("Connection error", "...1) Brak połaczenia");
       }
     });
+    */
 
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
     surfaceView.getHolder().addCallback(DrawActivity.this);
   }
 
   @Override
+  protected void onStop() {
+    super.onStop();
+    Log.d("Cykl życia DA", "...onStop()...");
+  }
+
+  @Override
+  protected void onStart() {
+    super.onStart();
+    Log.d("Cykl życia DA", "...onStart()...");
+  }
+
+  @Override
   protected void onResume() {
     super.onResume();
-    //sensorManager.registerListener(shakeSensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_UI);
+    Log.d("Cykl życia DA", "...onResume()...");
   }
 
   @Override
   protected void onPause() {
     super.onPause();
+    Log.d("Cykl życia DA", "...onPause()...");
   }
 
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    Log.d("Cykl życia DA", "...onBackPressed()...");
+  }
+
+  @Override
+  protected void onRestart() {
+    super.onRestart();
+    Log.d("Cykl życia DA", "...onRestart()...");
+  }
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -135,6 +162,7 @@ public class DrawActivity extends AppCompatActivity
       realm.close();
       realm = null;
     }
+    Log.d("Cykl życia DA", "...onDestroy()...koniec");
   }
 
   // if we are in the middle of a rotation, realm may be null.
@@ -143,7 +171,6 @@ public class DrawActivity extends AppCompatActivity
     if (realm == null) {
       return false;
     }
-
     int[] viewLocation = new int[2];
     surfaceView.getLocationInWindow(viewLocation);
     int action = event.getAction();

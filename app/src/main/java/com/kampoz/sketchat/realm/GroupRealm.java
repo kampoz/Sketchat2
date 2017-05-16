@@ -77,13 +77,13 @@ public class GroupRealm extends RealmObject {
 
   //zwraca wszystkie obiekty GroupRealm posortowane
   public List<GroupRealm> getAllfromGroupRealmSorted() {
-    List<GroupRealm> groups = new ArrayList<>();
-    RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class)
-        .findAllSorted("groupName");
-    for (GroupRealm groupRealm : all) {
-      groups.add(groupRealm);
-    }
-    return groups;
+//    List<GroupRealm> groups = new ArrayList<>();
+//    RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class)
+//        .findAllSorted("groupName");
+//    for (GroupRealm groupRealm : all) {
+//      groups.add(groupRealm);
+//    }
+    return Realm.getDefaultInstance().where(GroupRealm.class).findAllSorted("groupName");
   }
 
   public List<GroupRealm> searchELementsByName(String newText) {
