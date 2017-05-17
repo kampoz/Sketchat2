@@ -3,6 +3,7 @@ package com.kampoz.sketchat.fragments;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.kampoz.sketchat.R;
 import android.content.SharedPreferences;
 import com.kampoz.sketchat.activity.DrawActivity;
 import com.kampoz.sketchat.button.ColorButton;
+import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.model.DrawPath;
 import io.realm.Realm;
 
@@ -27,6 +29,7 @@ import io.realm.Realm;
 
 public class PaletteFragment extends Fragment implements ColorButton.PaintColorListener{
   SharedPreferences preferences;
+  Context context;
 
   public interface PaletteCallback{
     void wipeCanvas();
@@ -44,6 +47,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   private ColorButton ibColor6;
   private Button bWipeCanvas;
   private Button bUndo;
+  private Button bColorPIckerDialog;
   View view;
 
   @Override
@@ -62,6 +66,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     ibColor6 = (ColorButton)view.findViewById(R.id.bColor6);
     bWipeCanvas = (Button)view.findViewById(R.id.bWipeCanvas);
     bUndo = (Button)view.findViewById(R.id.bUndo);
+    bColorPIckerDialog = (Button)view.findViewById(R.id.bColorPickerDialog);
     ibColor1.setUpColor(R.color.colorBlack);
     ibColor2.setUpColor(R.color.colorMyRedDark);
     ibColor3.setUpColor(R.color.colorBallYellowDark);
@@ -80,6 +85,12 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
       @Override
       public void onClick(View v) {
         paletteCallback.undo();
+      }
+    });
+    bColorPIckerDialog.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        showDialog(v);
       }
     });
 
@@ -125,5 +136,11 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   public void setPaletteCallback(
       PaletteCallback paletteCallback) {
     this.paletteCallback = paletteCallback;
+  }
+
+  public void showDialog(View v){
+    android.support.v4.app.FragmentManager manager = getFragmentManager();
+    ColorPickerDialogFragment myDialog = new ColorPickerDialogFragment();
+    myDialog.show(manager, "myDialog");
   }
 }
