@@ -16,8 +16,6 @@ import android.widget.Button;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.activity.DrawActivity;
 import com.kampoz.sketchat.button.ColorButton;
-import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
-import android.support.v4.app.FragmentManager;
 
 /**
  * Created by wasili on 2017-05-12.
@@ -37,6 +35,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   private Button bWipeCanvas;
   private Button bUndo;
   private ColorButton ibColor;
+  private int currentColor = 0x000000;
   View view;
 
   @Override
@@ -50,7 +49,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     bUndo = (Button)view.findViewById(R.id.bUndo);
     ibColor = (ColorButton) view.findViewById(R.id.ibColor);
     ibColor.setListener(this);
-
+    ibColor.setBackgroundColor(currentColor);
     bWipeCanvas.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -96,13 +95,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     paletteCallback.onColorChange(color);
   }
 
-  public void showDialog(View v){
-    FragmentManager manager = getFragmentManager();
-    ColorPickerDialogFragment myDialog = new ColorPickerDialogFragment();
-    myDialog.show(manager, "myDialog");
-  }
-
   public void setColorIbColor(int color){
-    //ibColor.setBackgroundColor(color);
+    currentColor = color;
   }
 }

@@ -55,7 +55,7 @@ public class DrawActivity extends AppCompatActivity
   private DrawThread drawThread;
   private DrawPath currentPath;
   private long idOfLastDrawPath;
-  private int currentColor = 0x000000;;
+  private int currentColor;
   private PencilView currentPencil;
   private HashMap<String, Integer> nameToColorMap = new HashMap<>();
   private HashMap<Integer, String> colorIdToName = new HashMap<>();
@@ -68,14 +68,14 @@ public class DrawActivity extends AppCompatActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
+    currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();
     dialog.setColorListener(this);
+    dialog.setCurrentColor(currentColor);
     setPaletteFragment();
-    currentColor = 0x000000;
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
     paletteFragment = new PaletteFragment();
-    //paletteFragment.setPaletteCallback(this);
     realm = Realm.getDefaultInstance();
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
     surfaceView.getHolder().addCallback(DrawActivity.this);
@@ -325,24 +325,23 @@ public class DrawActivity extends AppCompatActivity
       }
     });
   }
-  /** End Interface PaletteFragment.PaletteCallback**/
-
-
 
   @Override
   public void showDialog() {
     FragmentManager manager = getSupportFragmentManager();
     ColorPickerDialogFragment myDialog = new ColorPickerDialogFragment();
     myDialog.setColorListener(this);
+    myDialog.setCurrentColor(currentColor);
     myDialog.show(manager, "myDialog");
   }
+  /** End Interface PaletteFragment.PaletteCallback**/
 
   /*** interface ColorPickerDialogFragment.ColorListener **/
   @Override
   public void setColor(MyColorRGB colorRGB) {
     currentColor = getIntFromColor(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue());
-    paletteFragment.setColorIbColor(currentColor);
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+    paletteFragment.setColorIbColor(currentColor);
     fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
     fragmentTransaction.commit();
   }
@@ -357,7 +356,7 @@ public class DrawActivity extends AppCompatActivity
   private void setPaletteFragment() {
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
     paletteFragment = new PaletteFragment();
-    //paletteFragment.setColorButtonColor(currentColor);
+    paletteFragment.setColorIbColor(currentColor);
     fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
     fragmentTransaction.commit();
   }
@@ -366,7 +365,6 @@ public class DrawActivity extends AppCompatActivity
     Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
     Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
     Blue = Blue & 0x000000FF; //Mask out anything not blue.
-
     return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
   }
 }

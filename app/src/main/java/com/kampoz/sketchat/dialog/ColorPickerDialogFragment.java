@@ -26,17 +26,15 @@ public class ColorPickerDialogFragment extends DialogFragment {
 
   private ImageButton[][] buttons = new ImageButton[8][10];
   private MyColorRGB[][] colors = new MyColorRGB[8][10];
-  ImageView ivCurrentColor;
+  private ImageView ivCurrentColor;
+  private int currentColor = -16777216;
 
   @Override
   public Dialog onCreateDialog(Bundle ssvadInstanceState) {
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     LayoutInflater inflater = getActivity().getLayoutInflater();
     View view = inflater.inflate(R.layout.dialog_color_picker, null);
-    //MyColorRGB currentColor = colorListener.getCurrentColor();
-    int currentColor = colorListener.getCurrentColor();
     ivCurrentColor = (ImageView)view.findViewById(R.id.ivCurrentColor);
-    //ivCurrentColor.setBackgroundColor(currentColor);
     createColorsTable();
     createColorButtonsBoard(view);
     builder.setView(view);
@@ -106,5 +104,13 @@ public class ColorPickerDialogFragment extends DialogFragment {
 
   public void setColorListener(ColorListener colorListener) {
     this.colorListener = colorListener;
+  }
+
+  public int getCurrentColor() {
+    return currentColor;
+  }
+
+  public void setCurrentColor(int currentColor) {
+    this.currentColor = currentColor;
   }
 }
