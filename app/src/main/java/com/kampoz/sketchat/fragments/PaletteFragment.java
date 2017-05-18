@@ -2,8 +2,6 @@ package com.kampoz.sketchat.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,38 +14,29 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.kampoz.sketchat.R;
-import android.content.SharedPreferences;
 import com.kampoz.sketchat.activity.DrawActivity;
 import com.kampoz.sketchat.button.ColorButton;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
-import com.kampoz.sketchat.model.DrawPath;
-import io.realm.Realm;
+import android.support.v4.app.FragmentManager;
 
 /**
  * Created by wasili on 2017-05-12.
  */
 
 public class PaletteFragment extends Fragment implements ColorButton.PaintColorListener{
-  SharedPreferences preferences;
-  Context context;
 
   public interface PaletteCallback{
     void wipeCanvas();
     void onColorChange(int color);
     void undo();
+    void showDialog();
   }
 
   private PaletteCallback paletteCallback;
-
-  private ColorButton ibColor1;
-  private ColorButton ibColor2;
-  private ColorButton ibColor3;
-  private ColorButton ibColor4;
-  private ColorButton ibColor5;
-  private ColorButton ibColor6;
+  SharedPreferences preferences;
   private Button bWipeCanvas;
   private Button bUndo;
-  private Button bColorPIckerDialog;
+  private ColorButton ibColor;
   View view;
 
   @Override
@@ -57,22 +46,10 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
 
     preferences = getActivity().getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
-
-    ibColor1 = (ColorButton)view.findViewById(R.id.bColor1);
-    ibColor2 = (ColorButton)view.findViewById(R.id.bColor2);
-    ibColor3 = (ColorButton)view.findViewById(R.id.bColor3);
-    ibColor4 = (ColorButton)view.findViewById(R.id.bColor4);
-    ibColor5 = (ColorButton)view.findViewById(R.id.bColor5);
-    ibColor6 = (ColorButton)view.findViewById(R.id.bColor6);
     bWipeCanvas = (Button)view.findViewById(R.id.bWipeCanvas);
     bUndo = (Button)view.findViewById(R.id.bUndo);
-    bColorPIckerDialog = (Button)view.findViewById(R.id.bColorPickerDialog);
-    ibColor1.setUpColor(R.color.colorBlack);
-    ibColor2.setUpColor(R.color.colorMyRedDark);
-    ibColor3.setUpColor(R.color.colorBallYellowDark);
-    ibColor4.setUpColor(R.color.colorMyRed);
-    ibColor5.setUpColor(R.color.colorMyGreen);
-    ibColor6.setUpColor(R.color.colorMyBlue);
+    ibColor = (ColorButton) view.findViewById(R.id.ibColor);
+    ibColor.setListener(this);
 
     bWipeCanvas.setOnClickListener(new OnClickListener() {
       @Override
@@ -87,14 +64,13 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
         paletteCallback.undo();
       }
     });
-    bColorPIckerDialog.setOnClickListener(new OnClickListener() {
+
+    ibColor.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        showDialog(v);
+        paletteCallback.showDialog();
       }
     });
-
-    bindButtons();
     return view;
   }
 
@@ -104,21 +80,6 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     setHasOptionsMenu(true);
   }
 
-  private void bindButtons() {
-    int[] buttonIds = {
-        R.id.bColor1,
-        R.id.bColor2,
-        R.id.bColor3,
-        R.id.bColor4,
-        R.id.bColor5,
-        R.id.bColor6
-    };
-
-    for (int id : buttonIds) {
-      ColorButton colorButton = (ColorButton) view.findViewById(id);
-      colorButton.setListener(this);
-    }
-  }
 
   @Override
   public void onAttach(Context context) {
@@ -126,21 +87,22 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     paletteCallback = (DrawActivity)context;
   }
 
+
+  /** interface ColorButton.PaintColorListener **/
   @Override
-  public void onClick(int color) {
+  public void onColorButtonClick(int color) {
     String strColor = String.format("#%06X", 0xFFFFFF & color);
-    Log.d("onClick", strColor);
+    Log.d("onColorButtonClick", strColor);
     paletteCallback.onColorChange(color);
   }
 
-  public void setPaletteCallback(
-      PaletteCallback paletteCallback) {
-    this.paletteCallback = paletteCallback;
-  }
-
   public void showDialog(View v){
-    android.support.v4.app.FragmentManager manager = getFragmentManager();
+    FragmentManager manager = getFragmentManager();
     ColorPickerDialogFragment myDialog = new ColorPickerDialogFragment();
     myDialog.show(manager, "myDialog");
+  }
+
+  public void setColorIbColor(int color){
+    //ibColor.setBackgroundColor(color);
   }
 }

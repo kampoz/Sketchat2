@@ -64,13 +64,6 @@ public class SplashActivity extends AppCompatActivity {
 
       @Override
       public void onError(ObjectServerError error) {
-//                File file = new File(preferences.getString("dbLocalPath","default value"));
-//                RealmConfiguration conf = new RealmConfiguration.Builder().directory(file).name("Draw").build();
-        //final SyncConfiguration conf = new SyncConfiguration.Builder(null, REALM_URL).build();
-//                Realm.setDefaultConfiguration(conf);
-//                realm = Realm.getDefaultInstance();
-//                Log.d("RealmConfiguration", "...1) Brak połaczenia");
-//                Log.d("RealmConfiguration", "...2) RealmConfiguration.getPath(): "+conf.getPath());
         Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
         Log.d("Connection error", "...1) Brak połaczenia");
 

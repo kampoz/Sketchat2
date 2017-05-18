@@ -13,11 +13,23 @@
         android:textSize="25dp"
         android:layout_gravity="center_horizontal"/>
 
-    <ImageView
-      android:id="@+id/ivColorsContainet"
+
+
+    <LinearLayout
+      android:id="@+id/llColorsButtonsContainer"
+      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="0dp"
+      android:layout_margin="10dp"
       android:layout_weight="1"/>
+
+    <ImageView
+      android:id="@+id/ivCurrentColor"
+      android:layout_width="70dp"
+      android:layout_height="70dp"
+      android:layout_gravity="center_horizontal"
+      android:background="@drawable/shape_rectangle"
+      />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -25,14 +37,6 @@
         android:orientation="horizontal"
         android:layout_margin="10dp"
         android:weightSum="2">
-
-        Button
-            android:id="@+id/bDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete group"
-            android:layout_weight="1"
-            android:textColor="@color/colorMyPrimaryDark"/>
 
         <Button
             android:id="@+id/bCancel"

@@ -1,104 +1,110 @@
 package com.kampoz.sketchat.dialog;
 
 import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.shape.ColorCircleView;
+import com.kampoz.sketchat.helper.MyColorRGB;
 
 public class ColorPickerDialogFragment extends DialogFragment {
-  Paint paint = new Paint();
-  //ImageView drawingImageView;
+
+  public interface ColorListener {
+    void setColor(MyColorRGB colorRGB);
+    //MyColorRGB getCurrentColor();
+    int getCurrentColor();
+  };
+
+  private ColorListener colorListener;
+
+  private ImageButton[][] buttons = new ImageButton[8][10];
+  private MyColorRGB[][] colors = new MyColorRGB[8][10];
+  ImageView ivCurrentColor;
 
   @Override
   public Dialog onCreateDialog(Bundle ssvadInstanceState) {
-
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     LayoutInflater inflater = getActivity().getLayoutInflater();
     View view = inflater.inflate(R.layout.dialog_color_picker, null);
-
-    ColorCircleView  colorCircleView = new ColorCircleView(getActivity());
-
-    final ImageView drawingImageView = (ImageView) view.findViewById(R.id.ivColorsContainet);
-    ViewTreeObserver vto = drawingImageView.getViewTreeObserver();
-    vto.addOnGlobalLayoutListener (new OnGlobalLayoutListener() {
-      @Override
-      public void onGlobalLayout() {
-        drawingImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        int parentWidth = ((LinearLayout)drawingImageView.getParent()).getWidth();
-
-        int drawingImageViewWidth  = parentWidth-50;
-        int drawingImageViewHeight  = parentWidth-50;
-        int singleSquareWidth = drawingImageViewWidth/10;
-
-        //int drawingImageViewWidth  = drawingImageView.getLayoutParams().height;
-        //int drawingImageViewHeight = drawingImageView.getLayoutParams().width;
-
-        Bitmap bitmap = Bitmap.createBitmap(drawingImageViewWidth, drawingImageViewHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawingImageView.setImageBitmap(bitmap);
-
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        float x = 250;
-        float y = 250;
-        float radius = 100;
-        canvas.drawCircle(x, y, radius, paint);
-
-        int red, green, blue;
-        float left, top, right, bottom;
-
-        left = 0;
-        top = 0;
-        right = 0;
-        bottom = 0;
-
-        red = 255;
-        green = 0;
-        blue = 0;
-
-        int counter = 0;
-
-        for(int i = 0; i< drawingImageViewWidth; i+=singleSquareWidth){
-          for(int j = 0; j< drawingImageViewWidth; j+=singleSquareWidth) {
-            paint.setStyle(Style.FILL);
-            paint.setColor(Color.rgb(red, green, blue));
-            canvas.drawRect(j, i, j+singleSquareWidth, i+singleSquareWidth, paint);
-            //red =+ 3;
-            green+=25;
-            if(counter>33){
-              blue+=25;
-            }
-            if(counter>66) {
-              red -= 25;
-            }
-            counter +=1;
-          }
-        }
-
-//        paint.setStyle(Style.FILL);
-//        canvas.drawRect(200,200,250,250, paint);
-//        paint.setColor(Color.rgb(0,0,100));
-//        canvas.drawRect(250,200,300,250, paint);
-      }
-    });
-
+    //MyColorRGB currentColor = colorListener.getCurrentColor();
+    int currentColor = colorListener.getCurrentColor();
+    ivCurrentColor = (ImageView)view.findViewById(R.id.ivCurrentColor);
+    //ivCurrentColor.setBackgroundColor(currentColor);
+    createColorsTable();
+    createColorButtonsBoard(view);
     builder.setView(view);
     Dialog dialog = builder.create();
     return dialog;
   }
 
+  public void createColorButtonsBoard(View view) {
+    LinearLayout layoutVertical = (LinearLayout) view.findViewById(R.id.llColorsButtonsContainer);
+    LinearLayout rowLayout = null;
+    int count = 101;
+    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        50, 1);
+
+    for (Integer i = 0; i < 7; i++) {
+      if (count % 10 == 1) {
+        rowLayout = new LinearLayout(getActivity());
+        rowLayout.setWeightSum(10);
+        layoutVertical.addView(rowLayout, param);
+        count = count - 10;
+      }
+      for (Integer j = 0; j < 10; j++) {
+        buttons[i][j] = new ImageButton(getActivity());
+        final MyColorRGB color = colors[i][j];
+        //buttons[i][j].setBackgroundResource(R.drawable.fieldblue);
+        buttons[i][j]
+            .setBackgroundColor(Color.rgb(color.getRed(),color.getGreen(),color.getBlue()));
+
+        rowLayout.addView(buttons[i][j], param);
+
+        final Integer x = i;
+        final Integer y = j;
+        buttons[x][y].setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                             ivCurrentColor.setBackgroundColor(Color.rgb(color.getRed(),color.getGreen(),color.getBlue()));
+                                             colorListener.setColor(color);
+                                             ColorPickerDialogFragment.this.dismiss();
+                                           }
+                                         }
+        );
+      }
+    }
+  }
+
+  public void createColorsTable(){
+    int count = 0;
+    int red = 254;
+    int green = 254;
+    int blue = 254;
+    for (Integer i = 0; i < 7; i++) {
+      for (Integer j = 0; j < 10; j++) {
+        colors[i][j] = new MyColorRGB(red, green, blue);
+        Log.d("colors[][] "+i+" "+j, colors[i][j].getRed()+" "+colors[i][j].getGreen()+" "+colors[i][j].getBlue());
+        if(i==0)blue-=25;
+        if(i==1)green-=25;
+        if(i==2)blue+=25;
+        if(i==3)red-=25;
+        if(i==4)green+=25;
+        if(i==5)blue-=25;
+        if(i==6)green-=25;
+      }
+    }
+    Log.d("colors lenght.....", String.valueOf(colors.length));
+  }
+
+  public void setColorListener(ColorListener colorListener) {
+    this.colorListener = colorListener;
+  }
 }

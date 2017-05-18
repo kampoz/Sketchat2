@@ -14,10 +14,10 @@ import android.widget.ImageButton;
  */
 
 public class ColorButton extends ImageButton {
-  public interface PaintColorListener {
-    void onClick(int color);
-  };
 
+  public interface PaintColorListener {
+    void onColorButtonClick(int color);
+  };
   private int color;
   private PaintColorListener listener;
 
@@ -49,7 +49,7 @@ public class ColorButton extends ImageButton {
     this.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        listener.onClick(color);
+        listener.onColorButtonClick(color);
       }
     });
   }

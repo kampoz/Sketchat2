@@ -22,7 +22,9 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.button.ColorButton;
 import com.kampoz.sketchat.button.ColorButton.PaintColorListener;
+import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
+import com.kampoz.sketchat.helper.MyColorRGB;
 import com.kampoz.sketchat.model.DrawPath;
 import com.kampoz.sketchat.model.DrawPoint;
 import com.kampoz.sketchat.model.PencilView;
@@ -38,7 +40,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class DrawActivity extends AppCompatActivity
-    implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback {
+    implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback, ColorPickerDialogFragment.ColorListener {
 
   private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw5";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
@@ -53,19 +55,21 @@ public class DrawActivity extends AppCompatActivity
   private DrawThread drawThread;
   private DrawPath currentPath;
   private long idOfLastDrawPath;
-  private int currentColor;
+  private int currentColor = 0x000000;;
   private PencilView currentPencil;
   private HashMap<String, Integer> nameToColorMap = new HashMap<>();
   private HashMap<Integer, String> colorIdToName = new HashMap<>();
   private PaletteFragment paletteFragment;
   private final FragmentManager fragmentManager = getSupportFragmentManager();
-
+  private ColorPickerDialogFragment dialog;
   SharedPreferences preferences;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
+    dialog = new ColorPickerDialogFragment();
+    dialog.setColorListener(this);
     setPaletteFragment();
     currentColor = 0x000000;
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
@@ -73,49 +77,6 @@ public class DrawActivity extends AppCompatActivity
     paletteFragment = new PaletteFragment();
     //paletteFragment.setPaletteCallback(this);
     realm = Realm.getDefaultInstance();
-
-    /*
-    final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
-    SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
-      @Override
-      public void onSuccess(SyncUser user) {
-        final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-            REALM_URL).directory(DrawActivity.this.getFilesDir()).build();
-
-        Log.d("SyncConfiguration",
-            "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
-        Log.d("SyncConfiguration",
-            "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
-        Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
-        Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
-        Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
-        Log.d("SyncConfiguration",
-            "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
-
-        Realm.setDefaultConfiguration(syncConfiguration);
-        realm = Realm.getDefaultInstance();
-        editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
-        editor.apply();
-        Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-        Log.d("Cykl życia DA", "...onCreate()...");
-      }
-
-      @Override
-      public void onError(ObjectServerError error) {
-//                File file = new File(preferences.getString("dbLocalPath","default value"));
-//                RealmConfiguration conf = new RealmConfiguration.Builder().directory(file).name("Draw").build();
-        //final SyncConfiguration conf = new SyncConfiguration.Builder(null, REALM_URL).build();
-//                Realm.setDefaultConfiguration(conf);
-//                realm = Realm.getDefaultInstance();
-//                Log.d("RealmConfiguration", "...1) Brak połaczenia");
-//                Log.d("RealmConfiguration", "...2) RealmConfiguration.getPath(): "+conf.getPath());
-        Toast.makeText(DrawActivity.this, "No connection", Toast.LENGTH_LONG).show();
-        Log.d("Connection error", "...1) Brak połaczenia");
-        Log.d("Connection error", "...1) Brak połaczenia");
-      }
-    });
-    */
-
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
     surfaceView.getHolder().addCallback(DrawActivity.this);
   }
@@ -348,6 +309,7 @@ public class DrawActivity extends AppCompatActivity
       });
     }
   }
+
   @Override
   public void onColorChange(int color) {
     currentColor = color;
@@ -365,11 +327,47 @@ public class DrawActivity extends AppCompatActivity
   }
   /** End Interface PaletteFragment.PaletteCallback**/
 
+
+
+  @Override
+  public void showDialog() {
+    FragmentManager manager = getSupportFragmentManager();
+    ColorPickerDialogFragment myDialog = new ColorPickerDialogFragment();
+    myDialog.setColorListener(this);
+    myDialog.show(manager, "myDialog");
+  }
+
+  /*** interface ColorPickerDialogFragment.ColorListener **/
+  @Override
+  public void setColor(MyColorRGB colorRGB) {
+    currentColor = getIntFromColor(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue());
+    paletteFragment.setColorIbColor(currentColor);
+    FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
+    fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
+    fragmentTransaction.commit();
+  }
+
+  @Override
+  public int getCurrentColor() {
+    return currentColor;
+  }
+
+  /*************************/
+
   private void setPaletteFragment() {
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
     paletteFragment = new PaletteFragment();
+    //paletteFragment.setColorButtonColor(currentColor);
     fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
     fragmentTransaction.commit();
+  }
+
+  public int getIntFromColor(int Red, int Green, int Blue){
+    Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+    Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+    Blue = Blue & 0x000000FF; //Mask out anything not blue.
+
+    return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
   }
 }
 
