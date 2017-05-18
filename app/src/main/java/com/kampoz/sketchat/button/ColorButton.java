@@ -18,6 +18,7 @@ public class ColorButton extends ImageButton {
   public interface PaintColorListener {
     void onColorButtonClick(int color);
   };
+
   private int color;
   private PaintColorListener listener;
 

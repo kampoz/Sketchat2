@@ -4,7 +4,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.activity.DrawActivity;
 import com.kampoz.sketchat.button.ColorButton;
+import com.kampoz.sketchat.helper.MyColorRGB;
 
 /**
  * Created by wasili on 2017-05-12.
@@ -35,8 +38,9 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   private Button bWipeCanvas;
   private Button bUndo;
   private ColorButton ibColor;
-  private int currentColor = 0x000000;
+  private int currentColor = -16777216;
   View view;
+  MyColorRGB colorRGB = new MyColorRGB(120,12,12);
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +53,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
     bUndo = (Button)view.findViewById(R.id.bUndo);
     ibColor = (ColorButton) view.findViewById(R.id.ibColor);
     ibColor.setListener(this);
-    ibColor.setBackgroundColor(currentColor);
+    ibColor.setBackgroundColor(Color.rgb(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue()));
     bWipeCanvas.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -87,15 +91,20 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   }
 
 
-  /** interface ColorButton.PaintColorListener **/
+  /*** interface ColorButton.PaintColorListener **/
   @Override
   public void onColorButtonClick(int color) {
     String strColor = String.format("#%06X", 0xFFFFFF & color);
     Log.d("onColorButtonClick", strColor);
     paletteCallback.onColorChange(color);
   }
+  /************/
 
   public void setColorIbColor(int color){
     currentColor = color;
+  }
+
+  public void setColorRGB(MyColorRGB colorRGB) {
+    this.colorRGB = colorRGB;
   }
 }

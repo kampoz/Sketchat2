@@ -56,6 +56,7 @@ public class DrawActivity extends AppCompatActivity
   private DrawPath currentPath;
   private long idOfLastDrawPath;
   private int currentColor;
+  private MyColorRGB currentRGBColor = new MyColorRGB(12,155,36);
   private PencilView currentPencil;
   private HashMap<String, Integer> nameToColorMap = new HashMap<>();
   private HashMap<Integer, String> colorIdToName = new HashMap<>();
@@ -339,9 +340,12 @@ public class DrawActivity extends AppCompatActivity
   /*** interface ColorPickerDialogFragment.ColorListener **/
   @Override
   public void setColor(MyColorRGB colorRGB) {
-    currentColor = getIntFromColor(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue());
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-    paletteFragment.setColorIbColor(currentColor);
+    paletteFragment = new PaletteFragment();
+    currentColor = getIntFromColor(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue());
+    currentRGBColor = colorRGB;
+    paletteFragment.setColorRGB(currentRGBColor);
+    //paletteFragment.setColorIbColor(currentColor);
     fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
     fragmentTransaction.commit();
   }
@@ -356,7 +360,9 @@ public class DrawActivity extends AppCompatActivity
   private void setPaletteFragment() {
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
     paletteFragment = new PaletteFragment();
-    paletteFragment.setColorIbColor(currentColor);
+    //paletteFragment.setColorIbColor(currentColor);
+    //currentColor = getIntFromColor(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue());
+    paletteFragment.setColorRGB(currentRGBColor);
     fragmentTransaction.replace(R.id.fl_palette_fragment_container, paletteFragment);
     fragmentTransaction.commit();
   }
