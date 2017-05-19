@@ -20,6 +20,7 @@ public class SubjectRealm extends RealmObject{
     private int groupId;
     private String subject;
     private int interlocutorsNumber;
+    private DrawingRealm drawing;
 
     public SubjectRealm() {
     }
@@ -118,5 +119,13 @@ public class SubjectRealm extends RealmObject{
         /*** ta metoda tez działa, ale prawd. jest wolniejsza: **/
         //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).equalTo("groupId", groupId).contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
         return new ArrayList<>(all);
+    }
+
+    public DrawingRealm getDrawing() {
+        return drawing;
+    }
+
+    public void setDrawing(DrawingRealm drawing) {
+        this.drawing = drawing;
     }
 }

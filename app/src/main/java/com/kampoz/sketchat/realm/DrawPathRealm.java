@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.kampoz.sketchat.model;
+package com.kampoz.sketchat.realm;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-public class DrawPath extends RealmObject {
+public class DrawPathRealm extends RealmObject {
 
   private long id;
   private boolean completed;
   private int color;
-  private RealmList<DrawPoint> points;
+  private RealmList<DrawPointRealm> points;
 
-  public DrawPath() {
+  public DrawPathRealm() {
     setId(generateId());
   }
 
@@ -47,11 +47,11 @@ public class DrawPath extends RealmObject {
     this.color = color;
   }
 
-  public RealmList<DrawPoint> getPoints() {
+  public RealmList<DrawPointRealm> getPoints() {
     return points;
   }
 
-  public void setPoints(RealmList<DrawPoint> points) {
+  public void setPoints(RealmList<DrawPointRealm> points) {
     this.points = points;
   }
 
@@ -66,7 +66,7 @@ public class DrawPath extends RealmObject {
   public long generateId() {
     long newId;
     Realm defaultInstance = Realm.getDefaultInstance();
-    Number oldMaxIdNumber = defaultInstance.where(DrawPath.class).max("id");
+    Number oldMaxIdNumber = defaultInstance.where(DrawPathRealm.class).max("id");
     Long oldMaxId = oldMaxIdNumber.longValue();
     if (oldMaxId == null) {
       newId = 1;

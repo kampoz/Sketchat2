@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.kampoz.sketchat.model;
+package com.kampoz.sketchat.realm;
 
 import io.realm.RealmObject;
 
-public class DrawPoint extends RealmObject {
+public class DrawPointRealm extends RealmObject {
     private double x;
     private double y;
 
