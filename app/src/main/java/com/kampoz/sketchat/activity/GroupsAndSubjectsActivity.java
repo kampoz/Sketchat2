@@ -140,6 +140,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 //            this.finish();
         }
         if (id == R.id.action_last_conversation) {
+            Intent startLastConversationActivityIntent = new Intent(this, ConversationActivity.class);
+            this.startActivity(startLastConversationActivityIntent);
         }
         if (id == R.id.action_draw_activity) {
             if(!myConnectionChecker.isOnline(this)){

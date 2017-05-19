@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.helper.MyColorRGB;
 
 public class ColorPickerDialogFragment extends DialogFragment {
-
   public interface ColorListener {
     void setColor(MyColorRGB colorRGB);
     //MyColorRGB getCurrentColor();
@@ -23,23 +23,32 @@ public class ColorPickerDialogFragment extends DialogFragment {
   };
 
   private ColorListener colorListener;
-
   private ImageButton[][] buttons = new ImageButton[8][10];
   private MyColorRGB[][] colors = new MyColorRGB[8][10];
-  private ImageView ivCurrentColor;
+  private View ivCurrentColor;
   private int currentColor = -16777216;
+  private MyColorRGB currentColorRGB = new MyColorRGB(0,0,0);
 
   @Override
   public Dialog onCreateDialog(Bundle ssvadInstanceState) {
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
     LayoutInflater inflater = getActivity().getLayoutInflater();
     View view = inflater.inflate(R.layout.dialog_color_picker, null);
-    ivCurrentColor = (ImageView)view.findViewById(R.id.ivCurrentColor);
+    ivCurrentColor = view.findViewById(R.id.ivCurrentColor);
+    ivCurrentColor.setBackgroundColor(Color.rgb(currentColorRGB.getRed(), currentColorRGB.getGreen(), currentColorRGB.getBlue()));
     createColorsTable();
     createColorButtonsBoard(view);
     builder.setView(view);
     Dialog dialog = builder.create();
     return dialog;
+  }
+
+  @Override
+  public int show(FragmentTransaction transaction, String tag) {
+
+    Log.d("color picker show()", "currentColorRGB: "+currentColorRGB.getRed()+" "+ currentColorRGB.getGreen()+" "+currentColorRGB.getBlue());
+
+    return super.show(transaction, tag);
   }
 
   public void createColorButtonsBoard(View view) {
@@ -89,7 +98,7 @@ public class ColorPickerDialogFragment extends DialogFragment {
     for (Integer i = 0; i < 7; i++) {
       for (Integer j = 0; j < 10; j++) {
         colors[i][j] = new MyColorRGB(red, green, blue);
-        Log.d("colors[][] "+i+" "+j, colors[i][j].getRed()+" "+colors[i][j].getGreen()+" "+colors[i][j].getBlue());
+        //Log.d("colors[][] "+i+" "+j, colors[i][j].getRed()+" "+colors[i][j].getGreen()+" "+colors[i][j].getBlue());
         if(i==0)blue-=25;
         if(i==1)green-=25;
         if(i==2)blue+=25;
@@ -108,6 +117,10 @@ public class ColorPickerDialogFragment extends DialogFragment {
 
   public int getCurrentColor() {
     return currentColor;
+  }
+
+  public void setCurrentColorRGB(MyColorRGB currentColorRGB) {
+    this.currentColorRGB = currentColorRGB;
   }
 
   public void setCurrentColor(int currentColor) {

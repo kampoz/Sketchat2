@@ -40,7 +40,7 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
   private ColorButton ibColor;
   private int currentColor = -16777216;
   View view;
-  MyColorRGB colorRGB = new MyColorRGB(120,12,12);
+  MyColorRGB colorRGB = new MyColorRGB(0,0,0);
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,5 +106,6 @@ public class PaletteFragment extends Fragment implements ColorButton.PaintColorL
 
   public void setColorRGB(MyColorRGB colorRGB) {
     this.colorRGB = colorRGB;
+    ibColor.setBackgroundColor(Color.rgb(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue()));
   }
 }

@@ -13,8 +13,6 @@
         android:textSize="25dp"
         android:layout_gravity="center_horizontal"/>
 
-
-
     <LinearLayout
       android:id="@+id/llColorsButtonsContainer"
       android:orientation="vertical"
@@ -32,7 +30,7 @@
         android:gravity="center_horizontal"
         android:layout_margin="10dp">
 
-        <ImageView
+        <View
           android:id="@+id/ivCurrentColor"
           android:layout_width="70dp"
           android:layout_height="70dp"
