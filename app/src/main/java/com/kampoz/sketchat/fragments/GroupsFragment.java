@@ -30,6 +30,7 @@ public class GroupsFragment extends Fragment implements
     AddGroupDialogFragment.AddGroupDialogFragmentListener {
 
   public interface FragmentListener {
+
     void onGroupItemSelected(int position);
   }
 
@@ -123,6 +124,10 @@ public class GroupsFragment extends Fragment implements
     setHasOptionsMenu(true);
   }
 
+  /**
+   * II sposób połaczenia Fragmentu z Activity, I sposób jest w GroupsAndSubjectsActivity - przez
+   * setter met. setSubjectsFragment linijka: ((SubjectsFragment)this.currentFragment).setListener(this);
+   */
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
@@ -170,7 +175,9 @@ public class GroupsFragment extends Fragment implements
 
   /*** Interfaces methods: ***/
 
-  /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
+  /***
+   * 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)
+   **/
   @Override
   public void onItemSelect(int groupId) {
     listener.onGroupItemSelected(groupId);
@@ -188,7 +195,9 @@ public class GroupsFragment extends Fragment implements
   }
   /** End of interfece GroupsAdapter.OnGroupItemSelectedListener **/
 
-  /*** 2) From interface AddGroupDialogFragment.AddGroupDialogFragmentListener (1 method) */
+  /***
+   * 2) From interface AddGroupDialogFragment.AddGroupDialogFragmentListener (1 method)
+   */
   @Override
   public void onOKClickInAddGroup(String groupName) {
     groupRealm = new GroupRealm();
@@ -199,7 +208,9 @@ public class GroupsFragment extends Fragment implements
   }
   /** End of interface'u AddGroupDialogFragment.AddGroupDialogFragmentListener  **/
 
-  /*** 3) From interface EditGroupDialogFragment.EditGroupDialogFragmentListener (3 methods)**/
+  /***
+   * 3) From interface EditGroupDialogFragment.EditGroupDialogFragmentListener (3 methods)
+   **/
   @Override
   public void onDeleteGroupClickInEdit(String groupName) {
     editGroupDialog.dismiss();
