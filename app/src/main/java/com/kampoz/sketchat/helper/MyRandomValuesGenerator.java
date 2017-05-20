@@ -99,7 +99,8 @@ public class MyRandomValuesGenerator {
         ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
         Random random = new Random();
         for(int i=0; i<subjectsNumber; i++){
-            SubjectRealm subject = new SubjectRealm(subjects[random.nextInt(subjects.length)]);
+            SubjectRealm subject = new SubjectRealm();
+            subject.setSubject("example subject");
             subjectsList.add(subject);
         }
         return subjectsList;

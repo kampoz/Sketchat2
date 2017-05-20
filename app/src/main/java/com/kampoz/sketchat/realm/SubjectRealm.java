@@ -22,13 +22,6 @@ public class SubjectRealm extends RealmObject{
     private int interlocutorsNumber;
     private DrawingRealm drawing;
 
-    public SubjectRealm() {
-    }
-
-    public SubjectRealm(String subject) {
-        this.subject = subject;
-    }
-
     public int getId() {
         return id;
     }
