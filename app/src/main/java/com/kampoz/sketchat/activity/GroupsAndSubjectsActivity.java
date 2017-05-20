@@ -210,7 +210,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   public void onSubjectItemSelected(long id) {
     // Zrobić metodę odpalającą Activity z rysowaniem synchronicznym - zdefiniowac w tej klasie i odpalić tutaj
     Toast.makeText(this, "You selected subject with id: " + id, Toast.LENGTH_LONG).show();
-    
+    Intent startDrawActivityIntent = new Intent(this, DrawActivity.class);
+    this.startActivity(startDrawActivityIntent);
   }
   /** end of interface methods */
 }
