@@ -24,6 +24,7 @@ import com.kampoz.sketchat.realm.DrawPointRealm;
 import com.kampoz.sketchat.model.PencilView;
 import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
+import io.realm.Realm.Transaction;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.HashMap;
@@ -163,12 +164,24 @@ public class DrawActivity extends AppCompatActivity
         point.setX(pointX);
         point.setY(pointY);
         currentPath.getPoints().add(point);
+        realm.
+            where(SubjectRealm.class).
+            equalTo("id", currentSubjectId).
+            findFirst().
+            getDrawing().
+            getPaths().add(currentPath);
         realm.commitTransaction();
         idOfLastDrawPath = currentPath.getId();
         currentPath = null;
       } else {
         realm.beginTransaction();
         currentPath.setCompleted(true);
+        realm.
+            where(SubjectRealm.class).
+            equalTo("id", currentSubjectId).
+            findFirst().
+            getDrawing().
+            getPaths().add(currentPath);
         realm.commitTransaction();
         idOfLastDrawPath = currentPath.getId();
         currentPath = null;
