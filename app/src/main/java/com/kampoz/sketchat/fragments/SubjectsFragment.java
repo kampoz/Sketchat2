@@ -37,10 +37,7 @@ public class SubjectsFragment extends Fragment implements
     EditSubjectDialogFragment.EditSubjectDialogFragmentListener {
 
   public interface FragmentListener {
-    void onSubjectItemSelected(int position);
-  }
-  public interface SubjectFragmentListener {
-    void onItemSelected(int position);
+    void onSubjectItemSelected(long id);
   }
 
   private FragmentListener listener;
@@ -146,6 +143,16 @@ public class SubjectsFragment extends Fragment implements
     setHasOptionsMenu(true);
   }
 
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    try {
+      listener = (FragmentListener) context;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(context.toString() + " must implements FragmentListener!!!!!");
+    }
+  }
+
   public void showEditButtonsAndFabs(boolean areEditButtonsShown) {
     adapter.setAreEditButtonsShown(areEditButtonsShown);
     adapter.notifyDataSetChanged();
@@ -178,7 +185,9 @@ public class SubjectsFragment extends Fragment implements
 
   /*** 1) From interfece SubjectsAdapter.OnSubjectItemSelectedListener (2 methods)**/
   @Override
-  public void onItemSelect(int position) {}
+  public void onItemSelect(long id) {
+    listener.onSubjectItemSelected(id);
+  }
 
   @Override
   public void onEditItem(SubjectRealm subjectRealm) {

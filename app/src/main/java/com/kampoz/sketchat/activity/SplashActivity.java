@@ -16,7 +16,7 @@ import io.realm.SyncUser;
 
 public class SplashActivity extends AppCompatActivity {
 
-  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw10";
+  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw11";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";

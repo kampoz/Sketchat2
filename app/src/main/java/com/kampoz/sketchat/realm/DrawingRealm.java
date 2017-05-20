@@ -12,6 +12,7 @@ public class DrawingRealm extends RealmObject {
 
   long id;
   RealmList<LayerRealm> layers = new RealmList<>();
+  RealmList<DrawPathRealm> paths = new RealmList<>();
 
   public long getId() {
     return id;
@@ -27,6 +28,14 @@ public class DrawingRealm extends RealmObject {
 
   public void setLayers(RealmList<LayerRealm> layers) {
     this.layers = layers;
+  }
+
+  public RealmList<DrawPathRealm> getPaths() {
+    return paths;
+  }
+
+  public void setPaths(RealmList<DrawPathRealm> paths) {
+    this.paths = paths;
   }
 
   public static int generateId() {

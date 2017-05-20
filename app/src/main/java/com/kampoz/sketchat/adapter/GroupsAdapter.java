@@ -67,9 +67,7 @@ public class GroupsAdapter extends RecyclerView.Adapter{
             tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
             ivPencil.setVisibility(View.VISIBLE);
         }
-
         ((MyViewHolder)viewHolder).tvGroupName.setText(groupsList.get(position).getGroupName());
-
         ((MyViewHolder)viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

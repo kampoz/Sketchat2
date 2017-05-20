@@ -199,8 +199,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     /*** interface SubjectsFragment.FragmentListener **/
     @Override
-    public void onSubjectItemSelected(int position) {
+    public void onSubjectItemSelected(long id) {
         // Zrobić metodę odpalającą Activity z rysowaniem synchronicznym - zdefiniowac w tej klasie i odpalić tutaj
+        Toast.makeText(this, "You selected subject with id: "+id, Toast.LENGTH_LONG).show();
     }
     /** end of interface methods */
 }
