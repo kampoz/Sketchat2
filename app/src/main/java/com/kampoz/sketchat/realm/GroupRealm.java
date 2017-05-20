@@ -126,6 +126,11 @@ public class GroupRealm extends RealmObject {
         subjectRealm.setGroupId(groupId);
         realm.copyToRealm(subjectRealm);
         realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().add(subjectRealm);
+        //DrawingRealm drawingRealm = new DrawingRealm();
+        DrawingRealm drawingRealm = realm.createObject(DrawingRealm.class, DrawingRealm.generateId());
+        ;
+        realm.copyToRealmOrUpdate(drawingRealm);
+        realm.where(SubjectRealm.class).equalTo("id", subjectRealm.getId()).findFirst().setDrawing(drawingRealm);
       }
     });
   }

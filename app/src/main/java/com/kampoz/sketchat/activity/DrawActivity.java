@@ -22,6 +22,7 @@ import com.kampoz.sketchat.helper.MyColorRGB;
 import com.kampoz.sketchat.realm.DrawPathRealm;
 import com.kampoz.sketchat.realm.DrawPointRealm;
 import com.kampoz.sketchat.model.PencilView;
+import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -245,7 +246,13 @@ public class DrawActivity extends AppCompatActivity
         return;
       }
       bgRealm = Realm.getDefaultInstance();
-      final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
+      //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
+      final RealmList<DrawPathRealm> results = bgRealm.
+          where(SubjectRealm.class).
+          equalTo("id", currentSubjectId).
+          findFirst().
+          getDrawing().
+          getPaths();
       while (!isInterrupted()) {
         try {
           final SurfaceHolder holder = surfaceView.getHolder();

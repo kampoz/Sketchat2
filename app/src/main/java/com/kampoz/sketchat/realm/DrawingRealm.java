@@ -3,6 +3,7 @@ package com.kampoz.sketchat.realm;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by wasili on 2017-05-19.
@@ -10,7 +11,8 @@ import io.realm.RealmObject;
 
 public class DrawingRealm extends RealmObject {
 
-  long id;
+  @PrimaryKey
+  private long id;
   RealmList<LayerRealm> layers = new RealmList<>();
   RealmList<DrawPathRealm> paths = new RealmList<>();
 
