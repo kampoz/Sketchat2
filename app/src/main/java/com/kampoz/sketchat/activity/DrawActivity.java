@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -52,12 +53,16 @@ public class DrawActivity extends AppCompatActivity
   private final FragmentManager fragmentManager = getSupportFragmentManager();
   private ColorPickerDialogFragment dialog;
   SharedPreferences preferences;
-  private long subjectId = 0;
+  Long currentSubjectId;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
+    Intent intent = getIntent();
+    currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
+    Log.d("currentSubjectId", currentSubjectId.toString());
     currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();
     dialog.setColorListener(this);
@@ -318,7 +323,6 @@ public class DrawActivity extends AppCompatActivity
 
   @Override
   public void showDialog() {
-
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
     dialog.setCurrentColorRGB(currentRGBColor);
     dialog.show(fragmentTransaction, "ColorPickerDialogFragment");
@@ -338,7 +342,6 @@ public class DrawActivity extends AppCompatActivity
   public int getCurrentColor() {
     return currentColor;
   }
-
   /*************************/
 
   private void setPaletteFragment() {
@@ -358,12 +361,12 @@ public class DrawActivity extends AppCompatActivity
     return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
   }
 
-  public long getSubjectId() {
-    return subjectId;
+  public long getCurrentSubjectId() {
+    return currentSubjectId;
   }
 
-  public void setSubjectId(long subjectId) {
-    this.subjectId = subjectId;
+  public void setCurrentSubjectId(long currentSubjectId) {
+    this.currentSubjectId = currentSubjectId;
   }
 }
 

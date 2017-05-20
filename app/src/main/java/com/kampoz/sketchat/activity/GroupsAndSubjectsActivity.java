@@ -207,10 +207,11 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
    * interface SubjectsFragment.FragmentListener
    **/
   @Override
-  public void onSubjectItemSelected(long id) {
+  public void onSubjectItemSelected(long currentSubjectid) {
     // Zrobić metodę odpalającą Activity z rysowaniem synchronicznym - zdefiniowac w tej klasie i odpalić tutaj
-    Toast.makeText(this, "You selected subject with id: " + id, Toast.LENGTH_LONG).show();
+    Toast.makeText(this, "You selected subject with id: " + currentSubjectid, Toast.LENGTH_LONG).show();
     Intent startDrawActivityIntent = new Intent(this, DrawActivity.class);
+    startDrawActivityIntent.putExtra("currentSubjectid", currentSubjectid);
     this.startActivity(startDrawActivityIntent);
   }
   /** end of interface methods */
