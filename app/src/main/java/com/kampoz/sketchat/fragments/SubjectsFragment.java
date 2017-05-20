@@ -143,7 +143,7 @@ public class SubjectsFragment extends Fragment implements
     setHasOptionsMenu(true);
   }
 
-  @Override
+  /*@Override
   public void onAttach(Context context) {
     super.onAttach(context);
     try {
@@ -151,7 +151,7 @@ public class SubjectsFragment extends Fragment implements
     } catch (ClassCastException e) {
       throw new ClassCastException(context.toString() + " must implements FragmentListener!!!!!");
     }
-  }
+  }*/
 
   public void showEditButtonsAndFabs(boolean areEditButtonsShown) {
     adapter.setAreEditButtonsShown(areEditButtonsShown);
@@ -181,7 +181,10 @@ public class SubjectsFragment extends Fragment implements
     }
   }
 
-  /*** Interfaces methods: ***/
+
+  public void setListener(FragmentListener listener) {
+    this.listener = listener;
+  }
 
   /*** 1) From interfece SubjectsAdapter.OnSubjectItemSelectedListener (2 methods)**/
   @Override

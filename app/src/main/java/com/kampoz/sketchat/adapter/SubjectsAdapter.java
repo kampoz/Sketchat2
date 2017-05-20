@@ -87,7 +87,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter {
       @Override
       public void onClick(View v) {
         if(!areEditButtonsShown){
-          onSubjectItemSelectedListener.onItemSelect(subjectsList.get(position).getId());
+          onSubjectItemSelectedListener.onItemSelect(currentSubjectId);
         }
       }
     });

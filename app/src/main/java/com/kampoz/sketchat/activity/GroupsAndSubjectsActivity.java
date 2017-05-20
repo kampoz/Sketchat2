@@ -36,7 +36,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private SubjectsFragment subjectsFragment;
     private GroupsFragment groupsFragment;
     private MyConnectionChecker myConnectionChecker;
-
     private int mCurrentGroupId = 0;
 
     @Override
@@ -64,50 +63,40 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         super.onDestroy();
         Log.d("Cykl życia", "...onDestroy()...");
     }
-
     @Override
     protected void onStop() {
         super.onStop();
         Log.d("Cykl życia", "...onStop()...");
     }
-
     @Override
     protected void onStart() {
         super.onStart();
         Log.d("Cykl życia", "...onStart()...");
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         Log.d("Cykl życia", "...onResume()...");
     }
-
     @Override
     protected void onPause() {
         super.onPause();
         Log.d("Cykl życia", "...onPause()...");
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         mCurrentGroupId = 0;
         Log.d("Cykl życia", "...onBackPressed()...");
     }
-
     @Override
     protected void onRestart() {
         super.onRestart();
         Log.d("Cykl życia", "...onRestart()...");
     }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
-
         outState.putInt("GROUP_ID", mCurrentGroupId);
-
         super.onSaveInstanceState(outState);
     }
 
@@ -181,6 +170,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
         this.currentFragment = new SubjectsFragment();
         ((SubjectsFragment)this.currentFragment).setGroupId(groupId);
+        ((SubjectsFragment)this.currentFragment).setListener(this);
         fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, this.currentFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
