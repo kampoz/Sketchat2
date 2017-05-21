@@ -149,6 +149,7 @@ public class DrawActivity extends AppCompatActivity
         point.setX(pointX);
         point.setY(pointY);
         currentPath.getPoints().add(point);
+        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
         realm.commitTransaction();
       } else if (action == MotionEvent.ACTION_MOVE) {
         realm.beginTransaction();
@@ -156,6 +157,7 @@ public class DrawActivity extends AppCompatActivity
         point.setX(pointX);
         point.setY(pointY);
         currentPath.getPoints().add(point);
+        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
         realm.commitTransaction();
       } else if (action == MotionEvent.ACTION_UP) {
         realm.beginTransaction();
@@ -164,24 +166,14 @@ public class DrawActivity extends AppCompatActivity
         point.setX(pointX);
         point.setY(pointY);
         currentPath.getPoints().add(point);
-        realm.
-            where(SubjectRealm.class).
-            equalTo("id", currentSubjectId).
-            findFirst().
-            getDrawing().
-            getPaths().add(currentPath);
+        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
         realm.commitTransaction();
         idOfLastDrawPath = currentPath.getId();
         currentPath = null;
       } else {
         realm.beginTransaction();
         currentPath.setCompleted(true);
-        realm.
-            where(SubjectRealm.class).
-            equalTo("id", currentSubjectId).
-            findFirst().
-            getDrawing().
-            getPaths().add(currentPath);
+        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
         realm.commitTransaction();
         idOfLastDrawPath = currentPath.getId();
         currentPath = null;
@@ -318,8 +310,9 @@ public class DrawActivity extends AppCompatActivity
     if (realm != null) {
       realm.executeTransactionAsync(new Realm.Transaction() {
         @Override
-        public void execute(Realm r) {
-          r.deleteAll();
+        public void execute(Realm realm) {
+          realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().deleteAllFromRealm();
+          //realm.deleteAll();
         }
       });
     }
