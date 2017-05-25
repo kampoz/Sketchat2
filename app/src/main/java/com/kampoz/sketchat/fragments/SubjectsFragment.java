@@ -63,7 +63,7 @@ public class SubjectsFragment extends Fragment implements
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
-    toolbar.setTitle("Group: "+GroupRealm.getGroupNameForId(groupId));
+    toolbar.setTitle("Group "+GroupRealm.getGroupNameForId(groupId));
 
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
@@ -77,22 +77,6 @@ public class SubjectsFragment extends Fragment implements
     recyclerView.setAdapter(adapter);
     return view;
   }
-
-  public SubjectsAdapter getAdapter() {
-    return adapter;
-  }
-
-  public void setAdapter(SubjectsAdapter adapter) {
-    this.adapter = adapter;
-  }
-
-  //seedowanie tematów
-//    public void seedSubjectsAndReload(){
-//        generator = new MyRandomValuesGenerator();
-//        adapter.getSubjectsList().clear();
-//        adapter.getSubjectsList().addAll(generator.generateSubjectsList(30));
-//        adapter.notifyDataSetChanged();
-//    }
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

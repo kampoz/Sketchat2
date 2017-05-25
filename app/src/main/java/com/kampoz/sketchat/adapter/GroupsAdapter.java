@@ -7,25 +7,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.GroupRealm;
-
 import java.util.ArrayList;
 
-public class GroupsAdapter extends RecyclerView.Adapter{
-
+public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder>{
     public interface OnGroupItemSelectedListener{
         void onItemSelect(int groupId);
         void onEditItem(GroupRealm groupRealm);
     }
-
     private OnGroupItemSelectedListener onGroupItemSelectedListener;
     private RecyclerView recyclerView;
     private ArrayList<GroupRealm> groupsList;
     private boolean areEditButtonsShown;
 
-    private class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tvGroupName;
         private Button bEditGroup;
         private TextView tvGroupSubjectsNumber;
@@ -46,16 +42,16 @@ public class GroupsAdapter extends RecyclerView.Adapter{
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_single_group, viewGroup, false);
-        return new GroupsAdapter.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-        final Button bEditGroup = ((MyViewHolder)viewHolder).bEditGroup;
-        final TextView tvGroupSubjectsNumber = ((MyViewHolder)viewHolder).tvGroupSubjectsNumber;
-        final ImageView ivPencil = ((MyViewHolder)viewHolder).ivPencil;
+    public void onBindViewHolder(final MyViewHolder viewHolder, final int position) {
+        final Button bEditGroup = viewHolder.bEditGroup;
+        final TextView tvGroupSubjectsNumber = viewHolder.tvGroupSubjectsNumber;
+        final ImageView ivPencil = viewHolder.ivPencil;
       GroupRealm groupRealm = groupsList.get(position);
       tvGroupSubjectsNumber.setText(String.valueOf(groupRealm.getSubjectsList().size()));
         if(areEditButtonsShown){
@@ -67,8 +63,8 @@ public class GroupsAdapter extends RecyclerView.Adapter{
             tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
             ivPencil.setVisibility(View.VISIBLE);
         }
-        ((MyViewHolder)viewHolder).tvGroupName.setText(groupsList.get(position).getGroupName());
-        ((MyViewHolder)viewHolder).itemView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.tvGroupName.setText(groupsList.get(position).getGroupName());
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!areEditButtonsShown){

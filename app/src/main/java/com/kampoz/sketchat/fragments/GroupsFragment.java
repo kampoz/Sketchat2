@@ -30,7 +30,6 @@ public class GroupsFragment extends Fragment implements
     AddGroupDialogFragment.AddGroupDialogFragmentListener {
 
   public interface FragmentListener {
-
     void onGroupItemSelected(int position);
   }
 
@@ -54,17 +53,14 @@ public class GroupsFragment extends Fragment implements
     recyclerView.setHasFixedSize(true);
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
     toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
     toolbar.setTitle("Groups");
-
     /*** pobranie danych z Realm i przekazanie ich do adaptera */
     groupRealm = new GroupRealm();
     groupsList.clear();
     groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
     /*** drugi sposob pobrania wszystkiego z GroupRealm */
     //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
-
     adapter = new GroupsAdapter(groupsList, recyclerView);
     adapter.setOnGroupItemSelectedListener(this);
     recyclerView.setAdapter(adapter);
@@ -75,7 +71,6 @@ public class GroupsFragment extends Fragment implements
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.menu_groups, toolbar.getMenu());
-
     Menu groupsMenu = toolbar.getMenu();
     for (int i = 0; i < groupsMenu.size(); i++) {
       MenuItem item = groupsMenu.getItem(i);

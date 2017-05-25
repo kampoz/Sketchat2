@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
         editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
         editor.apply();
         Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-        Log.d("Cykl życia DA", "...onCreate()...");
+
 
         Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
         SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);

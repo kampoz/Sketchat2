@@ -62,25 +62,21 @@ public class ConversationActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_register) {
             Intent startRegisterActivityIntent = new Intent(this, RegisterActivity.class);
             this.startActivity(startRegisterActivityIntent);
             this.finish();
         }
-
         if (id == R.id.action_login) {
 //            Intent startLoginActivityIntent = new Intent(this, LoginActivity.class);
 //            this.startActivity(startLoginActivityIntent);
 //            this.finish();
         }
-
         if (id == R.id.action_draw_activity) {
 //            Intent startSettingsActivityIntent = new Intent(this, SettingsActivity.class);
 //            this.startActivity(startSettingsActivityIntent);
 //            this.finish();
         }
-
         if (id == R.id.action_about) {
             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
             alertDialogBuilder.setMessage("Copyright \u00a9 2017\nKamil Poznakowski\nkampoznak@gmail.com");
@@ -94,7 +90,6 @@ public class ConversationActivity extends AppCompatActivity {
             android.app.AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

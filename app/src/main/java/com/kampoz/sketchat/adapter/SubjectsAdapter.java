@@ -17,7 +17,6 @@ import com.kampoz.sketchat.realm.SubjectRealm;
 import java.util.ArrayList;
 
 public class SubjectsAdapter extends RecyclerView.Adapter {
-
   public interface OnSubjectItemSelectedListener {
     void onItemSelect(long id);
     void onEditItem(SubjectRealm subjectRealm);
