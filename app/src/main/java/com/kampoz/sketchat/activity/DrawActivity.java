@@ -97,8 +97,62 @@ public class DrawActivity extends AppCompatActivity
     surfaceView.setOnTouchListener(new OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
-        Log.d("SurfaceView", "Kliknięto SurfaceView");
-        return true;
+        Log.d("SurfaceView", "Kliknięto SurfaceView "+event.getRawX()+" "+event.getRawY());
+        if (realm == null) {
+          return false;
+        }
+        int[] viewLocation = new int[2];
+        surfaceView.getLocationInWindow(viewLocation);
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_DOWN
+            || action == MotionEvent.ACTION_MOVE
+            || action == MotionEvent.ACTION_UP
+            || action == MotionEvent.ACTION_CANCEL) {
+          float x = event.getRawX();
+          float y = event.getRawY();
+          double pointX = (x - marginLeft - viewLocation[0]) * ratio;
+          double pointY = (y - marginTop - viewLocation[1]) * ratio;
+
+          if (action == MotionEvent.ACTION_DOWN) {
+            realm.beginTransaction();
+            currentPath = realm.createObject(DrawPathRealm.class);
+            currentPath.setColor(currentColor);
+            DrawPointRealm point = realm.createObject(DrawPointRealm.class);
+            point.setX(pointX);
+            point.setY(pointY);
+            currentPath.getPoints().add(point);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.commitTransaction();
+          } else if (action == MotionEvent.ACTION_MOVE) {
+            realm.beginTransaction();
+            DrawPointRealm point = realm.createObject(DrawPointRealm.class);
+            point.setX(pointX);
+            point.setY(pointY);
+            currentPath.getPoints().add(point);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.commitTransaction();
+          } else if (action == MotionEvent.ACTION_UP) {
+            realm.beginTransaction();
+            currentPath.setCompleted(true);
+            DrawPointRealm point = realm.createObject(DrawPointRealm.class);
+            point.setX(pointX);
+            point.setY(pointY);
+            currentPath.getPoints().add(point);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.commitTransaction();
+            idOfLastDrawPath = currentPath.getId();
+            currentPath = null;
+          } else {
+            realm.beginTransaction();
+            currentPath.setCompleted(true);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.commitTransaction();
+            idOfLastDrawPath = currentPath.getId();
+            currentPath = null;
+          }
+          return true;
+        }
+        return false;
       }
     });
 
