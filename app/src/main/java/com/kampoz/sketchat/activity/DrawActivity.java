@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -10,15 +11,25 @@ import android.graphics.Path;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.helper.MyColorRGB;
+import com.kampoz.sketchat.helper.MyLinearLayout;
 import com.kampoz.sketchat.realm.DrawPathRealm;
 import com.kampoz.sketchat.realm.DrawPointRealm;
 import com.kampoz.sketchat.model.PencilView;
@@ -44,7 +55,7 @@ public class DrawActivity extends AppCompatActivity
   private double marginLeft;
   private double marginTop;
   private DrawThread drawThread;
-  private DrawPathRealm currentPath;
+  private DrawPathRealm currentPath = new DrawPathRealm();
   private long idOfLastDrawPath;
   private int currentColor;
   private MyColorRGB currentRGBColor = new MyColorRGB(0,0,0);
@@ -55,14 +66,17 @@ public class DrawActivity extends AppCompatActivity
   private final FragmentManager fragmentManager = getSupportFragmentManager();
   private ColorPickerDialogFragment dialog;
   SharedPreferences preferences;
-  Long currentSubjectId;
-
+  private Long currentSubjectId;
+  //private MyLinearLayout llDrawingContainer;
+  //private DrawerLayout drawerLayout;
+  private Context context;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
+
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
     Log.d("currentSubjectId", currentSubjectId.toString());
     currentColor = -16777216;
@@ -74,8 +88,22 @@ public class DrawActivity extends AppCompatActivity
     paletteFragment = new PaletteFragment();
     setPaletteFragment();
     realm = Realm.getDefaultInstance();
+    //drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    //llDrawingContainer = (MyLinearLayout) findViewById(R.id.llDrawingContainer);
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
+    //llDrawingContainer.setViewToClick(surfaceView);
     surfaceView.getHolder().addCallback(DrawActivity.this);
+
+    surfaceView.setOnTouchListener(new OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        Log.d("SurfaceView", "Kliknięto SurfaceView");
+        return true;
+      }
+    });
+
+    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    drawer.getParent().requestDisallowInterceptTouchEvent(true);
   }
 
   @Override
@@ -83,31 +111,30 @@ public class DrawActivity extends AppCompatActivity
     super.onStop();
     Log.d("Cykl życia DA", "...onStop()...");
   }
-
   @Override
   protected void onStart() {
     super.onStart();
     Log.d("Cykl życia DA", "...onStart()...");
   }
-
   @Override
   protected void onResume() {
     super.onResume();
     Log.d("Cykl życia DA", "...onResume()...");
   }
-
   @Override
   protected void onPause() {
     super.onPause();
     Log.d("Cykl życia DA", "...onPause()...");
   }
-
   @Override
   public void onBackPressed() {
-    super.onBackPressed();
-    Log.d("Cykl życia DA", "...onBackPressed()...");
+    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    if (drawer.isDrawerOpen(GravityCompat.START)) {
+      drawer.closeDrawer(GravityCompat.START);
+    } else {
+      super.onBackPressed();
+    }
   }
-
   @Override
   protected void onRestart() {
     super.onRestart();

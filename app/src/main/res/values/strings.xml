@@ -11,4 +11,7 @@
   <string name="action_delete">Delete</string>
   <string name="draw_activity">Draw Activity</string>
   <string name="color_picker_label">Color picker</string>
+
+  <string name="navigation_drawer_open">Open navigation drawer</string>
+  <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
