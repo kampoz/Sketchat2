@@ -87,7 +87,6 @@ public class DrawActivity extends AppCompatActivity
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
-
     realm.executeTransaction(new Transaction() {
       @Override
       public void execute(Realm realm) {
