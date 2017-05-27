@@ -35,7 +35,7 @@ public class SubjectsFragment extends Fragment implements
     AddSubjectDialogFragment.AddSubjectDialogFragmentListener,
     SubjectsAdapter.OnSubjectItemSelectedListener,
     EditSubjectDialogFragment.EditSubjectDialogFragmentListener {
-
+  
   public interface FragmentListener {
     void onSubjectItemSelected(long id);
   }

@@ -68,6 +68,7 @@ public class DrawActivity extends AppCompatActivity
   private ColorPickerDialogFragment dialog;
   SharedPreferences preferences;
   private Long currentSubjectId;
+  private String currentSubjectTitle;
   //private MyLinearLayout llDrawingContainer;
   //private DrawerLayout drawerLayout;
   private Context context;
@@ -79,13 +80,21 @@ public class DrawActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
+    realm = Realm.getDefaultInstance();
 
-
-
+    //getSupportActionBar().setTitle(R.string.activity_draw_title);
     getSupportActionBar().setHomeButtonEnabled(true);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
+
+    realm.executeTransaction(new Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        currentSubjectTitle = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getSubject();
+      }
+    });
+    setTitle(currentSubjectTitle);
     Log.d("currentSubjectId", currentSubjectId.toString());
     currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();
@@ -95,7 +104,7 @@ public class DrawActivity extends AppCompatActivity
     final SharedPreferences.Editor editor = preferences.edit();
     paletteFragment = new PaletteFragment();
     setPaletteFragment();
-    realm = Realm.getDefaultInstance();
+
     //drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     //llDrawingContainer = (MyLinearLayout) findViewById(R.id.llDrawingContainer);
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
@@ -111,6 +120,7 @@ public class DrawActivity extends AppCompatActivity
       public void onDrawerOpened(View drawerView) {
       }
     };
+
     drawer.addDrawerListener(mDrawerToggle);
     mDrawerToggle.syncState();
 

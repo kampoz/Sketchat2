@@ -203,9 +203,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   }
   /** end of interface methods */
 
-  /***
-   * interface SubjectsFragment.FragmentListener
-   **/
+  /*** interface SubjectsFragment.FragmentListener **/
   @Override
   public void onSubjectItemSelected(long currentSubjectid) {
     // Zrobić metodę odpalającą Activity z rysowaniem synchronicznym - zdefiniowac w tej klasie i odpalić tutaj
