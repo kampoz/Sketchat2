@@ -16,6 +16,8 @@
         <item name="android:background">@color/colorMyPrimaryDark</item>
     </style>
 
+    <style name="DrawActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
+
     <style name="GroupsBarTheme" parent="AppTheme">
         <item name="android:background">@color/colorPrimary</item>
         <item name="actionMenuTextColor">@color/colorMyAlmostWhite</item>

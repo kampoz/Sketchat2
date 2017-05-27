@@ -27,7 +27,8 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.ConversationActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.DrawActivity" />
+        <activity android:name=".activity.DrawActivity"
+          android:theme="@style/DrawActivityTheme"/>
         <activity android:name=".activity.GroupsAndSubjectsActivity"/>
     </application>
 

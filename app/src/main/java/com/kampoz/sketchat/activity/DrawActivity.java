@@ -40,6 +40,7 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.HashMap;
 import java.util.Iterator;
+import android.view.MenuItem;
 
 public class DrawActivity extends AppCompatActivity
     implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback, ColorPickerDialogFragment.ColorListener {
@@ -70,12 +71,19 @@ public class DrawActivity extends AppCompatActivity
   //private MyLinearLayout llDrawingContainer;
   //private DrawerLayout drawerLayout;
   private Context context;
+  private DrawerLayout drawer;
+  private ActionBarDrawerToggle mDrawerToggle;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
+
+
+
+    getSupportActionBar().setHomeButtonEnabled(true);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
     Log.d("currentSubjectId", currentSubjectId.toString());
@@ -93,6 +101,19 @@ public class DrawActivity extends AppCompatActivity
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
     //llDrawingContainer.setViewToClick(surfaceView);
     surfaceView.getHolder().addCallback(DrawActivity.this);
+    drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+    mDrawerToggle = new ActionBarDrawerToggle(this,drawer,R.string.app_name,R.string.app_name){
+      @Override
+      public void onDrawerClosed(View drawerView) {
+      }
+
+      @Override
+      public void onDrawerOpened(View drawerView) {
+      }
+    };
+    drawer.addDrawerListener(mDrawerToggle);
+    mDrawerToggle.syncState();
 
     surfaceView.setOnTouchListener(new OnTouchListener() {
       @Override
@@ -156,7 +177,7 @@ public class DrawActivity extends AppCompatActivity
       }
     });
 
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
   }
 
@@ -207,60 +228,6 @@ public class DrawActivity extends AppCompatActivity
   // if we are in the middle of a rotation, realm may be null.
   @Override
   public boolean onTouchEvent(MotionEvent event) {
-    if (realm == null) {
-      return false;
-    }
-    int[] viewLocation = new int[2];
-    surfaceView.getLocationInWindow(viewLocation);
-    int action = event.getAction();
-    if (action == MotionEvent.ACTION_DOWN
-        || action == MotionEvent.ACTION_MOVE
-        || action == MotionEvent.ACTION_UP
-        || action == MotionEvent.ACTION_CANCEL) {
-      float x = event.getRawX();
-      float y = event.getRawY();
-      double pointX = (x - marginLeft - viewLocation[0]) * ratio;
-      double pointY = (y - marginTop - viewLocation[1]) * ratio;
-
-      if (action == MotionEvent.ACTION_DOWN) {
-        realm.beginTransaction();
-        currentPath = realm.createObject(DrawPathRealm.class);
-        currentPath.setColor(currentColor);
-        DrawPointRealm point = realm.createObject(DrawPointRealm.class);
-        point.setX(pointX);
-        point.setY(pointY);
-        currentPath.getPoints().add(point);
-        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
-        realm.commitTransaction();
-      } else if (action == MotionEvent.ACTION_MOVE) {
-        realm.beginTransaction();
-        DrawPointRealm point = realm.createObject(DrawPointRealm.class);
-        point.setX(pointX);
-        point.setY(pointY);
-        currentPath.getPoints().add(point);
-        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
-        realm.commitTransaction();
-      } else if (action == MotionEvent.ACTION_UP) {
-        realm.beginTransaction();
-        currentPath.setCompleted(true);
-        DrawPointRealm point = realm.createObject(DrawPointRealm.class);
-        point.setX(pointX);
-        point.setY(pointY);
-        currentPath.getPoints().add(point);
-        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
-        realm.commitTransaction();
-        idOfLastDrawPath = currentPath.getId();
-        currentPath = null;
-      } else {
-        realm.beginTransaction();
-        currentPath.setCompleted(true);
-        realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
-        realm.commitTransaction();
-        idOfLastDrawPath = currentPath.getId();
-        currentPath = null;
-      }
-      return true;
-    }
     return false;
   }
 
@@ -383,6 +350,17 @@ public class DrawActivity extends AppCompatActivity
         bgRealm.close();
       }
     }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Pass the event to ActionBarDrawerToggle, if it returns
+    // true, then it has handled the app icon touch event
+    if (mDrawerToggle.onOptionsItemSelected(item)) {
+      return true;
+    }
+    // Handle your other action bar items...
+    return super.onOptionsItemSelected(item);
   }
 
   /*** Interface PaletteFragment.PaletteCallback **/
