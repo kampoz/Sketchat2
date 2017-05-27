@@ -16,6 +16,6 @@
     android:layout_gravity="start"
     android:choiceMode="singleChoice"
     android:clickable="true"
-    android:background="@color/colorMyAlmostWhite"/>
+    android:background="@color/colorMyPrimary"/>
 
 </android.support.v4.widget.DrawerLayout>

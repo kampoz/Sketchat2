@@ -103,11 +103,10 @@ public class DrawActivity extends AppCompatActivity
     surfaceView.getHolder().addCallback(DrawActivity.this);
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-    mDrawerToggle = new ActionBarDrawerToggle(this,drawer,R.string.app_name,R.string.app_name){
+    mDrawerToggle = new ActionBarDrawerToggle(this,drawer,R.string.chat,R.string.chat){
       @Override
       public void onDrawerClosed(View drawerView) {
       }
-
       @Override
       public void onDrawerOpened(View drawerView) {
       }
