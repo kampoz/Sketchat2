@@ -6,7 +6,7 @@
     android:background="#000000">
 
     <include android:id="@+id/subjects_bar"
-        layout="@layout/subjects_bar"/>
+        layout="@layout/bar_subjects"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvSubjectsList"

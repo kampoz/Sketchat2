@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <include android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+        layout="@layout/bar_app_layout"/>
 
     <FrameLayout
         android:id="@+id/fl_subjects_and_groups_container"

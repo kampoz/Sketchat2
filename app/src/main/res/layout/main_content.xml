@@ -8,6 +8,37 @@
   android:orientation="vertical"
   tools:context="com.kampoz.sketchat.activity.DrawActivity">
 
+  <android.support.v7.widget.Toolbar
+    android:id="@+id/app_bar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorAccent">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+      <ImageButton
+        android:id="@+id/bChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_question_answer_white_18dp"
+        android:background="@android:color/transparent"
+        android:layout_gravity="center_vertical"/>
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_gravity="center"
+        android:text="Test"
+        android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+
+  </android.support.v7.widget.Toolbar>
 
   <SurfaceView
     android:id="@+id/surface_view"

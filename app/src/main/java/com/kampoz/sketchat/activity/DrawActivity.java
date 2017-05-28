@@ -8,21 +8,29 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
@@ -74,6 +82,8 @@ public class DrawActivity extends AppCompatActivity
   private Context context;
   private DrawerLayout drawer;
   private ActionBarDrawerToggle mDrawerToggle;
+  private Toolbar toolbar;
+  private ImageButton bChat;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +91,20 @@ public class DrawActivity extends AppCompatActivity
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
     realm = Realm.getDefaultInstance();
-
-    //getSupportActionBar().setTitle(R.string.activity_draw_title);
-    getSupportActionBar().setHomeButtonEnabled(true);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    toolbar = (Toolbar) findViewById(R.id.app_bar);
+    setSupportActionBar(toolbar);
+    getSupportActionBar().setHomeButtonEnabled(false);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    getSupportActionBar().setTitle("");
+    bChat = (ImageButton) findViewById(R.id.bChat);
+    bChat.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        drawer.openDrawer(Gravity.LEFT);
+      }
+    });
+    Drawable drawableChatIcon = ContextCompat.getDrawable(this, R.drawable.ic_question_answer_white_18dp);
+    //toolbar.setNavigationIcon(drawableChatIcon);
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
     realm.executeTransaction(new Transaction() {
@@ -103,25 +123,33 @@ public class DrawActivity extends AppCompatActivity
     final SharedPreferences.Editor editor = preferences.edit();
     paletteFragment = new PaletteFragment();
     setPaletteFragment();
-
-    //drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-    //llDrawingContainer = (MyLinearLayout) findViewById(R.id.llDrawingContainer);
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
-    //llDrawingContainer.setViewToClick(surfaceView);
     surfaceView.getHolder().addCallback(DrawActivity.this);
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-    mDrawerToggle = new ActionBarDrawerToggle(this,drawer,R.string.chat,R.string.chat){
-      @Override
-      public void onDrawerClosed(View drawerView) {
-      }
-      @Override
-      public void onDrawerOpened(View drawerView) {
-      }
-    };
 
-    drawer.addDrawerListener(mDrawerToggle);
-    mDrawerToggle.syncState();
+//    mDrawerToggle = new ActionBarDrawerToggle(this,drawer,R.string.chat,R.string.chat){
+//      @Override
+//      public void onDrawerClosed(View drawerView) {
+//      }
+//      @Override
+//      public void onDrawerOpened(View drawerView) {
+//      }
+//    };
+//
+//    mDrawerToggle.setDrawerIndicatorEnabled(false);
+//    mDrawerToggle.setHomeAsUpIndicator(null);
+
+   // drawer.addDrawerListener(mDrawerToggle);
+    //mDrawerToggle.syncState();
+
+    /*ImageButton chatButton = (ImageButton)findViewById(R.id.bChat);
+    chatButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        drawer.openDrawer(Gravity.LEFT);
+      }
+    });*/
 
     surfaceView.setOnTouchListener(new OnTouchListener() {
       @Override
@@ -362,13 +390,23 @@ public class DrawActivity extends AppCompatActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    // Pass the event to ActionBarDrawerToggle, if it returns
-    // true, then it has handled the app icon touch event
-    if (mDrawerToggle.onOptionsItemSelected(item)) {
+    int id = item.getItemId();
+    if (id==R.id.action_drawer_chat) {
+      drawer.openDrawer(Gravity.LEFT);
       return true;
+    } else {
+      // Handle your other action bar items...
+      return super.onOptionsItemSelected(item);
     }
-    // Handle your other action bar items...
-    return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    //getMenuInflater().inflate(R.menu.menu_drawing, menu);
+    //menu =  mActionMenuView.getMenu();
+    //getMenuInflater().inflate(R.menu.menu_drawing, menu);
+    //mActionMenuView.getMenu().
+    return true;
   }
 
   /*** Interface PaletteFragment.PaletteCallback **/

@@ -7,7 +7,7 @@
     tools:context="com.kampoz.sketchat.activity.ConversationActivity">
 
     <include android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+        layout="@layout/bar_app_layout"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvConversation"

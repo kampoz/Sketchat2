@@ -9,7 +9,7 @@
 
   <include
     android:id="@+id/groups_bar"
-    layout="@layout/groups_bar" />
+    layout="@layout/bar_groups" />
 
   <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
