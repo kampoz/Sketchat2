@@ -100,7 +100,10 @@ public class DrawActivity extends AppCompatActivity
     bChat.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        if(!drawer.isDrawerOpen(Gravity.LEFT))
         drawer.openDrawer(Gravity.LEFT);
+        if(drawer.isDrawerOpen(Gravity.LEFT))
+          drawer.closeDrawer(Gravity.LEFT);
       }
     });
     Drawable drawableChatIcon = ContextCompat.getDrawable(this, R.drawable.ic_question_answer_white_18dp);
