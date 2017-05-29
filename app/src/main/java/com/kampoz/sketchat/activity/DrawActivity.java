@@ -404,7 +404,7 @@ public class DrawActivity extends AppCompatActivity
               canvas.drawPath(path, paint);
             }
             Log.d("DA czas", "30");
-            if(progressDialog.isShowing()){
+            if(progressDialog!=null && progressDialog.isShowing()){
               progressDialog.dismiss();
               progressDialog=null;
             }
@@ -455,8 +455,10 @@ public class DrawActivity extends AppCompatActivity
       super.onPreExecute();
       holder = surfaceView.getHolder();
       canvas = holder.lockCanvas();
+      //progressDialog = new ProgressDialog(DrawActivity.this, R.style.MyProgressDialogTheme);
       progressDialog = new ProgressDialog(DrawActivity.this);
       progressDialog.setMessage("Loading sketch, please wait...");
+      //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
       progressDialog.show();
     }
     @Override
