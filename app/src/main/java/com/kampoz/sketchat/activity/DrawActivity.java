@@ -377,7 +377,9 @@ public class DrawActivity extends AppCompatActivity
 
           synchronized (holder) {
             Log.d("DA czas", "29");
-            canvas.drawColor(Color.WHITE);
+            if(canvas!=null) {
+              canvas.drawColor(Color.WHITE);
+            }
             final Paint paint = new Paint();
             for (DrawPathRealm drawPath : results) {
               final RealmList<DrawPointRealm> points = drawPath.getPoints();
@@ -401,7 +403,9 @@ public class DrawActivity extends AppCompatActivity
                 final float y = (float) ((point.getY() / ratio) + marginTop);
                 path.lineTo(x, y);
               }
+              if(canvas!=null){
               canvas.drawPath(path, paint);
+              }
             }
             Log.d("DA czas", "30");
             if(progressDialog!=null && progressDialog.isShowing()){
@@ -455,9 +459,9 @@ public class DrawActivity extends AppCompatActivity
       super.onPreExecute();
       holder = surfaceView.getHolder();
       canvas = holder.lockCanvas();
-      //progressDialog = new ProgressDialog(DrawActivity.this, R.style.MyProgressDialogTheme);
       progressDialog = new ProgressDialog(DrawActivity.this);
-      progressDialog.setMessage("Loading sketch, please wait...");
+      progressDialog.setMessage("Loading sketch. Please wait...");
+      progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
       progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
       progressDialog.show();
