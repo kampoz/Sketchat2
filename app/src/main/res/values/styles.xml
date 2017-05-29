@@ -1,35 +1,39 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionMenuTextColor">@color/colorMyAlmostWhite</item>
-        <item name="android:textColor">@color/colorMyAlmostWhite</item>
-        <item name="android:actionMenuTextColor">@color/colorMyAlmostWhite</item>
-        <item name="titleTextColor">@color/colorMyAlmostWhite</item>
-    </style>
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="actionMenuTextColor">@color/colorMyAlmostWhite</item>
+    <item name="android:textColor">@color/colorMyBlue</item>
+    <item name="android:actionMenuTextColor">@color/colorMyAlmostWhite</item>
+    <item name="titleTextColor">@color/colorMyAlmostWhite</item>
+  </style>
 
-    <style name="GroupsAndSubjectsBarTheme" parent="AppTheme">
-        <item name="android:background">@color/colorMyPrimaryDark</item>
-    </style>
+  <style name="GroupsAndSubjectsBarTheme" parent="AppTheme">
+    <item name="android:background">@color/colorMyPrimaryDark</item>
+  </style>
 
-    <style name="DrawActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
+  <style name="DrawActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
 
-    <style name="GroupsBarTheme" parent="AppTheme">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="actionMenuTextColor">@color/colorMyAlmostWhite</item>
-        <item name="android:actionMenuTextColor">@color/colorMyAlmostWhite</item>
-    </style>
+  <style name="GroupsBarTheme" parent="AppTheme">
+    <item name="android:background">@color/colorPrimary</item>
+    <item name="actionMenuTextColor">@color/colorMyAlmostWhite</item>
+    <item name="android:actionMenuTextColor">@color/colorMyAlmostWhite</item>
+  </style>
 
-    <style name="DeleteButton" parent="AppTheme">
-        <item name="colorAccent">#FFFFFF</item>
-    </style>
+  <style name="DeleteButton" parent="AppTheme">
+    <item name="colorAccent">#FFFFFF</item>
+  </style>
 
-    <style name="CancelButton" parent="AppTheme">
-        <item name="colorAccent">#ee0000</item>
-    </style>
+  <style name="CancelButton" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:textColor">@color/colorMyBlue</item>
+  </style>
+
+  <style name="MyProgressDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+    <item name="android:autoText">@color/colorPrimary</item>
+  </style>
 
 </resources>

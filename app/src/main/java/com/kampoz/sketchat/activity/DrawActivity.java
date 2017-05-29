@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -52,7 +54,8 @@ import java.util.Iterator;
 import android.view.MenuItem;
 
 public class DrawActivity extends AppCompatActivity
-    implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback, ColorPickerDialogFragment.ColorListener {
+    implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback,
+    ColorPickerDialogFragment.ColorListener {
 
   private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw5";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
@@ -68,7 +71,7 @@ public class DrawActivity extends AppCompatActivity
   private DrawPathRealm currentPath = new DrawPathRealm();
   private long idOfLastDrawPath;
   private int currentColor;
-  private MyColorRGB currentRGBColor = new MyColorRGB(0,0,0);
+  private MyColorRGB currentRGBColor = new MyColorRGB(0, 0, 0);
   private PencilView currentPencil;
   private HashMap<String, Integer> nameToColorMap = new HashMap<>();
   private HashMap<Integer, String> colorIdToName = new HashMap<>();
@@ -86,6 +89,8 @@ public class DrawActivity extends AppCompatActivity
   private Toolbar toolbar;
   private ImageButton bChat;
   private TextView tvSubjectTitle;
+  Canvas canvas = null;
+  ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -94,40 +99,60 @@ public class DrawActivity extends AppCompatActivity
     Intent intent = getIntent();
     realm = Realm.getDefaultInstance();
     toolbar = (Toolbar) findViewById(R.id.app_bar);
+    //Log.d("DA czas", "1");
     setSupportActionBar(toolbar);
+    //Log.d("DA czas", "2");
     getSupportActionBar().setHomeButtonEnabled(false);
+    //Log.d("DA czas", "3");
     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    //Log.d("DA czas","4");
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    tvSubjectTitle = (TextView)findViewById(R.id.tvSubjectTitle);
-
+    //Log.d("DA czas","5");
+    tvSubjectTitle = (TextView) findViewById(R.id.tvSubjectTitle);
+    //Log.d("DA czas","6");
     bChat = (ImageButton) findViewById(R.id.bChat);
+    //Log.d("DA czas","7");
     bChat.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        if(!drawer.isDrawerOpen(Gravity.LEFT))
-        drawer.openDrawer(Gravity.LEFT);
-        if(drawer.isDrawerOpen(Gravity.LEFT))
+        if (!drawer.isDrawerOpen(Gravity.LEFT)) {
+          drawer.openDrawer(Gravity.LEFT);
+        }
+        if (drawer.isDrawerOpen(Gravity.LEFT)) {
           drawer.closeDrawer(Gravity.LEFT);
+        }
       }
     });
+    //Log.d("DA czas","8");
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
+    //Log.d("DA czas","9");
     tvSubjectTitle.setText(getCurrentSubjectTitle(currentSubjectId));
+    //Log.d("DA czas","10");
     currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();
+    //Log.d("DA czas","11");
     dialog.setColorListener(this);
+    Log.d("DA czas", "12");
     dialog.setCurrentColor(currentColor);
+    Log.d("DA czas", "13");
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
+    Log.d("DA czas", "14");
     final SharedPreferences.Editor editor = preferences.edit();
+    Log.d("DA czas", "15");
     paletteFragment = new PaletteFragment();
+    Log.d("DA czas", "16");
     setPaletteFragment();
+    Log.d("DA czas", "17");
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
+    Log.d("DA czas", "18");
     surfaceView.getHolder().addCallback(DrawActivity.this);
+    Log.d("DA czas", "19");
 
     surfaceView.setOnTouchListener(new OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
-            Log.d("SurfaceView", "Kliknięto SurfaceView "+event.getRawX()+" "+event.getRawY());
+        //Log.d("SurfaceView", "Kliknięto SurfaceView "+event.getRawX()+" "+event.getRawY());
         if (realm == null) {
           return false;
         }
@@ -151,7 +176,8 @@ public class DrawActivity extends AppCompatActivity
             point.setX(pointX);
             point.setY(pointY);
             currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                .getPaths().add(currentPath);
             realm.commitTransaction();
           } else if (action == MotionEvent.ACTION_MOVE) {
             realm.beginTransaction();
@@ -159,7 +185,8 @@ public class DrawActivity extends AppCompatActivity
             point.setX(pointX);
             point.setY(pointY);
             currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                .getPaths().add(currentPath);
             realm.commitTransaction();
           } else if (action == MotionEvent.ACTION_UP) {
             realm.beginTransaction();
@@ -168,14 +195,16 @@ public class DrawActivity extends AppCompatActivity
             point.setX(pointX);
             point.setY(pointY);
             currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                .getPaths().add(currentPath);
             realm.commitTransaction();
             idOfLastDrawPath = currentPath.getId();
             currentPath = null;
           } else {
             realm.beginTransaction();
             currentPath.setCompleted(true);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                .getPaths().add(currentPath);
             realm.commitTransaction();
             idOfLastDrawPath = currentPath.getId();
             currentPath = null;
@@ -185,12 +214,15 @@ public class DrawActivity extends AppCompatActivity
         return false;
       }
     });
-
+    Log.d("DA czas", "20");
 
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
+    Log.d("DA czas", "21");
+    Log.d("DA czas", "=========================================================");
+
   }
 
-  public String getCurrentSubjectTitle(Long currentSubjectId){
+  public String getCurrentSubjectTitle(Long currentSubjectId) {
     return realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getSubject();
   }
 
@@ -199,21 +231,25 @@ public class DrawActivity extends AppCompatActivity
     super.onStop();
     Log.d("Cykl życia DA", "...onStop()...");
   }
+
   @Override
   protected void onStart() {
     super.onStart();
     Log.d("Cykl życia DA", "...onStart()...");
   }
+
   @Override
   protected void onResume() {
     super.onResume();
     Log.d("Cykl życia DA", "...onResume()...");
   }
+
   @Override
   protected void onPause() {
     super.onPause();
     Log.d("Cykl życia DA", "...onPause()...");
   }
+
   @Override
   public void onBackPressed() {
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -223,11 +259,13 @@ public class DrawActivity extends AppCompatActivity
       super.onBackPressed();
     }
   }
+
   @Override
   protected void onRestart() {
     super.onRestart();
     Log.d("Cykl życia DA", "...onRestart()...");
   }
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -246,14 +284,22 @@ public class DrawActivity extends AppCompatActivity
 
   @Override
   public void surfaceCreated(SurfaceHolder surfaceHolder) {
-    if (drawThread == null) {
+    Log.d("DA czas", "22");
+    ////Todo: Tu Asynctaska dac startujacego wczytanie pierwszy raz rysunku
+
+    /*if (drawThread == null) {
       drawThread = new DrawThread();
       drawThread.start();
-    }
+    }*/
+    new firstSketchDownloadAsyncTask().execute();
+
+    Log.d("DA czas", "23");
+    Log.d("DA czas", "=============");
   }
 
   @Override
   public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
+    Log.d("DA czas", "24");
     boolean isPortrait = width < height;
     if (isPortrait) {
       ratio = (double) EDGE_WIDTH / height;
@@ -267,6 +313,8 @@ public class DrawActivity extends AppCompatActivity
       marginLeft = 0;
       marginTop = (height - width) / 2.0;
     }
+    Log.d("DA czas", "25");
+    Log.d("DA czas", "================");
   }
 
   @Override
@@ -279,24 +327,30 @@ public class DrawActivity extends AppCompatActivity
   }
 
   class DrawThread extends Thread {
+
     private Realm bgRealm;
+
     public void shutdown() {
       synchronized (this) {
+        Log.d("DA czas", "26");
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
         }
       }
       interrupt();
+      Log.d("DA czas", "27");
+      Log.d("DA czas", "===============");
     }
 
     @Override
     public void run() {
+      Log.d("DA czas", "28");
       while (ratio < 0 && !isInterrupted()) {
       }
       if (isInterrupted()) {
         return;
       }
-      Canvas canvas = null;
+      canvas = null;
       try {
         final SurfaceHolder holder = surfaceView.getHolder();
         canvas = holder.lockCanvas();
@@ -313,14 +367,16 @@ public class DrawActivity extends AppCompatActivity
       }
       bgRealm = Realm.getDefaultInstance();
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
-      final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class).equalTo("id", currentSubjectId).
-          findFirst().getDrawing().getPaths();
+      final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class)
+          .equalTo("id", currentSubjectId).
+              findFirst().getDrawing().getPaths();
       while (!isInterrupted()) {
         try {
           final SurfaceHolder holder = surfaceView.getHolder();
           canvas = holder.lockCanvas();
 
           synchronized (holder) {
+            Log.d("DA czas", "29");
             canvas.drawColor(Color.WHITE);
             final Paint paint = new Paint();
             for (DrawPathRealm drawPath : results) {
@@ -347,6 +403,12 @@ public class DrawActivity extends AppCompatActivity
               }
               canvas.drawPath(path, paint);
             }
+            Log.d("DA czas", "30");
+            if(progressDialog.isShowing()){
+              progressDialog.dismiss();
+              progressDialog=null;
+            }
+
           }
         } finally {
           if (canvas != null) {
@@ -358,13 +420,15 @@ public class DrawActivity extends AppCompatActivity
       synchronized (this) {
         bgRealm.close();
       }
+      Log.d("DA czas", "31");
+      Log.d("DA czas", "===================");
     }
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
-    if (id==R.id.action_drawer_chat) {
+    if (id == R.id.action_drawer_chat) {
       drawer.openDrawer(Gravity.LEFT);
       return true;
     } else {
@@ -382,14 +446,82 @@ public class DrawActivity extends AppCompatActivity
     return true;
   }
 
-  /*** Interface PaletteFragment.PaletteCallback **/
+  private class firstSketchDownloadAsyncTask extends AsyncTask<Void, Void, Void> {
+
+    SurfaceHolder holder;
+
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+      holder = surfaceView.getHolder();
+      canvas = holder.lockCanvas();
+      progressDialog = new ProgressDialog(DrawActivity.this);
+      progressDialog.setMessage("Loading sketch, please wait...");
+      progressDialog.show();
+    }
+    @Override
+    protected void onPostExecute(Void aVoid) {
+      super.onPostExecute(aVoid);
+      if (canvas != null) {
+        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+        if (drawThread == null) {
+          drawThread = new DrawThread();
+          drawThread.start();
+        }
+      }
+    }
+    @Override
+    protected Void doInBackground(Void... arg0) {
+      /*Realm bgRealm = Realm.getDefaultInstance();
+      final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
+      synchronized (holder) {
+        Log.d("DA czas", "32");
+        canvas.drawColor(Color.WHITE);
+        final Paint paint = new Paint();
+        for (DrawPathRealm drawPath : results) {
+          final RealmList<DrawPointRealm> points = drawPath.getPoints();
+          final Integer color = drawPath.getColor();//nameToColorMap.get(drawPath.getColor());
+          if (color != null) {
+            paint.setColor(color);
+          } else {
+            paint.setColor(currentColor);
+          }
+          paint.setStyle(Style.STROKE);
+          paint.setStrokeWidth((float) (4 / ratio));
+          final Iterator<DrawPointRealm> iterator = points.iterator();
+          final DrawPointRealm firstPoint = iterator.next();
+          final Path path = new Path();
+          final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
+          final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
+          path.moveTo(firstX, firstY);
+          while (iterator.hasNext()) {
+            DrawPointRealm point = iterator.next();
+            final float x = (float) ((point.getX() / ratio) + marginLeft);
+            final float y = (float) ((point.getY() / ratio) + marginTop);
+            path.lineTo(x, y);
+          }
+          canvas.drawPath(path, paint);
+        }
+        Log.d("DA czas", "33");
+      }*/
+      return null;
+    }
+
+
+  }
+
+  /*** Interfaces methods:**/
+  /***
+   * Interface PaletteFragment.PaletteCallback
+   **/
   @Override
   public void wipeCanvas() {
     if (realm != null) {
       realm.executeTransactionAsync(new Realm.Transaction() {
         @Override
         public void execute(Realm realm) {
-          realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().deleteAllFromRealm();
+          realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+              .getPaths().deleteAllFromRealm();
           //realm.deleteAll();
         }
       });
@@ -400,14 +532,17 @@ public class DrawActivity extends AppCompatActivity
   public void onColorChange(int color) {
     currentColor = color;
   }
+
   @Override
   public void undo() {
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
-        DrawPathRealm lastDrawPath = realm.where(DrawPathRealm.class).equalTo("id", idOfLastDrawPath).findFirst();
-        if(lastDrawPath != null)
-        lastDrawPath.deleteFromRealm();
+        DrawPathRealm lastDrawPath = realm.where(DrawPathRealm.class)
+            .equalTo("id", idOfLastDrawPath).findFirst();
+        if (lastDrawPath != null) {
+          lastDrawPath.deleteFromRealm();
+        }
       }
     });
   }
@@ -420,7 +555,9 @@ public class DrawActivity extends AppCompatActivity
   }
   /** End Interface PaletteFragment.PaletteCallback**/
 
-  /*** interface ColorPickerDialogFragment.ColorListener **/
+  /***
+   * interface ColorPickerDialogFragment.ColorListener
+   **/
   @Override
   public void setColor(MyColorRGB colorRGB) {
     currentColor = getIntFromColor(colorRGB.getRed(), colorRGB.getGreen(), colorRGB.getBlue());
@@ -433,6 +570,7 @@ public class DrawActivity extends AppCompatActivity
   public int getCurrentColor() {
     return currentColor;
   }
+
   /*************************/
 
   private void setPaletteFragment() {
@@ -445,11 +583,12 @@ public class DrawActivity extends AppCompatActivity
     //paletteFragment.setColorRGB(currentRGBColor);
   }
 
-  public int getIntFromColor(int Red, int Green, int Blue){
+  public int getIntFromColor(int Red, int Green, int Blue) {
     Red = (Red << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
     Green = (Green << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
     Blue = Blue & 0x000000FF; //Mask out anything not blue.
-    return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
+    return 0xFF000000 | Red | Green
+        | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
   }
 
   public long getCurrentSubjectId() {
