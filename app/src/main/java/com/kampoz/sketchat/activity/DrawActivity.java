@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
@@ -84,6 +85,7 @@ public class DrawActivity extends AppCompatActivity
   private ActionBarDrawerToggle mDrawerToggle;
   private Toolbar toolbar;
   private ImageButton bChat;
+  private TextView tvSubjectTitle;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +97,9 @@ public class DrawActivity extends AppCompatActivity
     setSupportActionBar(toolbar);
     getSupportActionBar().setHomeButtonEnabled(false);
     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    getSupportActionBar().setTitle("");
+    drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    tvSubjectTitle = (TextView)findViewById(R.id.tvSubjectTitle);
+
     bChat = (ImageButton) findViewById(R.id.bChat);
     bChat.setOnClickListener(new OnClickListener() {
       @Override
@@ -106,18 +110,9 @@ public class DrawActivity extends AppCompatActivity
           drawer.closeDrawer(Gravity.LEFT);
       }
     });
-    Drawable drawableChatIcon = ContextCompat.getDrawable(this, R.drawable.ic_question_answer_white_18dp);
-    //toolbar.setNavigationIcon(drawableChatIcon);
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
-    realm.executeTransaction(new Transaction() {
-      @Override
-      public void execute(Realm realm) {
-        currentSubjectTitle = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getSubject();
-      }
-    });
-    setTitle(currentSubjectTitle);
-    Log.d("currentSubjectId", currentSubjectId.toString());
+    tvSubjectTitle.setText(getCurrentSubjectTitle(currentSubjectId));
     currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();
     dialog.setColorListener(this);
@@ -128,36 +123,11 @@ public class DrawActivity extends AppCompatActivity
     setPaletteFragment();
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
     surfaceView.getHolder().addCallback(DrawActivity.this);
-    drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-
-//    mDrawerToggle = new ActionBarDrawerToggle(this,drawer,R.string.chat,R.string.chat){
-//      @Override
-//      public void onDrawerClosed(View drawerView) {
-//      }
-//      @Override
-//      public void onDrawerOpened(View drawerView) {
-//      }
-//    };
-//
-//    mDrawerToggle.setDrawerIndicatorEnabled(false);
-//    mDrawerToggle.setHomeAsUpIndicator(null);
-
-   // drawer.addDrawerListener(mDrawerToggle);
-    //mDrawerToggle.syncState();
-
-    /*ImageButton chatButton = (ImageButton)findViewById(R.id.bChat);
-    chatButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        drawer.openDrawer(Gravity.LEFT);
-      }
-    });*/
 
     surfaceView.setOnTouchListener(new OnTouchListener() {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
-        Log.d("SurfaceView", "Kliknięto SurfaceView "+event.getRawX()+" "+event.getRawY());
+            Log.d("SurfaceView", "Kliknięto SurfaceView "+event.getRawX()+" "+event.getRawY());
         if (realm == null) {
           return false;
         }
@@ -218,6 +188,10 @@ public class DrawActivity extends AppCompatActivity
 
 
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
+  }
+
+  public String getCurrentSubjectTitle(Long currentSubjectId){
+    return realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getSubject();
   }
 
   @Override
@@ -339,12 +313,8 @@ public class DrawActivity extends AppCompatActivity
       }
       bgRealm = Realm.getDefaultInstance();
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
-      final RealmList<DrawPathRealm> results = bgRealm.
-          where(SubjectRealm.class).
-          equalTo("id", currentSubjectId).
-          findFirst().
-          getDrawing().
-          getPaths();
+      final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class).equalTo("id", currentSubjectId).
+          findFirst().getDrawing().getPaths();
       while (!isInterrupted()) {
         try {
           final SurfaceHolder holder = surfaceView.getHolder();
