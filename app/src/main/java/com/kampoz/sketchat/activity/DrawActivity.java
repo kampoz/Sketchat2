@@ -458,6 +458,7 @@ public class DrawActivity extends AppCompatActivity
       //progressDialog = new ProgressDialog(DrawActivity.this, R.style.MyProgressDialogTheme);
       progressDialog = new ProgressDialog(DrawActivity.this);
       progressDialog.setMessage("Loading sketch, please wait...");
+      progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
       progressDialog.show();
     }
