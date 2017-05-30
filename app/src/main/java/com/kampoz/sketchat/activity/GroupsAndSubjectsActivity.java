@@ -21,6 +21,7 @@ import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
+import io.realm.Realm;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     GroupsFragment.FragmentListener,
@@ -37,6 +38,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   private GroupsFragment groupsFragment;
   private MyConnectionChecker myConnectionChecker;
   private int mCurrentGroupId = 0;
+  private Realm realm;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     toolbar = (Toolbar) findViewById(R.id.app_bar);
     toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
     setSupportActionBar(toolbar);
+    realm = Realm.getDefaultInstance();
     this.isLand = getResources().getBoolean(R.bool.isLand);
     setGroupsFragment();
     myConnectionChecker = new MyConnectionChecker();
@@ -61,6 +64,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   @Override
   protected void onDestroy() {
     super.onDestroy();
+    realm.close();
     Log.d("Cykl życia", "...onDestroy()...");
   }
 

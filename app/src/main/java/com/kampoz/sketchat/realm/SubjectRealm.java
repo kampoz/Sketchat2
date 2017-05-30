@@ -29,29 +29,29 @@ public class SubjectRealm extends RealmObject{
     public void setId(int id) {
         this.id = id;
     }
-
     public int getGroupId() {
         return groupId;
     }
-
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
-
     public int getInterlocutorsNumber() {
         return interlocutorsNumber;
     }
-
     public void setInterlocutorsNumber(int interlocutorsNumber) {
         this.interlocutorsNumber = interlocutorsNumber;
     }
-
     public String getSubject() {
         return subject;
     }
-
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+    public DrawingRealm getDrawing() {
+        return drawing;
+    }
+    public void setDrawing(DrawingRealm drawing) {
+        this.drawing = drawing;
     }
 
     public void changeName(final String newName){
@@ -83,42 +83,40 @@ public class SubjectRealm extends RealmObject{
                 realm.copyToRealmOrUpdate(subjectRealm);
             }
         });
-        realm.close();
     }
 
     public static int generateSubjectId() {
-        Realm defaultInstance = Realm.getDefaultInstance();
+        Realm realm = Realm.getDefaultInstance();
         int newId = 0;
-        Number oldMaxId = defaultInstance.where(SubjectRealm.class).max("id");
+        Number oldMaxId = realm.where(SubjectRealm.class).max("id");
         if(oldMaxId==null){
+            realm.close();
             return newId;
-        }else
+        }else{
+            realm.close();
             return oldMaxId.intValue()+1;
+        }
         //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
     }
 
     public List<SubjectRealm> getAllfromSubjectRealmSorted() {
         List<SubjectRealm> subjects = new ArrayList<>();
-        RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).findAllSorted("subject");
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<SubjectRealm> all = realm.where(SubjectRealm.class).findAllSorted("subject");
         for (SubjectRealm subjectRealm : all) {
             subjects.add(subjectRealm);
         }
+        realm.close();
         return subjects;
     }
 
-    public List<SubjectRealm> searchELementsByName(String newText, int groupId) {
-        RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", groupId).
+    public List<SubjectRealm> searchElementsByName(String newText, int groupId) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<SubjectRealm> all = realm.where(GroupRealm.class).equalTo("id", groupId).
             findFirst().getSubjectsList().where().contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
         /*** ta metoda tez działa, ale prawd. jest wolniejsza: **/
         //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).equalTo("groupId", groupId).contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
+        realm.close();
         return new ArrayList<>(all);
-    }
-
-    public DrawingRealm getDrawing() {
-        return drawing;
-    }
-
-    public void setDrawing(DrawingRealm drawing) {
-        this.drawing = drawing;
     }
 }

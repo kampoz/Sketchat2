@@ -29,70 +29,61 @@ public class GroupRealm extends RealmObject {
     this.groupName = groupName;
     this.id = id;
   }
-
   public GroupRealm(String groupName, ArrayList<UserRealm> usersArrayList) {
     this.groupName = groupName;
   }
-
   public int getId() {
     return id;
   }
-
   public void setId(int id) {
     this.id = id;
   }
-
   public int getOwnersId() {
     return ownersId;
   }
-
   public void setOwnersId(int ownersId) {
     this.ownersId = ownersId;
   }
-
   public String getGroupName() {
     return groupName;
   }
-
   public void setGroupName(String groupName) {
     this.groupName = groupName;
   }
-
   public RealmList<SubjectRealm> getSubjectsList() {
     return subjectsList;
   }
-
   public void setSubjectsList(RealmList<SubjectRealm> subjectsList) {
     this.subjectsList = subjectsList;
   }
 
   public List<GroupRealm> getAllfromGroupRealm() {
+    Realm realm = Realm.getDefaultInstance();
     List<GroupRealm> groups = new ArrayList<>();
-    RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class).findAll();
+    RealmResults<GroupRealm> all = realm.where(GroupRealm.class).findAll();
     for (GroupRealm groupRealm : all) {
       groups.add(groupRealm);
     }
+    realm.close();
     return groups;
   }
 
   //zwraca wszystkie obiekty GroupRealm posortowane
   public List<GroupRealm> getAllfromGroupRealmSorted() {
-//    List<GroupRealm> groups = new ArrayList<>();
-//    RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class)
-//        .findAllSorted("groupName");
-//    for (GroupRealm groupRealm : all) {
-//      groups.add(groupRealm);
-//    }
-    return Realm.getDefaultInstance().where(GroupRealm.class).findAllSorted("groupName");
+    Realm realm = Realm.getDefaultInstance();
+    List<GroupRealm> groupList = realm.where(GroupRealm.class).findAllSorted("groupName");
+    realm.close();
+    return groupList;
   }
 
   public List<GroupRealm> searchELementsByName(String newText) {
     List<GroupRealm> groups = new ArrayList<>();
-    RealmResults<GroupRealm> all = Realm.getDefaultInstance().where(GroupRealm.class)
-        .contains("groupName", newText, Case.INSENSITIVE).findAllSorted("groupName");
+    Realm realm = Realm.getDefaultInstance();
+    RealmResults<GroupRealm> all = realm.where(GroupRealm.class).contains("groupName", newText, Case.INSENSITIVE).findAllSorted("groupName");
     for (GroupRealm groupRealm : all) {
       groups.add(groupRealm);
     }
+    realm.close();
     return groups;
   }
 
@@ -106,7 +97,10 @@ public class GroupRealm extends RealmObject {
   }
 
   public static String getGroupNameForId(final int id) {
-    return Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", id).findFirst().getGroupName();
+    Realm realm = Realm.getDefaultInstance();
+    String grouName = realm.where(GroupRealm.class).equalTo("id", id).findFirst().getGroupName();
+    realm.close();
+    return grouName;
   }
 
   public void changeName(final String newName) {
@@ -155,12 +149,14 @@ public class GroupRealm extends RealmObject {
   }
 
   private int generateGroupId() {
-    Realm defaultInstance = Realm.getDefaultInstance();
+    Realm realm = Realm.getDefaultInstance();
     int newId = 0;
-    Number oldMaxId = defaultInstance.where(GroupRealm.class).max("id");
+    Number oldMaxId = realm.where(GroupRealm.class).max("id");
     if (oldMaxId == null) {
+      realm.close();
       return newId;
     } else {
+      realm.close();
       return oldMaxId.intValue() + 1;
     }
     //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
@@ -169,10 +165,12 @@ public class GroupRealm extends RealmObject {
   public static List<SubjectRealm> getSubjectsFromGroupSorted(int groupId) {
     List<SubjectRealm> subjects = new ArrayList<>();
     //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).findAllSorted("subject");
-    RealmResults<SubjectRealm> subjectsFromGroup = Realm.getDefaultInstance().where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().sort("subject");
+    Realm realm = Realm.getDefaultInstance();
+    RealmResults<SubjectRealm> subjectsFromGroup = realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().sort("subject");
     for (SubjectRealm subjectRealm : subjectsFromGroup) {
       subjects.add(subjectRealm);
     }
+    realm.close();
     return subjects;
   }
 

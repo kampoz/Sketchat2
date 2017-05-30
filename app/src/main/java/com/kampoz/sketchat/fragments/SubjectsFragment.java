@@ -9,14 +9,12 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.SearchView.OnCloseListener;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
@@ -26,9 +24,6 @@ import com.kampoz.sketchat.dialog.EditSubjectDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-import java.security.acl.Group;
 import java.util.ArrayList;
 
 public class SubjectsFragment extends Fragment implements
@@ -68,10 +63,6 @@ public class SubjectsFragment extends Fragment implements
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
     subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
-
-//    if(subjectsFromThisGroupList!=null)
-//    subjectsList.addAll(groupRealm.getSubjectsForGroup(groupId));
-
     adapter = new SubjectsAdapter(subjectsList, recyclerView);
     adapter.setOnSubjectItemSelectedListener(this);
     recyclerView.setAdapter(adapter);
@@ -113,7 +104,7 @@ public class SubjectsFragment extends Fragment implements
       public boolean onQueryTextChange(String newText) {
         subjectRealm = new SubjectRealm();
         subjectsList.clear();
-        subjectsList.addAll(subjectRealm.searchELementsByName(newText, groupId));
+        subjectsList.addAll(subjectRealm.searchElementsByName(newText, groupId));
         adapter.notifyDataSetChanged();
         return false;
       }

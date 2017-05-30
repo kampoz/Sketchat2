@@ -42,7 +42,7 @@ public class GroupsFragment extends Fragment implements
   private EditGroupDialogFragment editGroupDialog;
   private AddGroupDialogFragment addGroupDialog;
   ArrayList<GroupRealm> groupsList = new ArrayList<>();
-  GroupRealm groupRealm = new GroupRealm();
+  GroupRealm groupRealm;
   private Context context;
 
   @Override

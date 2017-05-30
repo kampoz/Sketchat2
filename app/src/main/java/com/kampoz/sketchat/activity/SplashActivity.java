@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
   private volatile Realm realm;
   SharedPreferences preferences;
   Context context;
-
+  private String tag = "Cykl ż SplashActivity";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +50,15 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("SyncConfiguration",
             "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
 
-        Realm.setDefaultConfiguration(syncConfiguration);
-        realm = Realm.getDefaultInstance();
+
+        if(realm==null){
+          Realm.setDefaultConfiguration(syncConfiguration);
+          //realm = Realm.getDefaultInstance();
+        }else {
+          Realm.removeDefaultConfiguration();
+          Realm.setDefaultConfiguration(syncConfiguration);
+        }
+
         editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
         editor.apply();
         Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
@@ -78,7 +85,15 @@ public class SplashActivity extends AppCompatActivity {
         SplashActivity.this.finish();
       }
     });
+  }
 
-
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    if (realm != null) {
+      realm.close();
+      realm = null;
+    }
+    Log.d(tag, "...onDestroy()...");
   }
 }

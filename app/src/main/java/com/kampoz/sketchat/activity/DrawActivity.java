@@ -338,8 +338,6 @@ public class DrawActivity extends AppCompatActivity
         }
       }
       interrupt();
-      Log.d("DA czas", "27");
-      Log.d("DA czas", "===============");
     }
 
     @Override
@@ -513,8 +511,6 @@ public class DrawActivity extends AppCompatActivity
       }*/
       return null;
     }
-
-
   }
 
   /*** Interfaces methods:**/
@@ -542,7 +538,8 @@ public class DrawActivity extends AppCompatActivity
 
   @Override
   public void undo() {
-    Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+    Realm realm = Realm.getDefaultInstance();
+    realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
         DrawPathRealm lastDrawPath = realm.where(DrawPathRealm.class)
@@ -552,6 +549,7 @@ public class DrawActivity extends AppCompatActivity
         }
       }
     });
+    realm.close();
   }
 
   @Override
