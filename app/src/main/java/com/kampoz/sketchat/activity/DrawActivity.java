@@ -81,8 +81,6 @@ public class DrawActivity extends AppCompatActivity
   SharedPreferences preferences;
   private Long currentSubjectId;
   private String currentSubjectTitle;
-  //private MyLinearLayout llDrawingContainer;
-  //private DrawerLayout drawerLayout;
   private Context context;
   private DrawerLayout drawer;
   private ActionBarDrawerToggle mDrawerToggle;
@@ -165,29 +163,44 @@ public class DrawActivity extends AppCompatActivity
             || action == MotionEvent.ACTION_CANCEL) {
           float x = event.getRawX();
           float y = event.getRawY();
-          double pointX = (x - marginLeft - viewLocation[0]) * ratio;
-          double pointY = (y - marginTop - viewLocation[1]) * ratio;
+          final double pointX = (x - marginLeft - viewLocation[0]) * ratio;
+          final double pointY = (y - marginTop - viewLocation[1]) * ratio;
 
           if (action == MotionEvent.ACTION_DOWN) {
-            realm.beginTransaction();
-            currentPath = realm.createObject(DrawPathRealm.class);
-            currentPath.setColor(currentColor);
-            DrawPointRealm point = realm.createObject(DrawPointRealm.class);
-            point.setX(pointX);
-            point.setY(pointY);
-            currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
-                .getPaths().add(currentPath);
-            realm.commitTransaction();
+            realm.executeTransaction(new Transaction() {
+              @Override
+              public void execute(Realm realm) {
+                currentPath = realm.createObject(DrawPathRealm.class);
+                currentPath.setColor(currentColor);
+                DrawPointRealm point = realm.createObject(DrawPointRealm.class);
+                point.setX(pointX);
+                point.setY(pointY);
+                currentPath.getPoints().add(point);
+                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                    .getPaths().add(currentPath);
+              }
+            });
+
+
+            //////////realm.beginTransaction();
+
+            ///////////realm.commitTransaction();
+            ///////////////
           } else if (action == MotionEvent.ACTION_MOVE) {
-            realm.beginTransaction();
-            DrawPointRealm point = realm.createObject(DrawPointRealm.class);
-            point.setX(pointX);
-            point.setY(pointY);
-            currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
-                .getPaths().add(currentPath);
-            realm.commitTransaction();
+            //realm.beginTransaction();
+            realm.executeTransaction(new Transaction() {
+              @Override
+              public void execute(Realm realm) {
+                DrawPointRealm point = realm.createObject(DrawPointRealm.class);
+                point.setX(pointX);
+                point.setY(pointY);
+                currentPath.getPoints().add(point);
+                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                    .getPaths().add(currentPath);
+              }
+            });
+
+            //realm.commitTransaction();
           } else if (action == MotionEvent.ACTION_UP) {
             realm.beginTransaction();
             currentPath.setCompleted(true);
@@ -272,6 +285,8 @@ public class DrawActivity extends AppCompatActivity
     if (realm != null) {
       realm.close();
       realm = null;
+      /** ??????? **/
+      if(drawThread!=null) drawThread.shutdown();
     }
     Log.d("Cykl życia DA", "...onDestroy()...koniec");
   }
