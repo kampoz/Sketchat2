@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder>{
     public interface OnGroupItemSelectedListener{
-        void onItemSelect(int groupId);
+        void onItemSelect(long groupId);
         void onEditItem(GroupRealm groupRealm);
     }
     private OnGroupItemSelectedListener onGroupItemSelectedListener;

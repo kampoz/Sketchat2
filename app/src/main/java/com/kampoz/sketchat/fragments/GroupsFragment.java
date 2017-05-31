@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.GroupsAdapter;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
@@ -30,7 +31,7 @@ public class GroupsFragment extends Fragment implements
     AddGroupDialogFragment.AddGroupDialogFragmentListener {
 
   public interface FragmentListener {
-    void onGroupItemSelected(int position);
+    void onGroupItemSelected(long position);
   }
 
   private FragmentListener listener;
@@ -44,6 +45,7 @@ public class GroupsFragment extends Fragment implements
   ArrayList<GroupRealm> groupsList = new ArrayList<>();
   GroupRealm groupRealm;
   private Context context;
+  private GroupDao groupDao;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,10 +57,10 @@ public class GroupsFragment extends Fragment implements
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
     toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
     toolbar.setTitle("Groups");
+    groupDao = new GroupDao();
     /*** pobranie danych z Realm i przekazanie ich do adaptera */
-    groupRealm = new GroupRealm();
     groupsList.clear();
-    groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+    groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
     /*** drugi sposob pobrania wszystkiego z GroupRealm */
     //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
     adapter = new GroupsAdapter(groupsList, recyclerView);
@@ -96,9 +98,8 @@ public class GroupsFragment extends Fragment implements
 
       @Override
       public boolean onQueryTextChange(String newText) {
-        groupRealm = new GroupRealm();
         groupsList.clear();
-        groupsList.addAll(groupRealm.searchELementsByName(newText));
+        groupsList.addAll(groupDao.searchELementsByName(newText));
         adapter.notifyDataSetChanged();
         return false;
       }
@@ -157,9 +158,8 @@ public class GroupsFragment extends Fragment implements
       return true;
     }
     if (id == R.id.action_renew) {
-      groupRealm = new GroupRealm();
       groupsList.clear();
-      groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+      groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
       adapter.notifyDataSetChanged();
       Toast.makeText(getContext(), "Groups renew", Toast.LENGTH_SHORT).show();
       return true;
@@ -168,13 +168,17 @@ public class GroupsFragment extends Fragment implements
     }
   }
 
-  /*** Interfaces methods: ***/
-
-  /***
-   * 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)
-   **/
+  /** Zamyka ref. realma, która jest tworzona w konstruktorze RealmDao */
   @Override
-  public void onItemSelect(int groupId) {
+  public void onDetach() {
+    super.onDetach();
+    groupDao.getRealm().close();
+  }
+
+  /************** INTERFACES: *********************/
+  /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
+  @Override
+  public void onItemSelect(long groupId) {
     listener.onGroupItemSelected(groupId);
   }
 
@@ -195,9 +199,8 @@ public class GroupsFragment extends Fragment implements
    */
   @Override
   public void onOKClickInAddGroup(String groupName) {
-    groupRealm = new GroupRealm();
     groupsList.clear();
-    groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+    groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Group added: " + groupName, Toast.LENGTH_SHORT).show();
   }
@@ -209,9 +212,8 @@ public class GroupsFragment extends Fragment implements
   @Override
   public void onDeleteGroupClickInEdit(String groupName) {
     editGroupDialog.dismiss();
-    groupRealm = new GroupRealm();
     groupsList.clear();
-    groupsList.addAll(groupRealm.getAllfromGroupRealmSorted());
+    groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Group deleted: " + groupName, Toast.LENGTH_SHORT).show();
   }

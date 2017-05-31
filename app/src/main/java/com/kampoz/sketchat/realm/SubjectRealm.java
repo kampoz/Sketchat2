@@ -17,7 +17,7 @@ public class SubjectRealm extends RealmObject{
 
     @PrimaryKey
     private int id;
-    private int groupId;
+    private long groupId;
     private String subject;
     private int interlocutorsNumber;
     private DrawingRealm drawing;
@@ -29,10 +29,10 @@ public class SubjectRealm extends RealmObject{
     public void setId(int id) {
         this.id = id;
     }
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
-    public void setGroupId(int groupId) {
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
     public int getInterlocutorsNumber() {
@@ -110,7 +110,7 @@ public class SubjectRealm extends RealmObject{
         return subjects;
     }
 
-    public List<SubjectRealm> searchElementsByName(String newText, int groupId) {
+    public List<SubjectRealm> searchElementsByName(String newText, long groupId) {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<SubjectRealm> all = realm.where(GroupRealm.class).equalTo("id", groupId).
             findFirst().getSubjectsList().where().contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");

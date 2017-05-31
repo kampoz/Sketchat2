@@ -17,42 +17,50 @@ import io.realm.annotations.PrimaryKey;
 public class GroupRealm extends RealmObject {
 
   @PrimaryKey
-  private int id;
-  private int ownersId;
+  private long id;
+  private long ownersId;
   private String groupName;
   private RealmList<SubjectRealm> subjectsList;
 
   public GroupRealm() {
   }
 
-  public GroupRealm(int id, String groupName) {
+  public GroupRealm(long id, String groupName) {
     this.groupName = groupName;
     this.id = id;
   }
   public GroupRealm(String groupName, ArrayList<UserRealm> usersArrayList) {
     this.groupName = groupName;
   }
-  public int getId() {
+
+  public long getId() {
     return id;
   }
-  public void setId(int id) {
+
+  public void setId(long id) {
     this.id = id;
   }
-  public int getOwnersId() {
+
+  public long getOwnersId() {
     return ownersId;
   }
-  public void setOwnersId(int ownersId) {
+
+  public void setOwnersId(long ownersId) {
     this.ownersId = ownersId;
   }
+
   public String getGroupName() {
     return groupName;
   }
+
   public void setGroupName(String groupName) {
     this.groupName = groupName;
   }
+
   public RealmList<SubjectRealm> getSubjectsList() {
     return subjectsList;
   }
+
   public void setSubjectsList(RealmList<SubjectRealm> subjectsList) {
     this.subjectsList = subjectsList;
   }
@@ -87,7 +95,7 @@ public class GroupRealm extends RealmObject {
     return groups;
   }
 
-  public void deleteGroup(final int id) {
+  public void deleteGroup(final long id) {
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
@@ -96,7 +104,7 @@ public class GroupRealm extends RealmObject {
     });
   }
 
-  public static String getGroupNameForId(final int id) {
+  public static String getGroupNameForId(final long id) {
     Realm realm = Realm.getDefaultInstance();
     String grouName = realm.where(GroupRealm.class).equalTo("id", id).findFirst().getGroupName();
     realm.close();
@@ -112,7 +120,7 @@ public class GroupRealm extends RealmObject {
     });
   }
 
-  public void addSubjectToGroup(final int groupId, final SubjectRealm subjectRealm){
+  public void addSubjectToGroup(final long groupId, final SubjectRealm subjectRealm){
     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
@@ -162,7 +170,7 @@ public class GroupRealm extends RealmObject {
     //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
   }
 
-  public static List<SubjectRealm> getSubjectsFromGroupSorted(int groupId) {
+  public static List<SubjectRealm> getSubjectsFromGroupSorted(long groupId) {
     List<SubjectRealm> subjects = new ArrayList<>();
     //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).findAllSorted("subject");
     Realm realm = Realm.getDefaultInstance();
@@ -173,5 +181,4 @@ public class GroupRealm extends RealmObject {
     realm.close();
     return subjects;
   }
-
 }

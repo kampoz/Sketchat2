@@ -28,13 +28,13 @@ public class EditSubjectDialogFragment extends DialogFragment {
     private Button bOK;
     private TextView tvNameLabel;
     private TextView tvEditDialogLabel;
-    private int groupId;
+    private long groupId;
     public EditSubjectDialogFragmentListener listener;
 
     public interface EditSubjectDialogFragmentListener{
         void onCancelClickInEdit();
         void onOKClickInEdit();
-        void onDeleteSubjectClickInEdit(String subjectName, int groupId);
+        void onDeleteSubjectClickInEdit(String subjectName, long groupId);
     }
 
     @Override
@@ -100,11 +100,11 @@ public class EditSubjectDialogFragment extends DialogFragment {
         this.listener = listener;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 }

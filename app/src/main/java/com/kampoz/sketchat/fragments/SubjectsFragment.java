@@ -45,7 +45,7 @@ public class SubjectsFragment extends Fragment implements
   private ArrayList<SubjectRealm> subjectsList = new ArrayList<>();
   private SubjectRealm subjectRealm = new SubjectRealm();
   private GroupRealm groupRealm = new GroupRealm();
-  private int groupId;
+  private long groupId;
   private Context context;
 
   @Override
@@ -184,7 +184,7 @@ public class SubjectsFragment extends Fragment implements
 
   /*** 2) From interface AddSubjectDialogFragment.AddSubjectDialogFragmentListener (1 method)**/
   @Override
-  public void onOKClickInAddSubject(String subjectName, int groupId) {
+  public void onOKClickInAddSubject(String subjectName, long groupId) {
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
     subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
@@ -195,7 +195,7 @@ public class SubjectsFragment extends Fragment implements
 
   /*** 3) From Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener (3 methods) **/
   @Override
-  public void onDeleteSubjectClickInEdit(String subjectName, int groupId) {
+  public void onDeleteSubjectClickInEdit(String subjectName, long groupId) {
     editSubjectDialog.dismiss();
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
@@ -219,7 +219,7 @@ public class SubjectsFragment extends Fragment implements
   }
   /** End of Interface EditSubjectDialogFragment.EditSubjectDialogFragmentListener**/
 
-  public void setGroupId(int groupId) {
+  public void setGroupId(long groupId) {
     this.groupId = groupId;
   }
 }

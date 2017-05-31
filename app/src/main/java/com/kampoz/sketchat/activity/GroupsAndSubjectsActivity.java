@@ -37,7 +37,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   private SubjectsFragment subjectsFragment;
   private GroupsFragment groupsFragment;
   private MyConnectionChecker myConnectionChecker;
-  private int mCurrentGroupId = 0;
+  private long mCurrentGroupId = 0;
   private Realm realm;
 
   @Override
@@ -107,7 +107,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
-    outState.putInt("GROUP_ID", mCurrentGroupId);
+    outState.putLong("GROUP_ID", mCurrentGroupId);
     super.onSaveInstanceState(outState);
   }
 
@@ -185,7 +185,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
    * Fragmentu - w tym przypadku Subjectfragmentu II sposób jest w GroupsFragent met.
    * onAttach(Context context)
    */
-  private void setSubjectsFragment(int groupId) {
+  private void setSubjectsFragment(long groupId) {
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
     this.currentFragment = new SubjectsFragment();
     ((SubjectsFragment) this.currentFragment).setGroupId(groupId);
@@ -200,7 +200,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
    * interface GroupsFragment.FragmentListener
    **/
   @Override
-  public void onGroupItemSelected(int groupId) {
+  public void onGroupItemSelected(long groupId) {
     mCurrentGroupId = groupId;
     setSubjectsFragment(groupId);
     this.fragmentManager.executePendingTransactions();

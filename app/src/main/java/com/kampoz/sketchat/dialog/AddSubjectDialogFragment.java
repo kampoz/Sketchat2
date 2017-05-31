@@ -27,12 +27,12 @@ public class AddSubjectDialogFragment extends DialogFragment {
     private EditText etSubjectName;
     private Button bCancel;
     private Button bOK;
-    private int idOfGroupToAddSubject;
+    private long idOfGroupToAddSubject;
     private GroupRealm groupRealm = new GroupRealm();
     public AddSubjectDialogFragmentListener listener;
 
     public interface AddSubjectDialogFragmentListener {
-        void onOKClickInAddSubject(String groupName, int groupId);
+        void onOKClickInAddSubject(String groupName, long groupId);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
         this.listener = listener;
     }
 
-    public void setIdOfGroupToAddSubject(int idOfGroupToAddSubject) {
+    public void setIdOfGroupToAddSubject(long idOfGroupToAddSubject) {
         this.idOfGroupToAddSubject = idOfGroupToAddSubject;
     }
 
