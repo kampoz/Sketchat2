@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.realm.GroupRealm;
 
 /**
@@ -26,6 +27,7 @@ public class EditGroupDialogFragment extends DialogFragment {
     private Button bCancel;
     private Button bOK;
     public EditGroupDialogFragmentListener listener;
+    private GroupDao groupDao;
 
     public interface EditGroupDialogFragmentListener{
         void onCancelClickInEdit();
@@ -44,12 +46,14 @@ public class EditGroupDialogFragment extends DialogFragment {
         bOK = (Button) view.findViewById(R.id.bOK);
         etGroupName = (EditText)  view.findViewById(R.id.etChangeName);
         etGroupName.setText(groupRealmToEdit.getGroupName());
+        groupDao = new GroupDao();
 
         bDeleteGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String groupName = groupRealmToEdit.getGroupName().toString();
-                groupRealmToEdit.deleteGroup(groupRealmToEdit.getId());
+                //groupRealmToEdit.deleteGroup(groupRealmToEdit.getId());
+                groupDao.deleteGroup(groupRealmToEdit.getId());
                 listener.onDeleteGroupClickInEdit(groupName);
             }
         });
@@ -64,7 +68,8 @@ public class EditGroupDialogFragment extends DialogFragment {
         bOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupRealmToEdit.changeName(etGroupName.getText().toString());
+                //groupRealmToEdit.changeName(etGroupName.getText().toString());
+                groupDao.changeName(etGroupName.getText().toString(), groupRealmToEdit.getId());
                 listener.onOKClickInEdit();
             }
         });
@@ -91,4 +96,9 @@ public class EditGroupDialogFragment extends DialogFragment {
     }
 
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        groupDao.getRealm().close();
+    }
 }

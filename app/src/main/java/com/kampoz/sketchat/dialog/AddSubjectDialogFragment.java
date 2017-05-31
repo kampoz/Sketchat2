@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import android.widget.TextView;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
@@ -29,6 +30,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
     private Button bOK;
     private long idOfGroupToAddSubject;
     private GroupRealm groupRealm = new GroupRealm();
+    private GroupDao groupDao;
     public AddSubjectDialogFragmentListener listener;
 
     public interface AddSubjectDialogFragmentListener {
@@ -43,6 +45,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_add, null);
         tvTitle = (TextView)view.findViewById(R.id.tvTitle);
         tvTitle.setText("New subject");
+        groupDao = new GroupDao();
         etSubjectName = (EditText)view.findViewById(R.id.etName);
         etSubjectName.setHint("Subject's name");
         bCancel = (Button)view.findViewById(R.id.bCancelinAddGroup);
@@ -58,7 +61,8 @@ public class AddSubjectDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 SubjectRealm subjectRealm = new SubjectRealm();
                 subjectRealm.setSubject(etSubjectName.getText().toString());
-                groupRealm.addSubjectToGroup(idOfGroupToAddSubject, subjectRealm);
+                ///groupRealm.addSubjectToGroup(idOfGroupToAddSubject, subjectRealm);
+                groupDao.addSubjectToGroup(idOfGroupToAddSubject, subjectRealm);
 //                groupRealmToEdit.changeName(etSubjectName.getText().toString());
 //                listener.onOKClickInEdit();
                 getDialog().dismiss();
@@ -68,6 +72,12 @@ public class AddSubjectDialogFragment extends DialogFragment {
         builder.setView(view);
         Dialog dialog = builder.create();
         return dialog;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        groupDao.getRealm().close();
     }
 
     public void setContext(Context context) {

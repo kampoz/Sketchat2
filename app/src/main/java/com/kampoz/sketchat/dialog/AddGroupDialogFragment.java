@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.realm.GroupRealm;
 
 /**
@@ -23,6 +24,7 @@ public class AddGroupDialogFragment extends DialogFragment {
     private EditText etGroupName;
     private Button bCancel;
     private Button bOK;
+    private GroupDao groupDao;
     public AddGroupDialogFragmentListener listener;
 
     public interface AddGroupDialogFragmentListener{
@@ -35,7 +37,7 @@ public class AddGroupDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add, null);
-
+        groupDao = new GroupDao();
         etGroupName = (EditText)view.findViewById(R.id.etName);
         bCancel = (Button)view.findViewById(R.id.bCancelinAddGroup);
         bOK = (Button)view.findViewById(R.id.bOKinAddGroup);
@@ -52,9 +54,7 @@ public class AddGroupDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 GroupRealm groupRealm = new GroupRealm();
                 groupRealm.setGroupName(etGroupName.getText().toString());
-                groupRealm.addNewGroup(groupRealm);
-//                groupRealmToEdit.changeName(etGroupName.getText().toString());
-//                listener.onOKClickInEdit();
+                groupDao.addNewGroup(groupRealm);
                 getDialog().dismiss();
                 listener.onOKClickInAddGroup(etGroupName.getText().toString());
             }
@@ -64,6 +64,12 @@ public class AddGroupDialogFragment extends DialogFragment {
         builder.setView(view);
         Dialog dialog = builder.create();
         return dialog;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        groupDao.getRealm().close();
     }
 
     public void setContext(Context context) {

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.SubjectsAdapter;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dialog.AddSubjectDialogFragment;
 import com.kampoz.sketchat.dialog.EditSubjectDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
@@ -47,6 +48,7 @@ public class SubjectsFragment extends Fragment implements
   private GroupRealm groupRealm = new GroupRealm();
   private long groupId;
   private Context context;
+  private GroupDao groupDao;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,13 +58,12 @@ public class SubjectsFragment extends Fragment implements
     recyclerView.setHasFixedSize(true);
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
+    groupDao = new GroupDao();
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
-    toolbar.setTitle("Group "+GroupRealm.getGroupNameForId(groupId));
-
+    toolbar.setTitle("Group "+groupDao.getGroupNameForId(groupId));
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
+    subjectsList.addAll(groupDao.getSubjectsFromGroupSorted(groupId));
     adapter = new SubjectsAdapter(subjectsList, recyclerView);
     adapter.setOnSubjectItemSelectedListener(this);
     recyclerView.setAdapter(adapter);
@@ -134,6 +135,12 @@ public class SubjectsFragment extends Fragment implements
   }
 
   @Override
+  public void onDetach() {
+    super.onDetach();
+    groupDao.getRealm().close();
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     if (id == R.id.action_edit_subject) {
@@ -187,7 +194,7 @@ public class SubjectsFragment extends Fragment implements
   public void onOKClickInAddSubject(String subjectName, long groupId) {
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(groupId));
+    subjectsList.addAll(groupDao.getSubjectsFromGroupSorted(groupId));
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Subject added: " + subjectName, Toast.LENGTH_SHORT).show();
   }
@@ -199,7 +206,7 @@ public class SubjectsFragment extends Fragment implements
     editSubjectDialog.dismiss();
     subjectRealm = new SubjectRealm();
     subjectsList.clear();
-    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(editSubjectDialog.getGroupId()));
+    subjectsList.addAll(groupDao.getSubjectsFromGroupSorted(editSubjectDialog.getGroupId()));
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Subject deleted: " + subjectName, Toast.LENGTH_SHORT).show();
   }
@@ -213,7 +220,7 @@ public class SubjectsFragment extends Fragment implements
   public void onOKClickInEdit() {
     editSubjectDialog.dismiss();
     subjectsList.clear();
-    subjectsList.addAll(GroupRealm.getSubjectsFromGroupSorted(editSubjectDialog.getGroupId()));
+    subjectsList.addAll(groupDao.getSubjectsFromGroupSorted(editSubjectDialog.getGroupId()));
     adapter.notifyDataSetChanged();
     Toast.makeText(getContext(), "Name changed", Toast.LENGTH_SHORT).show();
   }

@@ -56,7 +56,7 @@ public class GroupDao {
     return groups;
   }
 
-  public void deleteGroup(final int id) {
+  public void deleteGroup(final long id) {
     realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
@@ -65,7 +65,7 @@ public class GroupDao {
     });
   }
 
-  public String getGroupNameForId(final int id) {
+  public String getGroupNameForId(final long id) {
     String groupName = realm.where(GroupRealm.class).equalTo("id", id).findFirst().getGroupName();
     return groupName;
   }
@@ -81,7 +81,7 @@ public class GroupDao {
     });
   }
 
-  public void addSubjectToGroup(final int groupId, final SubjectRealm subjectRealm) {
+  public void addSubjectToGroup(final long groupId, final SubjectRealm subjectRealm) {
     realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
@@ -127,7 +127,7 @@ public class GroupDao {
     //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
   }
 
-  public List<SubjectRealm> getSubjectsFromGroupSorted(int groupId) {
+  public List<SubjectRealm> getSubjectsFromGroupSorted(long groupId) {
     List<SubjectRealm> subjects = new ArrayList<>();
     //RealmResults<SubjectRealm> all = Realm.getDefaultInstance()
     // .where(SubjectRealm.class).findAllSorted("subject");

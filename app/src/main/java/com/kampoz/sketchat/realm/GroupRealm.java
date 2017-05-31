@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.realm;
 
+import com.kampoz.sketchat.dao.GroupDao;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,17 +158,18 @@ public class GroupRealm extends RealmObject {
   }
 
   private int generateGroupId() {
-    Realm realm = Realm.getDefaultInstance();
+    //Realm realm = Realm.getDefaultInstance();
+    GroupDao groupDao = new GroupDao();
     int newId = 0;
-    Number oldMaxId = realm.where(GroupRealm.class).max("id");
+    Number oldMaxId = groupDao.getRealm().where(GroupRealm.class).max("id");
     if (oldMaxId == null) {
-      realm.close();
+      groupDao.getRealm().close();
       return newId;
     } else {
-      realm.close();
+      groupDao.getRealm().close();
       return oldMaxId.intValue() + 1;
     }
-    //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
+
   }
 
   public static List<SubjectRealm> getSubjectsFromGroupSorted(long groupId) {
