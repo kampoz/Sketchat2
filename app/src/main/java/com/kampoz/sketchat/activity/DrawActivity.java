@@ -176,16 +176,12 @@ public class DrawActivity extends AppCompatActivity
                 point.setX(pointX);
                 point.setY(pointY);
                 currentPath.getPoints().add(point);
-                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst()
+                    .getDrawing()
                     .getPaths().add(currentPath);
               }
             });
 
-
-            //////////realm.beginTransaction();
-
-            ///////////realm.commitTransaction();
-            ///////////////
           } else if (action == MotionEvent.ACTION_MOVE) {
             //realm.beginTransaction();
             realm.executeTransaction(new Transaction() {
@@ -195,30 +191,38 @@ public class DrawActivity extends AppCompatActivity
                 point.setX(pointX);
                 point.setY(pointY);
                 currentPath.getPoints().add(point);
-                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst()
+                    .getDrawing()
                     .getPaths().add(currentPath);
               }
             });
-
-            //realm.commitTransaction();
           } else if (action == MotionEvent.ACTION_UP) {
-            realm.beginTransaction();
-            currentPath.setCompleted(true);
-            DrawPointRealm point = realm.createObject(DrawPointRealm.class);
-            point.setX(pointX);
-            point.setY(pointY);
-            currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
-                .getPaths().add(currentPath);
-            realm.commitTransaction();
+            //realm.beginTransaction();
+            realm.executeTransaction(new Transaction() {
+              @Override
+              public void execute(Realm realm) {
+                currentPath.setCompleted(true);
+                DrawPointRealm point = realm.createObject(DrawPointRealm.class);
+                point.setX(pointX);
+                point.setY(pointY);
+                currentPath.getPoints().add(point);
+                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst()
+                    .getDrawing()
+                    .getPaths().add(currentPath);
+              }
+            });
             idOfLastDrawPath = currentPath.getId();
             currentPath = null;
           } else {
-            realm.beginTransaction();
-            currentPath.setCompleted(true);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
-                .getPaths().add(currentPath);
-            realm.commitTransaction();
+            realm.executeTransaction(new Transaction() {
+              @Override
+              public void execute(Realm realm) {
+                currentPath.setCompleted(true);
+                realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst()
+                    .getDrawing()
+                    .getPaths().add(currentPath);
+              }
+            });
             idOfLastDrawPath = currentPath.getId();
             currentPath = null;
           }
@@ -227,11 +231,8 @@ public class DrawActivity extends AppCompatActivity
         return false;
       }
     });
-    Log.d("DA czas", "20");
-
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
-    Log.d("DA czas", "21");
-    Log.d("DA czas", "=========================================================");
+
 
   }
 
@@ -286,7 +287,9 @@ public class DrawActivity extends AppCompatActivity
       realm.close();
       realm = null;
       /** ??????? **/
-      if(drawThread!=null) drawThread.shutdown();
+      if (drawThread != null) {
+        drawThread.shutdown();
+      }
     }
     Log.d("Cykl życia DA", "...onDestroy()...koniec");
   }
@@ -390,7 +393,7 @@ public class DrawActivity extends AppCompatActivity
 
           synchronized (holder) {
             Log.d("DA czas", "29");
-            if(canvas!=null) {
+            if (canvas != null) {
               canvas.drawColor(Color.WHITE);
             }
             final Paint paint = new Paint();
@@ -416,14 +419,14 @@ public class DrawActivity extends AppCompatActivity
                 final float y = (float) ((point.getY() / ratio) + marginTop);
                 path.lineTo(x, y);
               }
-              if(canvas!=null){
-              canvas.drawPath(path, paint);
+              if (canvas != null) {
+                canvas.drawPath(path, paint);
               }
             }
             Log.d("DA czas", "30");
-            if(progressDialog!=null && progressDialog.isShowing()){
+            if (progressDialog != null && progressDialog.isShowing()) {
               progressDialog.dismiss();
-              progressDialog=null;
+              progressDialog = null;
             }
 
           }
@@ -479,6 +482,7 @@ public class DrawActivity extends AppCompatActivity
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
       progressDialog.show();
     }
+
     @Override
     protected void onPostExecute(Void aVoid) {
       super.onPostExecute(aVoid);
@@ -490,6 +494,7 @@ public class DrawActivity extends AppCompatActivity
         }
       }
     }
+
     @Override
     protected Void doInBackground(Void... arg0) {
       /*Realm bgRealm = Realm.getDefaultInstance();
