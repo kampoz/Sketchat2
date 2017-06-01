@@ -172,7 +172,22 @@ public class GroupsFragment extends Fragment implements
   @Override
   public void onDetach() {
     super.onDetach();
+
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    if(groupDao == null) {
+      groupDao = new GroupDao();
+    }
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
     groupDao.closeRealmInstance();
+    groupDao = null;
   }
 
   /************** INTERFACES: *********************/

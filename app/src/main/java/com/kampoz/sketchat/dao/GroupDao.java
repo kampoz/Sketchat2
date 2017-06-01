@@ -1,6 +1,7 @@
 package com.kampoz.sketchat.dao;
 
 import android.util.Log;
+import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.realm.DrawingRealm;
 import com.kampoz.sketchat.realm.GroupRealm;
 
@@ -20,12 +21,20 @@ public class GroupDao {
 
   private Realm realm;
   private String tag1 = "realm instance";
-  private String tagOpen = "in GroupDao open";
-  private String tagClose = "in GroupDao close";
+  private String tagOpen = "+ in GroupDao open";
+  private String tagClose = "- in GroupDao close";
+  private String tagCount = "= Realm instances opened in GroupDao: ";
+  private String tagGlobal = "== globalRealmInstancesCount: ";
+  static int count = 0;
 
   public GroupDao() {
     this.realm = Realm.getDefaultInstance();
+    count++;
+    SplashActivity.globalRealmInstancesCount++;
+    Log.d(tag1,"-------------------------");
     Log.d(tag1,tagOpen);
+    Log.d(tag1,tagCount + count);
+    Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
   }
 
   public Realm getRealm() {
@@ -142,6 +151,10 @@ public class GroupDao {
 
   public void closeRealmInstance(){
     realm.close();
+    count--;
+    SplashActivity.globalRealmInstancesCount--;
     Log.d(tag1,tagClose);
+    Log.d(tag1,tagCount + count);
+    Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
   }
 }

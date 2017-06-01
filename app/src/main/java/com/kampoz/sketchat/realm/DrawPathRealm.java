@@ -67,11 +67,11 @@ public class DrawPathRealm extends RealmObject {
     long newId;
     Realm defaultInstance = Realm.getDefaultInstance();
     Number oldMaxIdNumber = defaultInstance.where(DrawPathRealm.class).max("id");
-    Long oldMaxId = oldMaxIdNumber.longValue();
-    if (oldMaxId == null) {
+    //Long oldMaxId = oldMaxIdNumber.longValue();
+    if (oldMaxIdNumber == null) {
       newId = 1;
     } else {
-      newId = oldMaxId.intValue() + 1;
+      newId = oldMaxIdNumber.intValue() + 1;
     }
     return newId;
   }

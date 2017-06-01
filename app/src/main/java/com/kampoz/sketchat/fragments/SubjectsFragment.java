@@ -137,10 +137,22 @@ public class SubjectsFragment extends Fragment implements
   }
 
   @Override
-  public void onDetach() {
-    super.onDetach();
+  public void onResume() {
+    super.onResume();
+    if(groupDao == null)
+      groupDao = new GroupDao();
+
+    if(subjectDao == null)
+      subjectDao = new SubjectDao();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
     groupDao.closeRealmInstance();
+    groupDao = null;
     subjectDao.closeRealmInstance();
+    subjectDao = null;
   }
 
   @Override

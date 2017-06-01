@@ -10,13 +10,14 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.SyncConfiguration;
 import io.realm.SyncCredentials;
 import io.realm.SyncUser;
 
 public class SplashActivity extends AppCompatActivity {
 
-  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw13";
+  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw999";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -24,6 +25,9 @@ public class SplashActivity extends AppCompatActivity {
   SharedPreferences preferences;
   Context context;
   private String tag = "cz SA";
+  public static int globalRealmInstancesCount = 0;
+
+  boolean isFirst = true;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +41,9 @@ public class SplashActivity extends AppCompatActivity {
     SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
       @Override
       public void onSuccess(SyncUser user) {
+
         final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-            REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
+            REALM_URL).build();
 
         Log.d("SyncConfiguration",
             "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
@@ -50,11 +55,10 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("SyncConfiguration",
             "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
 
-
-        if(realm==null){
+        if (realm == null) {
           Realm.setDefaultConfiguration(syncConfiguration);
           //realm = Realm.getDefaultInstance();
-        }else {
+        } else {
           Realm.removeDefaultConfiguration();
           Realm.setDefaultConfiguration(syncConfiguration);
         }
@@ -62,7 +66,6 @@ public class SplashActivity extends AppCompatActivity {
         editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
         editor.apply();
         Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-
 
         Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
         SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);

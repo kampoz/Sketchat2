@@ -90,6 +90,12 @@ public class DrawActivity extends AppCompatActivity
   Canvas canvas = null;
   ProgressDialog progressDialog;
   private String tag = "cz DA";
+  private int count = 0;
+  private String tag1 = "realm instance DA";
+  private String tagOpen = "+ in DrawActivity open";
+  private String tagClose = "- in DrawActivity close";
+  private String tagCount = "= Realm instances opened in DrawActivity: ";
+  private String tagGlobal = "== globalRealmInstancesCount: ";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -308,8 +314,7 @@ public class DrawActivity extends AppCompatActivity
       marginLeft = 0;
       marginTop = (height - width) / 2.0;
     }
-    Log.d(tag, "25");
-    Log.d(tag, "================");
+
   }
 
   @Override
@@ -326,14 +331,17 @@ public class DrawActivity extends AppCompatActivity
 
     public void shutdown() {
       synchronized (this) {
-        Log.d("tag", "26 drawThred shutdown()");
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
           bgRealm.close();
-          Log.d("tag", "26 drawThred shutdown(), bgRealm.close();");
+          count--;
+          SplashActivity.globalRealmInstancesCount--;
+          Log.d(tag1,tagClose);
+          Log.d(tag1,tagCount + count);
+          Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
         }
       }
-      interrupt();
+      //interrupt();
     }
 
     @Override
@@ -360,6 +368,14 @@ public class DrawActivity extends AppCompatActivity
         return;
       }
       bgRealm = Realm.getDefaultInstance();
+      count++;
+      SplashActivity.globalRealmInstancesCount++;
+      Log.d(tag1,"-------------------------");
+      Log.d(tag1,tagOpen);
+      Log.d(tag1,tagCount + count);
+      Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
+      SplashActivity.globalRealmInstancesCount++;
+
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
       final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class)
           .equalTo("id", currentSubjectId).
@@ -417,7 +433,8 @@ public class DrawActivity extends AppCompatActivity
         bgRealm.waitForChange();
       }
       synchronized (this) {
-        bgRealm.close();
+        shutdown();
+        //bgRealm.close();
         Log.d(tag, "30a bgRealm.close()");
       }
       Log.d(tag, "31");
@@ -459,7 +476,7 @@ public class DrawActivity extends AppCompatActivity
       progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
       progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
-      progressDialog.show();
+      //progressDialog.show();
     }
 
     @Override
