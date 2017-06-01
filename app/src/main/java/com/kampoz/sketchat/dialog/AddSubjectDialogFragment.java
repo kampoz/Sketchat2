@@ -77,7 +77,7 @@ public class AddSubjectDialogFragment extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        groupDao.getRealm().close();
+        groupDao.closeRealmInstance();
     }
 
     public void setContext(Context context) {

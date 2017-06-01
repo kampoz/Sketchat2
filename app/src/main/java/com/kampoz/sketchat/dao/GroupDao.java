@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.dao;
 
+import android.util.Log;
 import com.kampoz.sketchat.realm.DrawingRealm;
 import com.kampoz.sketchat.realm.GroupRealm;
 
@@ -18,9 +19,13 @@ import io.realm.RealmResults;
 public class GroupDao {
 
   private Realm realm;
+  private String tag1 = "realm instance";
+  private String tagOpen = "in GroupDao open";
+  private String tagClose = "in GroupDao close";
 
   public GroupDao() {
     this.realm = Realm.getDefaultInstance();
+    Log.d(tag1,tagOpen);
   }
 
   public Realm getRealm() {
@@ -71,7 +76,7 @@ public class GroupDao {
   }
 
   public void changeName(final String newName, final long groupId) {
-    Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+    realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
         GroupRealm groupRealm = realm.where(GroupRealm.class).equalTo("id", groupId).findFirst();
@@ -114,14 +119,11 @@ public class GroupDao {
   }
 
   private int generateGroupId() {
-    Realm realm = Realm.getDefaultInstance();
     int newId = 0;
     Number oldMaxId = realm.where(GroupRealm.class).max("id");
     if (oldMaxId == null) {
-      realm.close();
       return newId;
     } else {
-      realm.close();
       return oldMaxId.intValue() + 1;
     }
     //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
@@ -136,5 +138,10 @@ public class GroupDao {
       subjects.add(subjectRealm);
     }
     return subjects;
+  }
+
+  public void closeRealmInstance(){
+    realm.close();
+    Log.d(tag1,tagClose);
   }
 }

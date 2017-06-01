@@ -89,6 +89,7 @@ public class DrawActivity extends AppCompatActivity
   private TextView tvSubjectTitle;
   Canvas canvas = null;
   ProgressDialog progressDialog;
+  private String tag = "cz DA";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -97,19 +98,13 @@ public class DrawActivity extends AppCompatActivity
     Intent intent = getIntent();
     realm = Realm.getDefaultInstance();
     toolbar = (Toolbar) findViewById(R.id.app_bar);
-    //Log.d("DA czas", "1");
+
     setSupportActionBar(toolbar);
-    //Log.d("DA czas", "2");
     getSupportActionBar().setHomeButtonEnabled(false);
-    //Log.d("DA czas", "3");
     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    //Log.d("DA czas","4");
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    //Log.d("DA czas","5");
     tvSubjectTitle = (TextView) findViewById(R.id.tvSubjectTitle);
-    //Log.d("DA czas","6");
     bChat = (ImageButton) findViewById(R.id.bChat);
-    //Log.d("DA czas","7");
     bChat.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -121,31 +116,19 @@ public class DrawActivity extends AppCompatActivity
         }
       }
     });
-    //Log.d("DA czas","8");
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
-    //Log.d("DA czas","9");
     tvSubjectTitle.setText(getCurrentSubjectTitle(currentSubjectId));
-    //Log.d("DA czas","10");
     currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();
-    //Log.d("DA czas","11");
     dialog.setColorListener(this);
-    Log.d("DA czas", "12");
     dialog.setCurrentColor(currentColor);
-    Log.d("DA czas", "13");
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
-    Log.d("DA czas", "14");
     final SharedPreferences.Editor editor = preferences.edit();
-    Log.d("DA czas", "15");
     paletteFragment = new PaletteFragment();
-    Log.d("DA czas", "16");
     setPaletteFragment();
-    Log.d("DA czas", "17");
     surfaceView = (SurfaceView) findViewById(R.id.surface_view);
-    Log.d("DA czas", "18");
     surfaceView.getHolder().addCallback(DrawActivity.this);
-    Log.d("DA czas", "19");
 
     surfaceView.setOnTouchListener(new OnTouchListener() {
       @Override
@@ -181,9 +164,7 @@ public class DrawActivity extends AppCompatActivity
                     .getPaths().add(currentPath);
               }
             });
-
           } else if (action == MotionEvent.ACTION_MOVE) {
-            //realm.beginTransaction();
             realm.executeTransaction(new Transaction() {
               @Override
               public void execute(Realm realm) {
@@ -197,7 +178,6 @@ public class DrawActivity extends AppCompatActivity
               }
             });
           } else if (action == MotionEvent.ACTION_UP) {
-            //realm.beginTransaction();
             realm.executeTransaction(new Transaction() {
               @Override
               public void execute(Realm realm) {
@@ -243,25 +223,25 @@ public class DrawActivity extends AppCompatActivity
   @Override
   protected void onStop() {
     super.onStop();
-    Log.d("Cykl życia DA", "...onStop()...");
+    Log.d(tag, "...onStop()...");
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    Log.d("Cykl życia DA", "...onStart()...");
+    Log.d(tag, "...onStart()...");
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    Log.d("Cykl życia DA", "...onResume()...");
+    Log.d(tag, "...onResume()...");
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-    Log.d("Cykl życia DA", "...onPause()...");
+    Log.d(tag, "...onPause()...");
   }
 
   @Override
@@ -277,7 +257,7 @@ public class DrawActivity extends AppCompatActivity
   @Override
   protected void onRestart() {
     super.onRestart();
-    Log.d("Cykl życia DA", "...onRestart()...");
+    Log.d(tag, "...onRestart()...");
   }
 
   @Override
@@ -286,12 +266,9 @@ public class DrawActivity extends AppCompatActivity
     if (realm != null) {
       realm.close();
       realm = null;
-      /** ??????? **/
-      if (drawThread != null) {
-        drawThread.shutdown();
-      }
     }
-    Log.d("Cykl życia DA", "...onDestroy()...koniec");
+    ratio = 0;
+    Log.d(tag, "...onDestroy()...koniec");
   }
 
   // if we are in the middle of a rotation, realm may be null.
@@ -311,8 +288,8 @@ public class DrawActivity extends AppCompatActivity
     }*/
     new firstSketchDownloadAsyncTask().execute();
 
-    Log.d("DA czas", "23");
-    Log.d("DA czas", "=============");
+    Log.d(tag, "23");
+    Log.d(tag, "=============");
   }
 
   @Override
@@ -331,28 +308,29 @@ public class DrawActivity extends AppCompatActivity
       marginLeft = 0;
       marginTop = (height - width) / 2.0;
     }
-    Log.d("DA czas", "25");
-    Log.d("DA czas", "================");
+    Log.d(tag, "25");
+    Log.d(tag, "================");
   }
 
   @Override
   public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
     if (drawThread != null) {
-      drawThread.shutdown();
-      drawThread = null;
+      //drawThread.shutdown();
+      //drawThread = null;
     }
     ratio = -1;
   }
 
   class DrawThread extends Thread {
-
     private Realm bgRealm;
 
     public void shutdown() {
       synchronized (this) {
-        Log.d("DA czas", "26");
+        Log.d("tag", "26 drawThred shutdown()");
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
+          bgRealm.close();
+          Log.d("tag", "26 drawThred shutdown(), bgRealm.close();");
         }
       }
       interrupt();
@@ -360,7 +338,7 @@ public class DrawActivity extends AppCompatActivity
 
     @Override
     public void run() {
-      Log.d("DA czas", "28");
+      Log.d(tag, "28");
       while (ratio < 0 && !isInterrupted()) {
       }
       if (isInterrupted()) {
@@ -387,12 +365,13 @@ public class DrawActivity extends AppCompatActivity
           .equalTo("id", currentSubjectId).
               findFirst().getDrawing().getPaths();
       while (!isInterrupted()) {
+        Log.d(tag, "28a while (!isInterrupted()");
         try {
           final SurfaceHolder holder = surfaceView.getHolder();
           canvas = holder.lockCanvas();
 
           synchronized (holder) {
-            Log.d("DA czas", "29");
+            Log.d(tag, "29");
             if (canvas != null) {
               canvas.drawColor(Color.WHITE);
             }
@@ -423,7 +402,7 @@ public class DrawActivity extends AppCompatActivity
                 canvas.drawPath(path, paint);
               }
             }
-            Log.d("DA czas", "30");
+            Log.d(tag, "30");
             if (progressDialog != null && progressDialog.isShowing()) {
               progressDialog.dismiss();
               progressDialog = null;
@@ -439,9 +418,10 @@ public class DrawActivity extends AppCompatActivity
       }
       synchronized (this) {
         bgRealm.close();
+        Log.d(tag, "30a bgRealm.close()");
       }
-      Log.d("DA czas", "31");
-      Log.d("DA czas", "===================");
+      Log.d(tag, "31");
+      Log.d(tag, "===================");
     }
   }
 
@@ -467,7 +447,6 @@ public class DrawActivity extends AppCompatActivity
   }
 
   private class firstSketchDownloadAsyncTask extends AsyncTask<Void, Void, Void> {
-
     SurfaceHolder holder;
 
     @Override
@@ -491,6 +470,7 @@ public class DrawActivity extends AppCompatActivity
         if (drawThread == null) {
           drawThread = new DrawThread();
           drawThread.start();
+          Log.d(tag, "AsyncTask.onPostExecute() ");
         }
       }
     }

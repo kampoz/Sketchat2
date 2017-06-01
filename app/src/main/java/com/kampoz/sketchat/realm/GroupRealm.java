@@ -163,10 +163,10 @@ public class GroupRealm extends RealmObject {
     int newId = 0;
     Number oldMaxId = groupDao.getRealm().where(GroupRealm.class).max("id");
     if (oldMaxId == null) {
-      groupDao.getRealm().close();
+      groupDao.closeRealmInstance();
       return newId;
     } else {
-      groupDao.getRealm().close();
+      groupDao.closeRealmInstance();
       return oldMaxId.intValue() + 1;
     }
 

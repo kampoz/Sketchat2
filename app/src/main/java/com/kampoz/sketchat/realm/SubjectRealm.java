@@ -16,17 +16,17 @@ import io.realm.annotations.PrimaryKey;
 public class SubjectRealm extends RealmObject{
 
     @PrimaryKey
-    private int id;
+    private long id;
     private long groupId;
     private String subject;
     private int interlocutorsNumber;
     private DrawingRealm drawing;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public long getGroupId() {

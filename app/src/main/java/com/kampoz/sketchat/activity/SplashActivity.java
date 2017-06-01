@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
   private volatile Realm realm;
   SharedPreferences preferences;
   Context context;
-  private String tag = "Cykl ż SplashActivity";
+  private String tag = "cz SA";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

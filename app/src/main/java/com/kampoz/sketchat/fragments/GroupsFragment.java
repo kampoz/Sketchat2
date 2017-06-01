@@ -172,7 +172,7 @@ public class GroupsFragment extends Fragment implements
   @Override
   public void onDetach() {
     super.onDetach();
-    groupDao.getRealm().close();
+    groupDao.closeRealmInstance();
   }
 
   /************** INTERFACES: *********************/

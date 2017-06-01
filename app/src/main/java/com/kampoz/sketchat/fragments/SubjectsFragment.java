@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.SubjectsAdapter;
 import com.kampoz.sketchat.dao.GroupDao;
+import com.kampoz.sketchat.dao.SubjectDao;
 import com.kampoz.sketchat.dialog.AddSubjectDialogFragment;
 import com.kampoz.sketchat.dialog.EditSubjectDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
@@ -49,6 +50,7 @@ public class SubjectsFragment extends Fragment implements
   private long groupId;
   private Context context;
   private GroupDao groupDao;
+  private SubjectDao subjectDao;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +61,7 @@ public class SubjectsFragment extends Fragment implements
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
     groupDao = new GroupDao();
+    subjectDao = new SubjectDao();
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
     toolbar.setTitle("Group "+groupDao.getGroupNameForId(groupId));
     subjectRealm = new SubjectRealm();
@@ -103,9 +106,8 @@ public class SubjectsFragment extends Fragment implements
       }
       @Override
       public boolean onQueryTextChange(String newText) {
-        subjectRealm = new SubjectRealm();
         subjectsList.clear();
-        subjectsList.addAll(subjectRealm.searchElementsByName(newText, groupId));
+        subjectsList.addAll(subjectDao.searchElementsByName(newText, groupId));
         adapter.notifyDataSetChanged();
         return false;
       }
@@ -137,7 +139,8 @@ public class SubjectsFragment extends Fragment implements
   @Override
   public void onDetach() {
     super.onDetach();
-    groupDao.getRealm().close();
+    groupDao.closeRealmInstance();
+    subjectDao.closeRealmInstance();
   }
 
   @Override

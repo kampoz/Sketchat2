@@ -99,6 +99,6 @@ public class EditGroupDialogFragment extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        groupDao.getRealm().close();
+        groupDao.closeRealmInstance();
     }
 }

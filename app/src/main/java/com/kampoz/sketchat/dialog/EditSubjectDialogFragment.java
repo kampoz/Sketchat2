@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.SubjectDao;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
 /**
@@ -30,6 +31,7 @@ public class EditSubjectDialogFragment extends DialogFragment {
     private TextView tvEditDialogLabel;
     private long groupId;
     public EditSubjectDialogFragmentListener listener;
+    private SubjectDao subjectDao;
 
     public interface EditSubjectDialogFragmentListener{
         void onCancelClickInEdit();
@@ -53,13 +55,15 @@ public class EditSubjectDialogFragment extends DialogFragment {
         bOK = (Button) view.findViewById(R.id.bOK);
         etSubjectName = (EditText)  view.findViewById(R.id.etChangeName);
         etSubjectName.setText(subjectRealmToEdit.getSubject());
+        subjectDao = new SubjectDao();
 
 
         bDeleteSubject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String subjectName = subjectRealmToEdit.getSubject();
-                subjectRealmToEdit.deleteSubject(subjectRealmToEdit.getId());
+                //subjectRealmToEdit.deleteSubject(subjectRealmToEdit.getId());
+                subjectDao.deleteSubject(subjectRealmToEdit.getId());
                 listener.onDeleteSubjectClickInEdit(subjectName, groupId);
             }
         });
@@ -74,7 +78,8 @@ public class EditSubjectDialogFragment extends DialogFragment {
         bOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subjectRealmToEdit.changeName(etSubjectName.getText().toString());
+                //subjectRealmToEdit.changeName(etSubjectName.getText().toString());
+                subjectDao.changeName(etSubjectName.getText().toString(), subjectRealmToEdit.getId());
                 listener.onOKClickInEdit();
             }
         });
@@ -106,5 +111,11 @@ public class EditSubjectDialogFragment extends DialogFragment {
 
     public long getGroupId() {
         return groupId;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        subjectDao.closeRealmInstance();
     }
 }

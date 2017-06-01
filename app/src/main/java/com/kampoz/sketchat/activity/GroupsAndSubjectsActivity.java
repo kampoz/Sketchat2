@@ -38,7 +38,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   private GroupsFragment groupsFragment;
   private MyConnectionChecker myConnectionChecker;
   private long mCurrentGroupId = 0;
-  private Realm realm;
+  private String tag = "cz G&SA";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     toolbar = (Toolbar) findViewById(R.id.app_bar);
     toolbar.setTitle(R.string.activity_groups_list_toolbar_title);
     setSupportActionBar(toolbar);
-    realm = Realm.getDefaultInstance();
     this.isLand = getResources().getBoolean(R.bool.isLand);
     setGroupsFragment();
     myConnectionChecker = new MyConnectionChecker();
@@ -64,45 +63,44 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    realm.close();
-    Log.d("Cykl życia", "...onDestroy()...");
+    Log.d(tag, "...onDestroy()...");
   }
 
   @Override
   protected void onStop() {
     super.onStop();
-    Log.d("Cykl życia", "...onStop()...");
+    Log.d(tag, "...onStop()...");
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    Log.d("Cykl życia", "...onStart()...");
+    Log.d(tag, "...onStart()...");
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    Log.d("Cykl życia", "...onResume()...");
+    Log.d(tag, "...onResume()...");
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-    Log.d("Cykl życia", "...onPause()...");
+    Log.d(tag, "...onPause()...");
   }
 
   @Override
   public void onBackPressed() {
     super.onBackPressed();
     mCurrentGroupId = 0;
-    Log.d("Cykl życia", "...onBackPressed()...");
+    Log.d(tag, "...onBackPressed()...");
   }
 
   @Override
   protected void onRestart() {
     super.onRestart();
-    Log.d("Cykl życia", "...onRestart()...");
+    Log.d(tag, "...onRestart()...");
   }
 
   @Override
@@ -215,6 +213,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     Intent startDrawActivityIntent = new Intent(this, DrawActivity.class);
     startDrawActivityIntent.putExtra("currentSubjectid", currentSubjectid);
     this.startActivity(startDrawActivityIntent);
+    //this.finish();
   }
   /** end of interface methods */
 }
