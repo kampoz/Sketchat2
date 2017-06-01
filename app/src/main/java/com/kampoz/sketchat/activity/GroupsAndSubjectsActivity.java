@@ -22,6 +22,7 @@ import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
 import io.realm.Realm;
+import io.realm.SyncUser;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     GroupsFragment.FragmentListener,

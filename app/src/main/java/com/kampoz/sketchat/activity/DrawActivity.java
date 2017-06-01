@@ -9,20 +9,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -33,14 +28,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.helper.MyColorRGB;
-import com.kampoz.sketchat.helper.MyLinearLayout;
 import com.kampoz.sketchat.realm.DrawPathRealm;
 import com.kampoz.sketchat.realm.DrawPointRealm;
 import com.kampoz.sketchat.model.PencilView;
@@ -48,7 +40,9 @@ import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.RealmList;
-import io.realm.RealmResults;
+import io.realm.SyncConfiguration;
+import io.realm.SyncCredentials;
+import io.realm.SyncUser;
 import java.util.HashMap;
 import java.util.Iterator;
 import android.view.MenuItem;
@@ -57,7 +51,7 @@ public class DrawActivity extends AppCompatActivity
     implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback,
     ColorPickerDialogFragment.ColorListener {
 
-  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw5";
+  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw999";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -90,19 +84,35 @@ public class DrawActivity extends AppCompatActivity
   Canvas canvas = null;
   ProgressDialog progressDialog;
   private String tag = "cz DA";
-  private int count = 0;
-  private String tag1 = "realm instance DA";
-  private String tagOpen = "+ in DrawActivity open";
-  private String tagClose = "- in DrawActivity close";
-  private String tagCount = "= Realm instances opened in DrawActivity: ";
+  private int countInThread = 0;
+  private String tag1 = "realm instance th";
+  private String tagOpen = "+ in Thread open";
+  private String tagClose = "- in Thread close";
+  private String tagCount = "= Realm instances opened in Thread: ";
   private String tagGlobal = "== globalRealmInstancesCount: ";
+
+  private int countDA = 0;
+  private String tag2 = "realm instance DA";
+  private String tagOpenDA = "+ in DrawActivity open";
+  private String tagCloseDA = "- in DrawActivity close";
+  private String tagCountDA = "= Realm instances opened in DrawActivity: ";
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
+
     realm = Realm.getDefaultInstance();
+    countDA++;
+    SplashActivity.globalRealmInstancesCount++;
+    Log.d(tag2,"---------DrawActivity OnCreate()------------");
+    Log.d(tag2,"-------------------------");
+    Log.d(tag2,tagOpenDA);
+    Log.d(tag2,tagCountDA + countDA);
+    Log.d(tag2,tagGlobal + SplashActivity.globalRealmInstancesCount);
+
     toolbar = (Toolbar) findViewById(R.id.app_bar);
 
     setSupportActionBar(toolbar);
@@ -272,9 +282,14 @@ public class DrawActivity extends AppCompatActivity
     if (realm != null) {
       realm.close();
       realm = null;
+      countDA--;
+      SplashActivity.globalRealmInstancesCount--;
+      Log.d(tag1,tagCloseDA);
+      Log.d(tag1,tagCountDA + countDA);
+      Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
+      Log.d(tag1,"---------DrawActivity OnDestroy()------------");
     }
     ratio = 0;
-    Log.d(tag, "...onDestroy()...koniec");
   }
 
   // if we are in the middle of a rotation, realm may be null.
@@ -285,7 +300,7 @@ public class DrawActivity extends AppCompatActivity
 
   @Override
   public void surfaceCreated(SurfaceHolder surfaceHolder) {
-    Log.d("DA czas", "22");
+
     ////Todo: Tu Asynctaska dac startujacego wczytanie pierwszy raz rysunku
 
     /*if (drawThread == null) {
@@ -293,14 +308,10 @@ public class DrawActivity extends AppCompatActivity
       drawThread.start();
     }*/
     new firstSketchDownloadAsyncTask().execute();
-
-    Log.d(tag, "23");
-    Log.d(tag, "=============");
   }
 
   @Override
   public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-    Log.d("DA czas", "24");
     boolean isPortrait = width < height;
     if (isPortrait) {
       ratio = (double) EDGE_WIDTH / height;
@@ -334,11 +345,12 @@ public class DrawActivity extends AppCompatActivity
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
           bgRealm.close();
-          count--;
+          countInThread--;
           SplashActivity.globalRealmInstancesCount--;
           Log.d(tag1,tagClose);
-          Log.d(tag1,tagCount + count);
+          Log.d(tag1,tagCount + countInThread);
           Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
+          Log.d(tag1,"---------thread shutdown()------------");
         }
       }
       //interrupt();
@@ -346,7 +358,17 @@ public class DrawActivity extends AppCompatActivity
 
     @Override
     public void run() {
-      Log.d(tag, "28");
+      Log.d(tag1, "---------thread run()----------------------");
+
+      //final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
+
+
+      /*SyncUser user = SyncUser.currentUser();
+      Log.d(tag1, "---------thread run() SyncUser.currentUser()--------------------");
+      final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
+          REALM_URL).build();
+      Realm.setDefaultConfiguration(syncConfiguration);*/
+
       while (ratio < 0 && !isInterrupted()) {
       }
       if (isInterrupted()) {
@@ -367,19 +389,25 @@ public class DrawActivity extends AppCompatActivity
       if (isInterrupted()) {
         return;
       }
+      //moja sdynchronizacja, żeby sie nie rozjechało
+      /*synchronized (this){
       bgRealm = Realm.getDefaultInstance();
-      count++;
+      countInThread++;
       SplashActivity.globalRealmInstancesCount++;
-      Log.d(tag1,"-------------------------");
-      Log.d(tag1,tagOpen);
-      Log.d(tag1,tagCount + count);
-      Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
+      Log.d(tag1, "-------------------------");
+      Log.d(tag1, tagOpen);
+      Log.d(tag1, tagCount + countInThread);
+      Log.d(tag1, tagGlobal + SplashActivity.globalRealmInstancesCount);
       SplashActivity.globalRealmInstancesCount++;
-
+    }*/
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
+      //synchronized (this)
+      bgRealm = Realm.getDefaultInstance();
       final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class)
           .equalTo("id", currentSubjectId).
               findFirst().getDrawing().getPaths();
+      //bgRealm.close();
+
       while (!isInterrupted()) {
         Log.d(tag, "28a while (!isInterrupted()");
         try {
@@ -387,7 +415,6 @@ public class DrawActivity extends AppCompatActivity
           canvas = holder.lockCanvas();
 
           synchronized (holder) {
-            Log.d(tag, "29");
             if (canvas != null) {
               canvas.drawColor(Color.WHITE);
             }
@@ -418,7 +445,6 @@ public class DrawActivity extends AppCompatActivity
                 canvas.drawPath(path, paint);
               }
             }
-            Log.d(tag, "30");
             if (progressDialog != null && progressDialog.isShowing()) {
               progressDialog.dismiss();
               progressDialog = null;
@@ -437,8 +463,6 @@ public class DrawActivity extends AppCompatActivity
         //bgRealm.close();
         Log.d(tag, "30a bgRealm.close()");
       }
-      Log.d(tag, "31");
-      Log.d(tag, "===================");
     }
   }
 
@@ -473,10 +497,10 @@ public class DrawActivity extends AppCompatActivity
       canvas = holder.lockCanvas();
       progressDialog = new ProgressDialog(DrawActivity.this);
       progressDialog.setMessage("Loading sketch. Please wait...");
-      progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      //progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
       progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
-      //progressDialog.show();
+      progressDialog.show();
     }
 
     @Override

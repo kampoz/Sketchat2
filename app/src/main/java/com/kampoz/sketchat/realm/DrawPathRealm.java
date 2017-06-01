@@ -73,6 +73,7 @@ public class DrawPathRealm extends RealmObject {
     } else {
       newId = oldMaxIdNumber.intValue() + 1;
     }
+    defaultInstance.close();
     return newId;
   }
 }

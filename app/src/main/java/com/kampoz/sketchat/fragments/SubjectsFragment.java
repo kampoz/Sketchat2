@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +52,7 @@ public class SubjectsFragment extends Fragment implements
   private Context context;
   private GroupDao groupDao;
   private SubjectDao subjectDao;
+  private String tag1 = "realm instance";
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +62,7 @@ public class SubjectsFragment extends Fragment implements
     recyclerView.setHasFixedSize(true);
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+    Log.d(tag1,"---------SubjectFragment onCreateView()------------");
     groupDao = new GroupDao();
     subjectDao = new SubjectDao();
     toolbar = (Toolbar) view.findViewById(R.id.subjects_bar);
@@ -144,6 +147,7 @@ public class SubjectsFragment extends Fragment implements
 
     if(subjectDao == null)
       subjectDao = new SubjectDao();
+    Log.d(tag1,"------------SubjectFragment onResume()-------------");
   }
 
   @Override
@@ -153,6 +157,7 @@ public class SubjectsFragment extends Fragment implements
     groupDao = null;
     subjectDao.closeRealmInstance();
     subjectDao = null;
+    Log.d(tag1,"---------SubjectFragment onPause()------------");
   }
 
   @Override

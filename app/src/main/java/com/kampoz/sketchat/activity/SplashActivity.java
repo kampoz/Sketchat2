@@ -38,9 +38,13 @@ public class SplashActivity extends AppCompatActivity {
     final SharedPreferences.Editor editor = preferences.edit();
 
     final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
+    //SyncUser user = SyncUser.currentUser();
+
     SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
       @Override
       public void onSuccess(SyncUser user) {
+
+
 
         final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
             REALM_URL).build();
@@ -56,6 +60,7 @@ public class SplashActivity extends AppCompatActivity {
             "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
 
         if (realm == null) {
+          Realm.removeDefaultConfiguration();
           Realm.setDefaultConfiguration(syncConfiguration);
           //realm = Realm.getDefaultInstance();
         } else {

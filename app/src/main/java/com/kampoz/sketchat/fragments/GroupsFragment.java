@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +47,7 @@ public class GroupsFragment extends Fragment implements
   GroupRealm groupRealm;
   private Context context;
   private GroupDao groupDao;
+  private String tag1 = "realm instance";
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +59,7 @@ public class GroupsFragment extends Fragment implements
     //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
     toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
     toolbar.setTitle("Groups");
+    Log.d(tag1,"------------GroupsFragment onCreateView()-------------");
     groupDao = new GroupDao();
     /*** pobranie danych z Realm i przekazanie ich do adaptera */
     groupsList.clear();
@@ -180,7 +183,9 @@ public class GroupsFragment extends Fragment implements
     super.onResume();
     if(groupDao == null) {
       groupDao = new GroupDao();
+
     }
+    Log.d(tag1,"------------GroupsFragment onResume()-------------");
   }
 
   @Override
@@ -188,6 +193,8 @@ public class GroupsFragment extends Fragment implements
     super.onPause();
     groupDao.closeRealmInstance();
     groupDao = null;
+    Log.d(tag1,"------------GroupsFragment onPause()-------------");
+
   }
 
   /************** INTERFACES: *********************/
