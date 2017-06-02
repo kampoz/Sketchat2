@@ -150,7 +150,7 @@ public class GroupDao {
   }
 
   public void closeRealmInstance(){
-    realm.close();
+    //realm.close();
     count--;
     SplashActivity.globalRealmInstancesCount--;
     Log.d(tag1,tagClose);

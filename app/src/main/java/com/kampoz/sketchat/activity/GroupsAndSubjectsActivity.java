@@ -40,6 +40,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   private MyConnectionChecker myConnectionChecker;
   private long mCurrentGroupId = 0;
   private String tag = "cz G&SA";
+  private String backStackTag = "backStack entries: ";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,12 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     this.isLand = getResources().getBoolean(R.bool.isLand);
     setGroupsFragment();
     myConnectionChecker = new MyConnectionChecker();
+
     Log.d("Cykl życia", "...onCreate()...");
+    Log.d(backStackTag, "...onCreate()..getSupportFragmentManager().getBackStackEntryCount()"+fragmentManager.getBackStackEntryCount());
+    for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++){
+      Log.d(backStackTag, "Found fragment id: " + fragmentManager.getBackStackEntryAt(entry).getId());
+    }
 
     if (savedInstanceState != null) {
       mCurrentGroupId = savedInstanceState.getInt("GROUP_ID");
@@ -93,10 +99,40 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
   @Override
   public void onBackPressed() {
-    super.onBackPressed();
+    //moveTaskToBack(true);
+    FragmentManager fm = this.fragmentManager;
+    Fragment currentFragment = fm.findFragmentById(R.id.fl_subjects_and_groups_container);
+    if(currentFragment instanceof GroupsFragment){
+      //super.onBackPressed();
+
+    }if(currentFragment instanceof SubjectsFragment){
+      super.onBackPressed();
+    }
+
+/*
+    if(fm.getBackStackEntryCount() == 1) {
+      //setGroupsFragment();
+      super.onBackPressed();
+    }*/
     mCurrentGroupId = 0;
-    Log.d(tag, "...onBackPressed()...");
+
+    Log.d(backStackTag, "...onBackPressed()..getSupportFragmentManager()."
+        + "getBackStackEntryCount()"+fm.getBackStackEntryCount());
+    for(int entry = 0; entry < fm.getBackStackEntryCount(); entry++){
+      Log.d(backStackTag, "Found fragment id: " + fm.getBackStackEntryAt(entry).getId()+" "+ fm.getBackStackEntryAt(entry).getClass());
+
+    }
   }
+
+  /*@Override
+  public void onBackPressed() {
+    if(getSupportFragmentManager().getBackStackEntryCount() != 0) {
+
+    }
+    // mCurrentGroupId = 0;
+    Log.d(tag, "...onBackPressed()...");
+  }*/
+
 
   @Override
   protected void onRestart() {
@@ -173,10 +209,16 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
   private void setGroupsFragment() {
     FragmentTransaction fragmentTransaction = this.fragmentManager.beginTransaction();
-    //this.currentFragment = new GroupsFragment();
     groupsFragment = new GroupsFragment();
-    fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, groupsFragment);
+    fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, groupsFragment, "GROUPS_FRAGMENT");
+    fragmentTransaction.addToBackStack(null);
     fragmentTransaction.commit();
+    FragmentManager fm = this.fragmentManager;
+    Log.d(backStackTag, "...setGroupsFragment()..getSupportFragmentManager()."
+        + "getBackStackEntryCount()"+fm.getBackStackEntryCount());
+    for(int entry = 0; entry < fm.getBackStackEntryCount(); entry++){
+      Log.d(backStackTag, "Found fragment id: " + fm.getBackStackEntryAt(entry).getId()+" "+ fm.getBackStackEntryAt(entry).getClass());
+    }
   }
 
   /**
@@ -189,9 +231,17 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     this.currentFragment = new SubjectsFragment();
     ((SubjectsFragment) this.currentFragment).setGroupId(groupId);
     ((SubjectsFragment) this.currentFragment).setListener(this);
-    fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, this.currentFragment);
+    fragmentTransaction.replace(R.id.fl_subjects_and_groups_container, this.currentFragment, "SUBJECT_FRAGMENT");
     fragmentTransaction.addToBackStack(null);
     fragmentTransaction.commit();
+    FragmentManager fm = this.fragmentManager;
+    Log.d(backStackTag, "...setSubjectsFragment()..getSupportFragmentManager()."
+        + "getBackStackEntryCount()"+fm.getBackStackEntryCount());
+
+    for(int entry = 0; entry < fm.getBackStackEntryCount(); entry++){
+      Log.d(backStackTag, "Found fragment id: " + fm.getBackStackEntryAt(entry).getId()+" "+ fm.getBackStackEntryAt(entry).getClass());
+
+    }
   }
 
   /*** Interfaces methods overwrited: **/

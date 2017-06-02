@@ -194,8 +194,8 @@ public class GroupsFragment extends Fragment implements
     groupDao.closeRealmInstance();
     groupDao = null;
     Log.d(tag1,"------------GroupsFragment onPause()-------------");
-
   }
+
 
   /************** INTERFACES: *********************/
   /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
