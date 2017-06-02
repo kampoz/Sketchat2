@@ -14,6 +14,7 @@
 
   <style name="GroupsAndSubjectsBarTheme" parent="AppTheme">
     <item name="android:background">@color/colorMyPrimaryDark</item>
+    <item name="android:textColor">@color/colorMyAlmostWhite</item>
   </style>
 
   <style name="DrawActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar" />

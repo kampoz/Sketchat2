@@ -6,6 +6,4 @@
   android:background="@color/colorMyPrimaryDark"
   app:popupTheme="@style/GroupsAndSubjectsBarTheme"
   app:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-
 </android.support.v7.widget.Toolbar>

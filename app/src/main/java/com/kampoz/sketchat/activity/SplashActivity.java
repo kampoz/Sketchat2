@@ -43,9 +43,6 @@ public class SplashActivity extends AppCompatActivity {
     SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
       @Override
       public void onSuccess(SyncUser user) {
-
-
-
         final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
             REALM_URL).build();
 
@@ -80,7 +77,7 @@ public class SplashActivity extends AppCompatActivity {
       @Override
       public void onError(ObjectServerError error) {
         Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
-        Log.d("Connection error", "...1) Brak połaczenia");
+        Log.d("Connection error", "................1) Brak połaczenia");
 
         SyncUser user = SyncUser.currentUser();
         final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
