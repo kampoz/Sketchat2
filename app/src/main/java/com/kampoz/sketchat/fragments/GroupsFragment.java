@@ -183,8 +183,11 @@ public class GroupsFragment extends Fragment implements
     super.onResume();
     if(groupDao == null) {
       groupDao = new GroupDao();
-
     }
+
+    groupsList.clear();
+    groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
+    adapter.notifyDataSetChanged();
     Log.d(tag1,"------------GroupsFragment onResume()-------------");
   }
 

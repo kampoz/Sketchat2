@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
@@ -41,6 +42,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
   private long mCurrentGroupId = 0;
   private String tag = "cz G&SA";
   private String backStackTag = "backStack entries: ";
+  //private GroupDao groupDao;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     setSupportActionBar(toolbar);
     this.isLand = getResources().getBoolean(R.bool.isLand);
     setGroupsFragment();
+    /** groupDao obiekt tylko po t, żeby była aktywna instancjsa reala*/
+    //groupDao = new GroupDao();
     myConnectionChecker = new MyConnectionChecker();
 
     Log.d("Cykl życia", "...onCreate()...");
