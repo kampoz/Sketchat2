@@ -26,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
   Context context;
   private String tag = "cz SA";
   public static int globalRealmInstancesCount = 0;
-
   boolean isFirst = true;
 
   @Override
@@ -37,59 +36,75 @@ public class SplashActivity extends AppCompatActivity {
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
 
-    final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
-    //SyncUser user = SyncUser.currentUser();
+    if(SyncUser.currentUser()!=null && SyncUser.currentUser().isValid()) {
 
-    SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
-      @Override
-      public void onSuccess(SyncUser user) {
-        final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-            REALM_URL).build();
+      final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(),
+          REALM_URL).build();
 
-        Log.d("SyncConfiguration",
-            "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
-        Log.d("SyncConfiguration",
-            "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
-        Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
-        Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
-        Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
-        Log.d("SyncConfiguration",
-            "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
+      //Realm.setDefaultConfiguration(Realm.getDefaultInstance().getConfiguration());
+//      Realm.getInstance(syncConfiguration).close();
 
-        if (realm == null) {
-          Realm.removeDefaultConfiguration();
-          Realm.setDefaultConfiguration(syncConfiguration);
-          //realm = Realm.getDefaultInstance();
-        } else {
-          Realm.removeDefaultConfiguration();
-          Realm.setDefaultConfiguration(syncConfiguration);
+      Realm.setDefaultConfiguration(syncConfiguration);
+
+      Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this,
+          GroupsAndSubjectsActivity.class);
+      SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+      SplashActivity.this.finish();
+      Log.d(tag, "Realm.getGlobalInstanceCount() z if "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+
+    } else {
+      final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
+      SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
+        @Override
+        public void onSuccess(SyncUser user) {
+          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
+                  REALM_URL).build();
+
+          Log.d("SyncConfiguration",
+                  "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
+          Log.d("SyncConfiguration",
+                  "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
+          Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
+          Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
+          Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
+          Log.d("SyncConfiguration",
+                  "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
+          Log.d(tag, "Realm.getGlobalInstanceCount() z else "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+
+          if (realm == null) {
+            Realm.removeDefaultConfiguration();
+            Realm.setDefaultConfiguration(syncConfiguration);
+            //realm = Realm.getDefaultInstance();
+          } else {
+            Realm.removeDefaultConfiguration();
+            Realm.setDefaultConfiguration(syncConfiguration);
+          }
+
+          editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
+          editor.apply();
+          Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
+          Log.d(tag, "Realm.getGlobalInstanceCount() "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+
+          Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
+          SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+          SplashActivity.this.finish();
         }
 
-        editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
-        editor.apply();
-        Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
+        @Override
+        public void onError(ObjectServerError error) {
+          Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
 
-        Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
-        SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-        SplashActivity.this.finish();
-      }
-
-      @Override
-      public void onError(ObjectServerError error) {
-        Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
-        Log.d("Connection error", "................1) Brak połaczenia");
-
-        SyncUser user = SyncUser.currentUser();
-        final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-            REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
-
-        Realm.setDefaultConfiguration(syncConfiguration);
-
-        Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
-        SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-        SplashActivity.this.finish();
-      }
-    });
+          Log.d("Connection error", "................1) Brak połaczenia");
+          SyncUser user = SyncUser.currentUser();
+          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
+                  REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
+          Realm.setDefaultConfiguration(syncConfiguration);
+          Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
+          SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+          SplashActivity.this.finish();
+        }
+      });
+    }
   }
 
   @Override
@@ -98,6 +113,7 @@ public class SplashActivity extends AppCompatActivity {
     if (realm != null) {
       realm.close();
       realm = null;
+
     }
     Log.d(tag, "...onDestroy()...");
   }
