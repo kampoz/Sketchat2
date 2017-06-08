@@ -25,8 +25,10 @@ public class SplashActivity extends AppCompatActivity {
   SharedPreferences preferences;
   Context context;
   private String tag = "cz SA";
+  private String tagGlobalInstances = " Realm global inst. SA";
   public static int globalRealmInstancesCount = 0;
   boolean isFirst = true;
+  public static SyncConfiguration publicSyncConfiguration;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class SplashActivity extends AppCompatActivity {
 
       final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(),
           REALM_URL).build();
+
+      publicSyncConfiguration = syncConfiguration;
 
       //Realm.setDefaultConfiguration(Realm.getDefaultInstance().getConfiguration());
 //      Realm.getInstance(syncConfiguration).close();
@@ -69,7 +73,7 @@ public class SplashActivity extends AppCompatActivity {
           Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
           Log.d("SyncConfiguration",
                   "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
-          Log.d(tag, "Realm.getGlobalInstanceCount() z else "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+          Log.d(tagGlobalInstances, "Realm.getGlobalInstanceCount() z else "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
 
           if (realm == null) {
             Realm.removeDefaultConfiguration();
@@ -83,7 +87,7 @@ public class SplashActivity extends AppCompatActivity {
           editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
           editor.apply();
           Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-          Log.d(tag, "Realm.getGlobalInstanceCount() "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+          Log.d(tagGlobalInstances, "Realm.getGlobalInstanceCount() "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
 
           Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
           SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
@@ -113,6 +117,7 @@ public class SplashActivity extends AppCompatActivity {
     if (realm != null) {
       realm.close();
       realm = null;
+      Log.d(tagGlobalInstances, "onDestroy(); Realm.getGlobalInstanceCount() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
     }
     Log.d(tag, "...onDestroy()...");

@@ -96,6 +96,7 @@ public class DrawActivity extends AppCompatActivity
   private String tagOpenDA = "+ in DrawActivity open";
   private String tagCloseDA = "- in DrawActivity close";
   private String tagCountDA = "= Realm instances opened in DrawActivity: ";
+  private String tagGlobalInstances = "Realm global inst. DA";
 
 
   @Override
@@ -108,10 +109,6 @@ public class DrawActivity extends AppCompatActivity
     countDA++;
     SplashActivity.globalRealmInstancesCount++;
     Log.d(tag2,"---------DrawActivity OnCreate()------------");
-    Log.d(tag2,"-------------------------");
-    Log.d(tag2,tagOpenDA);
-    Log.d(tag2,tagCountDA + countDA);
-    Log.d(tag2,tagGlobal + SplashActivity.globalRealmInstancesCount);
 
     toolbar = (Toolbar) findViewById(R.id.app_bar);
 
@@ -228,7 +225,8 @@ public class DrawActivity extends AppCompatActivity
       }
     });
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
-
+    Log.d(tagGlobalInstances,"onCreate()  Realm.getGlobalInstanceCount: "+String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
   }
 
@@ -240,24 +238,32 @@ public class DrawActivity extends AppCompatActivity
   protected void onStop() {
     super.onStop();
     Log.d(tag, "...onStop()...");
+    Log.d(tagGlobalInstances,"onStop()  Realm.getGlobalInstanceCount: "+String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
   protected void onStart() {
     super.onStart();
     Log.d(tag, "...onStart()...");
+    Log.d(tagGlobalInstances,"onStart() Realm.getGlobalInstanceCount: "+String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
   protected void onResume() {
     super.onResume();
     Log.d(tag, "...onResume()...");
+    Log.d(tagGlobalInstances,"onResume() Realm.getGlobalInstanceCount: "+String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
   protected void onPause() {
     super.onPause();
     Log.d(tag, "...onPause()...");
+    Log.d(tagGlobalInstances,"onPause() Realm.getGlobalInstanceCount: "+String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
@@ -268,6 +274,8 @@ public class DrawActivity extends AppCompatActivity
     } else {
       super.onBackPressed();
     }
+    Log.d(tagGlobalInstances,"onBackPressed() Realm.getGlobalInstanceCount: "+String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
@@ -282,12 +290,9 @@ public class DrawActivity extends AppCompatActivity
     if (realm != null) {
       realm.close();
       realm = null;
-      countDA--;
-      SplashActivity.globalRealmInstancesCount--;
-      Log.d(tag1,tagCloseDA);
-      Log.d(tag1,tagCountDA + countDA);
-      Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
       Log.d(tag1,"---------DrawActivity OnDestroy()------------");
+      Log.d(tagGlobalInstances,"onDestroy() Realm.getGlobalInstanceCount: "+String.
+              valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
     }
     ratio = 0;
   }
@@ -331,8 +336,8 @@ public class DrawActivity extends AppCompatActivity
   @Override
   public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
     if (drawThread != null) {
-      //drawThread.shutdown();
-      //drawThread = null;
+      drawThread.shutdown();
+      drawThread = null;
     }
     ratio = -1;
   }
@@ -344,16 +349,11 @@ public class DrawActivity extends AppCompatActivity
       synchronized (this) {
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
-          bgRealm.close();
-          countInThread--;
-          SplashActivity.globalRealmInstancesCount--;
-          Log.d(tag1,tagClose);
-          Log.d(tag1,tagCount + countInThread);
-          Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
-          Log.d(tag1,"---------thread shutdown()------------");
+          Log.d(tag1,"Realm.getGlobalInstanceCount(): "+String.
+                  valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
         }
       }
-      //interrupt();
+      interrupt();
     }
 
     @Override
@@ -402,7 +402,9 @@ public class DrawActivity extends AppCompatActivity
     }*/
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
       //synchronized (this)
+
       bgRealm = Realm.getDefaultInstance();
+
       final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class)
           .equalTo("id", currentSubjectId).
               findFirst().getDrawing().getPaths();
@@ -459,9 +461,10 @@ public class DrawActivity extends AppCompatActivity
         bgRealm.waitForChange();
       }
       synchronized (this) {
-        shutdown();
-        //bgRealm.close();
-        Log.d(tag, "30a bgRealm.close()");
+       // shutdown();
+        bgRealm.close();
+        Log.d("Count after bgRealm", ""+Realm.getGlobalInstanceCount(bgRealm.getConfiguration()));
+        //Log.d(tag, "30a bgRealm.close()");
       }
     }
   }

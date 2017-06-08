@@ -19,12 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.adapter.GroupsAdapter;
 import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class GroupsFragment extends Fragment implements
     GroupsAdapter.OnGroupItemSelectedListener,
@@ -48,6 +51,7 @@ public class GroupsFragment extends Fragment implements
   private Context context;
   private GroupDao groupDao;
   private String tag1 = "realm instance";
+  private String tagGlobalInstances = "Realm global inst. GF";
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,6 +125,8 @@ public class GroupsFragment extends Fragment implements
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     setHasOptionsMenu(true);
+    Log.d(tagGlobalInstances, "Realm.getGlobalInstanceCount(): " + String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   /**
@@ -130,6 +136,8 @@ public class GroupsFragment extends Fragment implements
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
+    Log.d(tagGlobalInstances, "onAttach() Realm.getGlobalInstanceCount(): " + String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
     try {
       listener = (FragmentListener) context;
     } catch (ClassCastException e) {
@@ -175,6 +183,8 @@ public class GroupsFragment extends Fragment implements
   @Override
   public void onDetach() {
     super.onDetach();
+    Log.d(tagGlobalInstances, "onDetach() Realm.getGlobalInstanceCount(): " + String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
   }
 
@@ -189,6 +199,8 @@ public class GroupsFragment extends Fragment implements
     groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
     adapter.notifyDataSetChanged();
     Log.d(tag1,"------------GroupsFragment onResume()-------------");
+    Log.d(tagGlobalInstances, "onResume() Realm.getGlobalInstanceCount(): " + String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
@@ -197,6 +209,8 @@ public class GroupsFragment extends Fragment implements
     groupDao.closeRealmInstance();
     groupDao = null;
     Log.d(tag1,"------------GroupsFragment onPause()-------------");
+    Log.d(tagGlobalInstances, "onPause() Realm.getGlobalInstanceCount(): " + String.
+            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
 
