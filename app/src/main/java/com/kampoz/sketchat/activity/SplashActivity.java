@@ -37,59 +37,80 @@ public class SplashActivity extends AppCompatActivity {
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
 
-    final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
-    //SyncUser user = SyncUser.currentUser();
+    if(SyncUser.currentUser()!=null && SyncUser.currentUser().isValid()) {
 
-    SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
-      @Override
-      public void onSuccess(SyncUser user) {
-        final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-            REALM_URL).build();
+      final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(),
+          REALM_URL).build();
 
-        Log.d("SyncConfiguration",
-            "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
-        Log.d("SyncConfiguration",
-            "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
-        Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
-        Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
-        Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
-        Log.d("SyncConfiguration",
-            "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
+      //Realm.setDefaultConfiguration(Realm.getDefaultInstance().getConfiguration());
 
-        if (realm == null) {
-          Realm.removeDefaultConfiguration();
-          Realm.setDefaultConfiguration(syncConfiguration);
-          //realm = Realm.getDefaultInstance();
-        } else {
-          Realm.removeDefaultConfiguration();
-          Realm.setDefaultConfiguration(syncConfiguration);
+      Log.d("Count", ""+Realm.getGlobalInstanceCount(syncConfiguration));
+//      Realm.getInstance(syncConfiguration).close();
+
+      Realm.setDefaultConfiguration(syncConfiguration);
+
+      Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this,
+          GroupsAndSubjectsActivity.class);
+      SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+      SplashActivity.this.finish();
+
+    } else {
+
+      final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
+
+      SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
+        @Override
+        public void onSuccess(SyncUser user) {
+          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
+              REALM_URL).build();
+
+          Log.d("SyncConfiguration",
+              "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
+          Log.d("SyncConfiguration",
+              "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
+          Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
+          Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
+          Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
+          Log.d("SyncConfiguration",
+              "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
+
+          if (realm == null) {
+            Realm.removeDefaultConfiguration();
+            Realm.setDefaultConfiguration(syncConfiguration);
+            //realm = Realm.getDefaultInstance();
+          } else {
+            Realm.removeDefaultConfiguration();
+            Realm.setDefaultConfiguration(syncConfiguration);
+          }
+
+          editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
+          editor.apply();
+          Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
+
+          Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this,
+              GroupsAndSubjectsActivity.class);
+          SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+          SplashActivity.this.finish();
         }
 
-        editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
-        editor.apply();
-        Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
+        @Override
+        public void onError(ObjectServerError error) {
+          Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
+          Log.d("Connection error", "................1) Brak połaczenia");
 
-        Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
-        SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-        SplashActivity.this.finish();
-      }
+          SyncUser user = SyncUser.currentUser();
+          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
+              REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
 
-      @Override
-      public void onError(ObjectServerError error) {
-        Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
-        Log.d("Connection error", "................1) Brak połaczenia");
+          Realm.setDefaultConfiguration(syncConfiguration);
 
-        SyncUser user = SyncUser.currentUser();
-        final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-            REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
-
-        Realm.setDefaultConfiguration(syncConfiguration);
-
-        Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
-        SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-        SplashActivity.this.finish();
-      }
-    });
+          Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this,
+              GroupsAndSubjectsActivity.class);
+          SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+          SplashActivity.this.finish();
+        }
+      });
+    }
   }
 
   @Override

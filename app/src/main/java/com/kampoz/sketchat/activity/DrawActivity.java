@@ -331,8 +331,8 @@ public class DrawActivity extends AppCompatActivity
   @Override
   public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
     if (drawThread != null) {
-      //drawThread.shutdown();
-      //drawThread = null;
+      drawThread.shutdown();
+      drawThread = null;
     }
     ratio = -1;
   }
@@ -344,7 +344,6 @@ public class DrawActivity extends AppCompatActivity
       synchronized (this) {
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
-          bgRealm.close();
           countInThread--;
           SplashActivity.globalRealmInstancesCount--;
           Log.d(tag1,tagClose);
@@ -353,7 +352,7 @@ public class DrawActivity extends AppCompatActivity
           Log.d(tag1,"---------thread shutdown()------------");
         }
       }
-      //interrupt();
+      interrupt();
     }
 
     @Override
@@ -402,7 +401,9 @@ public class DrawActivity extends AppCompatActivity
     }*/
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
       //synchronized (this)
+
       bgRealm = Realm.getDefaultInstance();
+
       final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class)
           .equalTo("id", currentSubjectId).
               findFirst().getDrawing().getPaths();
@@ -459,9 +460,10 @@ public class DrawActivity extends AppCompatActivity
         bgRealm.waitForChange();
       }
       synchronized (this) {
-        shutdown();
-        //bgRealm.close();
-        Log.d(tag, "30a bgRealm.close()");
+       // shutdown();
+        bgRealm.close();
+        Log.d("Count after bgRealm", ""+Realm.getGlobalInstanceCount(bgRealm.getConfiguration()));
+        //Log.d(tag, "30a bgRealm.close()");
       }
     }
   }

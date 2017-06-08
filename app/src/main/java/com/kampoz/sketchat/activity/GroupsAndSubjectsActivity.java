@@ -103,29 +103,33 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
   @Override
   public void onBackPressed() {
-    //moveTaskToBack(true);
-    FragmentManager fm = this.fragmentManager;
-    Fragment currentFragment = fm.findFragmentById(R.id.fl_subjects_and_groups_container);
-    if(currentFragment instanceof GroupsFragment){
-      //super.onBackPressed();
 
-    }if(currentFragment instanceof SubjectsFragment){
-      super.onBackPressed();
-    }
-
-/*
-    if(fm.getBackStackEntryCount() == 1) {
-      //setGroupsFragment();
-      super.onBackPressed();
-    }*/
     mCurrentGroupId = 0;
+    super.onBackPressed();
 
-    Log.d(backStackTag, "...onBackPressed()..getSupportFragmentManager()."
-        + "getBackStackEntryCount()"+fm.getBackStackEntryCount());
-    for(int entry = 0; entry < fm.getBackStackEntryCount(); entry++){
-      Log.d(backStackTag, "Found fragment id: " + fm.getBackStackEntryAt(entry).getId()+" "+ fm.getBackStackEntryAt(entry).getClass());
-
-    }
+    //moveTaskToBack(true);
+//    FragmentManager fm = this.fragmentManager;
+//    Fragment currentFragment = fm.findFragmentById(R.id.fl_subjects_and_groups_container);
+//    if(currentFragment instanceof GroupsFragment){
+//      //super.onBackPressed();
+//
+//    }if(currentFragment instanceof SubjectsFragment){
+//      super.onBackPressed();
+//    }
+//
+///*
+//    if(fm.getBackStackEntryCount() == 1) {
+//      //setGroupsFragment();
+//      super.onBackPressed();
+//    }*/
+//    mCurrentGroupId = 0;
+//
+//    Log.d(backStackTag, "...onBackPressed()..getSupportFragmentManager()."
+//        + "getBackStackEntryCount()"+fm.getBackStackEntryCount());
+//    for(int entry = 0; entry < fm.getBackStackEntryCount(); entry++){
+//      Log.d(backStackTag, "Found fragment id: " + fm.getBackStackEntryAt(entry).getId()+" "+ fm.getBackStackEntryAt(entry).getClass());
+//
+//    }
   }
 
   /*@Override
