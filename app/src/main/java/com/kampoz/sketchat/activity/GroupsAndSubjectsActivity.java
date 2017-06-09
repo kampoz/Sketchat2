@@ -252,41 +252,46 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
      */
 
     class GettingActualGroupsThread extends Thread {
-
         public void run() {
-
-
-            try {
-                sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                sleep(5000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
             while (isThreadActive) {
                 if(currentFragment instanceof GroupsFragment) {
-
                     runOnUiThread(new Runnable() {
+
                         @Override
                         public void run() {
                             GroupDao groupDao = new GroupDao();
                             ArrayList<GroupRealm> threadGroupsList = new ArrayList<>();
-                            ArrayList<SubjectRealm> threadSubjectsList = new ArrayList<>();
                             threadGroupsList.addAll(groupDao.getAllfromGroupRealmSorted());
                             ((GroupsFragment)currentFragment).getGroupsList().clear();
                             ((GroupsFragment)currentFragment).getGroupsList().addAll(threadGroupsList);
                             //if (((GroupsFragment)currentFragment).getAdapter()!=null){
                                 ((GroupsFragment)currentFragment).getAdapter().notifyDataSetChanged();
                             //}
+                            groupDao.closeRealmInstance();
+                            groupDao = null;
                         }
                     });
-
                     Log.i(threadTag, "... pobranie grup ...");
-
                 } else if (currentFragment instanceof SubjectsFragment){
-//                    threadSubjectsList.addAll(groupDao.getSubjectsFromGroupSorted(((SubjectsFragment)currentFragment).getGroupId()));
-//                    ((SubjectsFragment)currentFragment).getSubjectsList().clear();
-//                    ((SubjectsFragment)currentFragment).getSubjectsList().addAll(threadSubjectsList);
-//                    ((SubjectsFragment)currentFragment).getAdapter().notifyDataSetChanged();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GroupDao groupDao = new GroupDao();
+                            ArrayList<SubjectRealm> threadSubjectsList = new ArrayList<>();
+                            threadSubjectsList.addAll(groupDao.getSubjectsFromGroupSorted(((SubjectsFragment)currentFragment).getGroupId()));
+                            ((SubjectsFragment)currentFragment).getSubjectsList().clear();
+                            ((SubjectsFragment)currentFragment).getSubjectsList().addAll(threadSubjectsList);
+                            ((SubjectsFragment)currentFragment).getAdapter().notifyDataSetChanged();
+                            groupDao.closeRealmInstance();
+                            groupDao = null;
+                        }
+                    });
                     Log.i(threadTag, "... pobranie subjectów ...");
                 }
                 try {
