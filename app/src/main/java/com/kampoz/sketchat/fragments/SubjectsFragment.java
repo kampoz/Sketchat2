@@ -270,4 +270,24 @@ public class SubjectsFragment extends Fragment implements
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
+
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public SubjectsAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(SubjectsAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    public ArrayList<SubjectRealm> getSubjectsList() {
+        return subjectsList;
+    }
+
+    public void setSubjectsList(ArrayList<SubjectRealm> subjectsList) {
+        this.subjectsList = subjectsList;
+    }
 }

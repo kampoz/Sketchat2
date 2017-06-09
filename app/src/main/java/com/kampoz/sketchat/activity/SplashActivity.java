@@ -35,18 +35,16 @@ public class SplashActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_splash);
 
+    Log.d(tagGlobalInstances, "--------------- Start app --------------");
+
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
 
     if(SyncUser.currentUser()!=null && SyncUser.currentUser().isValid()) {
-
       final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(),
           REALM_URL).build();
 
       publicSyncConfiguration = syncConfiguration;
-
-      //Realm.setDefaultConfiguration(Realm.getDefaultInstance().getConfiguration());
-//      Realm.getInstance(syncConfiguration).close();
 
       Realm.setDefaultConfiguration(syncConfiguration);
 
@@ -54,7 +52,7 @@ public class SplashActivity extends AppCompatActivity {
           GroupsAndSubjectsActivity.class);
       SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
       SplashActivity.this.finish();
-      Log.d(tag, "Realm.getGlobalInstanceCount() z if "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+      Log.d(tagGlobalInstances, "onCreate() <SyncUser exist> "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
 
     } else {
       final SyncCredentials syncCredentials = SyncCredentials.usernamePassword(ID, PASSWORD, false);
@@ -73,7 +71,7 @@ public class SplashActivity extends AppCompatActivity {
           Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
           Log.d("SyncConfiguration",
                   "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
-          Log.d(tagGlobalInstances, "Realm.getGlobalInstanceCount() z else "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+          //Log.d(tagGlobalInstances, "onCreate() z else <SyncUser don't exist or isnt valid> "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
           if (realm == null) {
             Realm.removeDefaultConfiguration();
@@ -87,7 +85,7 @@ public class SplashActivity extends AppCompatActivity {
           editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
           editor.apply();
           Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-          Log.d(tagGlobalInstances, "Realm.getGlobalInstanceCount() "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
+          Log.d(tagGlobalInstances, "onCreate() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
           Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
           SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);

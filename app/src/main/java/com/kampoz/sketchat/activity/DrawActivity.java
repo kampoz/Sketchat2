@@ -330,7 +330,6 @@ public class DrawActivity extends AppCompatActivity
       marginLeft = 0;
       marginTop = (height - width) / 2.0;
     }
-
   }
 
   @Override

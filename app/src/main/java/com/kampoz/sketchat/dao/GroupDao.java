@@ -29,12 +29,6 @@ public class GroupDao {
 
   public GroupDao() {
     this.realm = Realm.getDefaultInstance();
-    count++;
-    SplashActivity.globalRealmInstancesCount++;
-    Log.d(tag1,"-------------------------");
-    Log.d(tag1,tagOpen);
-    Log.d(tag1,tagCount + count);
-    Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
   }
 
   public Realm getRealm() {
@@ -151,10 +145,5 @@ public class GroupDao {
 
   public void closeRealmInstance(){
     realm.close();
-    count--;
-    SplashActivity.globalRealmInstancesCount--;
-    Log.d(tag1,tagClose);
-    Log.d(tag1,tagCount + count);
-    Log.d(tag1,tagGlobal + SplashActivity.globalRealmInstancesCount);
   }
 }
