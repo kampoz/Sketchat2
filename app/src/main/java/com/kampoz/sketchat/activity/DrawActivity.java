@@ -45,6 +45,8 @@ import io.realm.SyncCredentials;
 import io.realm.SyncUser;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.StringTokenizer;
+
 import android.view.MenuItem;
 
 public class DrawActivity extends AppCompatActivity
@@ -96,7 +98,9 @@ public class DrawActivity extends AppCompatActivity
   private String tagOpenDA = "+ in DrawActivity open";
   private String tagCloseDA = "- in DrawActivity close";
   private String tagCountDA = "= Realm instances opened in DrawActivity: ";
+  private String tagBgRealm = "DA bgRealm instance";
   private String tagGlobalInstances = "Realm global inst. DA";
+  private  boolean realmCloseFlag = false;
 
 
   @Override
@@ -261,6 +265,7 @@ public class DrawActivity extends AppCompatActivity
   @Override
   protected void onPause() {
     super.onPause();
+    realmCloseFlag = true;
     Log.d(tag, "...onPause()...");
     Log.d(tagGlobalInstances,"onPause() Realm.getGlobalInstanceCount: "+String.
             valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
@@ -290,6 +295,7 @@ public class DrawActivity extends AppCompatActivity
     if (realm != null) {
       realm.close();
       realm = null;
+      realmCloseFlag = true;
       Log.d(tag1,"---------DrawActivity OnDestroy()------------");
       Log.d(tagGlobalInstances,"onDestroy() Realm.getGlobalInstanceCount: "+String.
               valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
@@ -388,26 +394,14 @@ public class DrawActivity extends AppCompatActivity
       if (isInterrupted()) {
         return;
       }
-      //moja sdynchronizacja, żeby sie nie rozjechało
-      /*synchronized (this){
-      bgRealm = Realm.getDefaultInstance();
-      countInThread++;
-      SplashActivity.globalRealmInstancesCount++;
-      Log.d(tag1, "-------------------------");
-      Log.d(tag1, tagOpen);
-      Log.d(tag1, tagCount + countInThread);
-      Log.d(tag1, tagGlobal + SplashActivity.globalRealmInstancesCount);
-      SplashActivity.globalRealmInstancesCount++;
-    }*/
       //final RealmResults<DrawPathRealm> results = bgRealm.where(DrawPathRealm.class).findAll();
       //synchronized (this)
-
       bgRealm = Realm.getDefaultInstance();
+      Log.d(tagBgRealm, "bgRealm NEW INSTANCE OPEN >>> >>> >>>");
 
       final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class)
           .equalTo("id", currentSubjectId).
               findFirst().getDrawing().getPaths();
-      //bgRealm.close();
 
       while (!isInterrupted()) {
         Log.d(tag, "28a while (!isInterrupted()");
@@ -458,12 +452,11 @@ public class DrawActivity extends AppCompatActivity
           }
         }
         bgRealm.waitForChange();
+        Log.d(tagBgRealm, " bgRealm.waitForChange() ");
       }
-      synchronized (this) {
-       // shutdown();
-        bgRealm.close();
-        Log.d("Count after bgRealm", ""+Realm.getGlobalInstanceCount(bgRealm.getConfiguration()));
-        //Log.d(tag, "30a bgRealm.close()");
+      if(interrupted() && realmCloseFlag) {
+        if(!bgRealm.isClosed())bgRealm.close();
+        Log.d(tagBgRealm, "drawThread is interrupted() & bgRealm INSTANCE CLOSED <<<");
       }
     }
   }
@@ -520,38 +513,6 @@ public class DrawActivity extends AppCompatActivity
 
     @Override
     protected Void doInBackground(Void... arg0) {
-      /*Realm bgRealm = Realm.getDefaultInstance();
-      final RealmList<DrawPathRealm> results = bgRealm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
-      synchronized (holder) {
-        Log.d("DA czas", "32");
-        canvas.drawColor(Color.WHITE);
-        final Paint paint = new Paint();
-        for (DrawPathRealm drawPath : results) {
-          final RealmList<DrawPointRealm> points = drawPath.getPoints();
-          final Integer color = drawPath.getColor();//nameToColorMap.get(drawPath.getColor());
-          if (color != null) {
-            paint.setColor(color);
-          } else {
-            paint.setColor(currentColor);
-          }
-          paint.setStyle(Style.STROKE);
-          paint.setStrokeWidth((float) (4 / ratio));
-          final Iterator<DrawPointRealm> iterator = points.iterator();
-          final DrawPointRealm firstPoint = iterator.next();
-          final Path path = new Path();
-          final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
-          final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
-          path.moveTo(firstX, firstY);
-          while (iterator.hasNext()) {
-            DrawPointRealm point = iterator.next();
-            final float x = (float) ((point.getX() / ratio) + marginLeft);
-            final float y = (float) ((point.getY() / ratio) + marginTop);
-            path.lineTo(x, y);
-          }
-          canvas.drawPath(path, paint);
-        }
-        Log.d("DA czas", "33");
-      }*/
       return null;
     }
   }
