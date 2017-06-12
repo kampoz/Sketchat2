@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.SubjectDao;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 
@@ -27,6 +28,7 @@ public class SubjectsAdapter extends RecyclerView.Adapter {
   private ArrayList<SubjectRealm> subjectsList;
   private boolean areEditButtonsShown;
   private Context context;
+  private SubjectDao subjectDao;
 
   private class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -120,5 +122,13 @@ public class SubjectsAdapter extends RecyclerView.Adapter {
   public void setOnSubjectItemSelectedListener(
       OnSubjectItemSelectedListener onSubjectItemSelectedListener) {
     this.onSubjectItemSelectedListener = onSubjectItemSelectedListener;
+  }
+
+  public SubjectDao getSubjectDao() {
+    return subjectDao;
+  }
+
+  public void setSubjectDao(SubjectDao subjectDao) {
+    this.subjectDao = subjectDao;
   }
 }

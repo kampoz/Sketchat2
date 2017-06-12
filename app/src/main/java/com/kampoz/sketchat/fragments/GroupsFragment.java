@@ -72,6 +72,7 @@ public class GroupsFragment extends Fragment implements
         //groupDao = null;
         adapter = new GroupsAdapter(groupsList, recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
+        adapter.setGroupDao(((GroupsAndSubjectsActivity) getActivity()).getGroupDao());
         recyclerView.setAdapter(adapter);
         return view;
     }

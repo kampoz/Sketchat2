@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.adapter.SubjectsAdapter;
 import com.kampoz.sketchat.dao.GroupDao;
@@ -77,6 +78,7 @@ public class SubjectsFragment extends Fragment implements
         subjectsList.addAll(groupDao.getSubjectsFromGroupSorted(groupId));
         adapter = new SubjectsAdapter(subjectsList, recyclerView);
         adapter.setOnSubjectItemSelectedListener(this);
+        adapter.setSubjectDao(((GroupsAndSubjectsActivity)getActivity()).getSubjectDao());
         recyclerView.setAdapter(adapter);
         return view;
     }

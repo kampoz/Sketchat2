@@ -23,6 +23,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     private RecyclerView recyclerView;
     private ArrayList<GroupRealm> groupsList;
     private boolean areEditButtonsShown;
+    private GroupDao groupDao;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tvGroupName;
@@ -56,12 +57,12 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         final TextView tvGroupSubjectsNumber = viewHolder.tvGroupSubjectsNumber;
         final ImageView ivPencil = viewHolder.ivPencil;
         GroupRealm groupRealm = groupsList.get(position);
-        //long groupId = groupRealm.getId();
+        long groupId = groupRealm.getId();
         //GroupDao groupDao = new GroupDao();
 
-        //tvGroupSubjectsNumber.setText(String.valueOf(groupDao.getSubjectsCount(groupId)));
+        tvGroupSubjectsNumber.setText(String.valueOf(groupDao.getSubjectsCount(groupId)));
 
-        tvGroupSubjectsNumber.setText("5");
+        //tvGroupSubjectsNumber.setText("5");
         //groupDao.closeRealmInstance();
         if (areEditButtonsShown) {
             bEditGroup.setVisibility(View.VISIBLE);
@@ -107,5 +108,13 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     public void setAreEditButtonsShown(boolean areEditButtonsShown) {
         this.areEditButtonsShown = areEditButtonsShown;
+    }
+
+    public GroupDao getGroupDao() {
+        return groupDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
     }
 }
