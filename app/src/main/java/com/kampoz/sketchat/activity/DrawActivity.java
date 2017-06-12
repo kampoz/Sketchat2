@@ -656,7 +656,7 @@ public class DrawActivity extends AppCompatActivity
       //progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
       progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
-      //progressDialog.show();
+      progressDialog.show();
     }
 
     @Override
