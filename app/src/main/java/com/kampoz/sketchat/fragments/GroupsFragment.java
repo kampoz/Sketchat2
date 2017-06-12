@@ -136,8 +136,7 @@ public class GroupsFragment extends Fragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(tagGlobalInstances, "onAttach() Realm.getGlobalInstanceCount(): " + String.
-                valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+        //Log.d(tagGlobalInstances, "onAttach() Realm.getGlobalInstanceCount(): " + String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
         try {
             listener = (FragmentListener) context;
         } catch (ClassCastException e) {

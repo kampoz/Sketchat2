@@ -73,7 +73,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         }
 
         if (savedInstanceState != null) {
-            mCurrentGroupId = savedInstanceState.getInt("GROUP_ID");
+            mCurrentGroupId = savedInstanceState.getLong("GROUP_ID");
             if (mCurrentGroupId != 0) {
                 onGroupItemSelected(mCurrentGroupId);
             }

@@ -664,16 +664,28 @@ public class DrawActivity extends AppCompatActivity
       super.onPostExecute(aVoid);
       if (canvas != null) {
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
-        if (drawThread == null) {
+        //if (realmThread.isAlive()) {
           //drawThread = new DrawThread();
           //myDrawThread = new MyDrawThread();
           //drawThread.start();
           //myDrawThread.start();
+//          }else{
+//          realmThread.start();
+//          }
+
+        if (realmThread.getState() == Thread.State.NEW)
+        {
           realmThread.start();
+        } else{
+          Intent startDrawActivityIntent = new Intent(DrawActivity.this, DrawActivity.class);
+          startDrawActivityIntent.putExtra("currentSubjectid", currentSubjectId);
+          startActivity(startDrawActivityIntent);
+          DrawActivity.this.finish();
+        }
           Log.d(tag, "AsyncTask.onPostExecute() ");
         }
-      }
     }
+
 
     @Override
     protected Void doInBackground(Void... arg0) {
