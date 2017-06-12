@@ -8,8 +8,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.realm.GroupRealm;
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder>{
     public interface OnGroupItemSelectedListener{
@@ -52,9 +55,15 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         final Button bEditGroup = viewHolder.bEditGroup;
         final TextView tvGroupSubjectsNumber = viewHolder.tvGroupSubjectsNumber;
         final ImageView ivPencil = viewHolder.ivPencil;
-      GroupRealm groupRealm = groupsList.get(position);
-      tvGroupSubjectsNumber.setText(String.valueOf(groupRealm.getSubjectsList().size()));
-        if(areEditButtonsShown){
+        GroupRealm groupRealm = groupsList.get(position);
+        //long groupId = groupRealm.getId();
+        //GroupDao groupDao = new GroupDao();
+
+        //tvGroupSubjectsNumber.setText(String.valueOf(groupDao.getSubjectsCount(groupId)));
+
+        tvGroupSubjectsNumber.setText("5");
+        //groupDao.closeRealmInstance();
+        if (areEditButtonsShown) {
             bEditGroup.setVisibility(View.VISIBLE);
             tvGroupSubjectsNumber.setVisibility(View.INVISIBLE);
             ivPencil.setVisibility(View.INVISIBLE);

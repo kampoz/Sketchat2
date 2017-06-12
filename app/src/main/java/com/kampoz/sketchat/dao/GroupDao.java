@@ -94,7 +94,9 @@ public class GroupDao {
       @Override
       public void execute(Realm realm) {
         //// TODO: 2017-05-31 zamienic subjectRealm tu na daoSubjectRealm jak juz bedzie
-        subjectRealm.setId(subjectRealm.generateSubjectId());
+        SubjectDao subjectDao = new SubjectDao();
+        subjectRealm.setId(subjectDao.generateSubjectId());
+        subjectDao.closeRealmInstance();
         subjectRealm.setGroupId(groupId);
         realm.copyToRealm(subjectRealm);
         realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList()
@@ -105,6 +107,7 @@ public class GroupDao {
         realm.copyToRealmOrUpdate(drawingRealm);
         realm.where(SubjectRealm.class).equalTo("id", subjectRealm.getId()).findFirst()
             .setDrawing(drawingRealm);
+        realm.close();
       }
     });
   }
@@ -143,7 +146,12 @@ public class GroupDao {
     return subjects;
   }
 
+  public int getSubjectsCount(long groupId){
+    return realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().size();
+  }
+
   public void closeRealmInstance(){
+    //if(!realm.isClosed()) realm.close();
     realm.close();
   }
 }

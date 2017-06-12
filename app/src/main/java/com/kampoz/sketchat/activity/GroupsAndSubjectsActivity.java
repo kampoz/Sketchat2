@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.GroupDao;
+import com.kampoz.sketchat.dao.SubjectDao;
 import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
@@ -46,7 +47,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private String tagGlobalInstances = "Realm global inst. G&FA";
     private boolean isThreadActive = true;
     private String threadTag = "G&SA thread";
-    //private GroupDao groupDao;
+    private GroupDao groupDao;
+    private SubjectDao subjectDao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         setGroupsFragment();
         myConnectionChecker = new MyConnectionChecker();
 
+        groupDao = new GroupDao();
+        subjectDao = new SubjectDao();
 
         Log.d("Cykl życia", "...onCreate()...");
         Log.d(backStackTag, "...onCreate()..getSupportFragmentManager().getBackStackEntryCount()" + fragmentManager.getBackStackEntryCount());
@@ -80,11 +85,14 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         isThreadActive = false;
+        groupDao.closeRealmInstance();
+        subjectDao.closeRealmInstance();
+
         Log.d(tag, "...onDestroy()...");
         Log.d(tagGlobalInstances, "onDestroy(); Realm.getGlobalInstanceCount()" + String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
         Log.d(tagGlobalInstances, "-------------- closing app -------------");
+        super.onDestroy();
     }
 
     @Override
@@ -117,9 +125,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-
         mCurrentGroupId = 0;
-
         if (currentFragment instanceof SubjectsFragment){
             currentFragment = groupsFragment;
         }
@@ -274,7 +280,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
                                 ((GroupsFragment)currentFragment).getAdapter().notifyDataSetChanged();
                             //}
                             groupDao.closeRealmInstance();
-                            groupDao = null;
+                            //groupDao = null;
                         }
                     });
                     Log.i(threadTag, "... pobranie grup ...");
@@ -289,7 +295,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
                             ((SubjectsFragment)currentFragment).getSubjectsList().addAll(threadSubjectsList);
                             ((SubjectsFragment)currentFragment).getAdapter().notifyDataSetChanged();
                             groupDao.closeRealmInstance();
-                            groupDao = null;
+                            //groupDao = null;
                         }
                     });
                     Log.i(threadTag, "... pobranie subjectów ...");
@@ -299,8 +305,24 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Log.i(threadTag, "... wątek odświeżający dane działa ...");
+                //Log.i(threadTag, "... wątek odświeżający dane działa ...");
             }
         }
+    }
+
+    public GroupDao getGroupDao() {
+        return groupDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
+
+    public SubjectDao getSubjectDao() {
+        return subjectDao;
+    }
+
+    public void setSubjectDao(SubjectDao subjectDao) {
+        this.subjectDao = subjectDao;
     }
 }

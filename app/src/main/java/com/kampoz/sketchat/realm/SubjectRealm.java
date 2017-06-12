@@ -54,36 +54,6 @@ public class SubjectRealm extends RealmObject{
         this.drawing = drawing;
     }
 
-    public void changeName(final String newName){
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                setSubject(newName);
-            }
-        });
-    }
-
-    public void deleteSubject(final int id){
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.where(SubjectRealm.class).equalTo("id", id).findFirst().deleteFromRealm();
-            }
-        });
-    }
-
-    public static void addNewSubject(final SubjectRealm subjectRealm1){
-        Realm realm = Realm.getDefaultInstance();
-        final SubjectRealm subjectRealm = new SubjectRealm();
-        subjectRealm.setId(generateSubjectId());
-        subjectRealm.setSubject(subjectRealm1.getSubject());
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealmOrUpdate(subjectRealm);
-            }
-        });
-    }
 
     public static int generateSubjectId() {
         Realm realm = Realm.getDefaultInstance();
@@ -99,24 +69,5 @@ public class SubjectRealm extends RealmObject{
         //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
     }
 
-    public List<SubjectRealm> getAllfromSubjectRealmSorted() {
-        List<SubjectRealm> subjects = new ArrayList<>();
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<SubjectRealm> all = realm.where(SubjectRealm.class).findAllSorted("subject");
-        for (SubjectRealm subjectRealm : all) {
-            subjects.add(subjectRealm);
-        }
-        realm.close();
-        return subjects;
-    }
 
-    public List<SubjectRealm> searchElementsByName(String newText, long groupId) {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<SubjectRealm> all = realm.where(GroupRealm.class).equalTo("id", groupId).
-            findFirst().getSubjectsList().where().contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
-        /*** ta metoda tez działa, ale prawd. jest wolniejsza: **/
-        //RealmResults<SubjectRealm> all = Realm.getDefaultInstance().where(SubjectRealm.class).equalTo("groupId", groupId).contains("subject", newText, Case.INSENSITIVE).findAllSorted("subject");
-        realm.close();
-        return new ArrayList<>(all);
-    }
 }

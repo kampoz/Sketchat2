@@ -20,9 +20,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.adapter.GroupsAdapter;
-import com.kampoz.sketchat.dao.GroupDao;
+//import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
@@ -47,7 +48,7 @@ public class GroupsFragment extends Fragment implements
     private EditGroupDialogFragment editGroupDialog;
     private AddGroupDialogFragment addGroupDialog;
     private Context context;
-    private GroupDao groupDao;
+    //private GroupDao groupDao;
     private String tag1 = "realm instance";
     private String tagGlobalInstances = "Realm global inst. GF";
 
@@ -61,12 +62,14 @@ public class GroupsFragment extends Fragment implements
         toolbar = (Toolbar) view.findViewById(R.id.groups_bar);
         toolbar.setTitle("Groups");
         Log.d(tag1, "------------GroupsFragment onCreateView()-------------");
-        groupDao = new GroupDao();
+        //groupDao = new GroupDao();
         /*** pobranie danych z Realm i przekazanie ich do adaptera */
         groupsList.clear();
-        groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
+        groupsList.addAll(((GroupsAndSubjectsActivity)getActivity()).getGroupDao().getAllfromGroupRealmSorted());
         /*** drugi sposob pobrania wszystkiego z GroupRealm */
         //groupsList.addAll(Realm.getDefaultInstance().where(GroupRealm.class).findAll());
+        //groupDao.closeRealmInstance();
+        //groupDao = null;
         adapter = new GroupsAdapter(groupsList, recyclerView);
         adapter.setOnGroupItemSelectedListener(this);
         recyclerView.setAdapter(adapter);
@@ -103,7 +106,7 @@ public class GroupsFragment extends Fragment implements
             @Override
             public boolean onQueryTextChange(String newText) {
                 groupsList.clear();
-                groupsList.addAll(groupDao.searchELementsByName(newText));
+                groupsList.addAll(((GroupsAndSubjectsActivity)getActivity()).getGroupDao().searchELementsByName(newText));
                 adapter.notifyDataSetChanged();
                 return false;
             }
@@ -167,7 +170,7 @@ public class GroupsFragment extends Fragment implements
         }
         if (id == R.id.action_renew) {
             groupsList.clear();
-            groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
+            groupsList.addAll(((GroupsAndSubjectsActivity)getActivity()).getGroupDao().getAllfromGroupRealmSorted());
             adapter.notifyDataSetChanged();
             Toast.makeText(getContext(), "Groups renew", Toast.LENGTH_SHORT).show();
             return true;
@@ -190,13 +193,10 @@ public class GroupsFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if (groupDao == null) {
-            groupDao = new GroupDao();
-        }
-
         groupsList.clear();
-        groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
+        groupsList.addAll(((GroupsAndSubjectsActivity)getActivity()).getGroupDao().getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
+
         Log.d(tag1, "------------GroupsFragment onResume()-------------");
         Log.d(tagGlobalInstances, "onResume() Realm.getGlobalInstanceCount(): " + String.
                 valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
@@ -204,13 +204,21 @@ public class GroupsFragment extends Fragment implements
 
     @Override
     public void onPause() {
-        super.onPause();
-        groupDao.closeRealmInstance();
-        groupDao = null;
         Log.d(tag1, "------------GroupsFragment onPause()-------------");
         Log.d(tagGlobalInstances, "onPause() Realm.getGlobalInstanceCount(): " + String.
                 valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+        super.onPause();
     }
+
+    @Override
+    public void onStop() {
+        Log.d(tag1, "------------GroupsFragment onStop()-------------");
+        Log.d(tagGlobalInstances, "onStop() Realm.getGlobalInstanceCount(): " + String.
+                valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+        super.onStop();
+    }
+
+
 
     /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
     @Override
@@ -238,7 +246,7 @@ public class GroupsFragment extends Fragment implements
     @Override
     public void onOKClickInAddGroup(String groupName) {
         groupsList.clear();
-        groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
+        groupsList.addAll(((GroupsAndSubjectsActivity)getActivity()).getGroupDao().getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
         Toast.makeText(getContext(), "Group added: " + groupName, Toast.LENGTH_SHORT).show();
     }
@@ -251,7 +259,7 @@ public class GroupsFragment extends Fragment implements
     public void onDeleteGroupClickInEdit(String groupName) {
         editGroupDialog.dismiss();
         groupsList.clear();
-        groupsList.addAll(groupDao.getAllfromGroupRealmSorted());
+        groupsList.addAll(((GroupsAndSubjectsActivity)getActivity()).getGroupDao().getAllfromGroupRealmSorted());
         adapter.notifyDataSetChanged();
         Toast.makeText(getContext(), "Group deleted: " + groupName, Toast.LENGTH_SHORT).show();
     }
