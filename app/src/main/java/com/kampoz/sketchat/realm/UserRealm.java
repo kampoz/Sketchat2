@@ -1,5 +1,7 @@
 package com.kampoz.sketchat.realm;
 
+import java.util.ArrayList;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -11,23 +13,23 @@ import io.realm.annotations.PrimaryKey;
 public class UserRealm extends RealmObject{
 
     @PrimaryKey
-    private int id;
+    private long id;
     private String name;
+    private String password;
+
     @Ignore
     private int sessionId;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
-
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -35,7 +37,6 @@ public class UserRealm extends RealmObject{
     public int getSessionId() {
         return sessionId;
     }
-
     public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
     }

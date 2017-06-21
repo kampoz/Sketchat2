@@ -22,6 +22,7 @@ public class GroupRealm extends RealmObject {
   private long ownersId;
   private String groupName;
   private RealmList<SubjectRealm> subjectsList;
+  private RealmList<UserRealm> usersList;
 
   public GroupRealm() {
   }
@@ -37,7 +38,6 @@ public class GroupRealm extends RealmObject {
   public long getId() {
     return id;
   }
-
   public void setId(long id) {
     this.id = id;
   }
@@ -45,7 +45,6 @@ public class GroupRealm extends RealmObject {
   public long getOwnersId() {
     return ownersId;
   }
-
   public void setOwnersId(long ownersId) {
     this.ownersId = ownersId;
   }
@@ -53,7 +52,6 @@ public class GroupRealm extends RealmObject {
   public String getGroupName() {
     return groupName;
   }
-
   public void setGroupName(String groupName) {
     this.groupName = groupName;
   }
@@ -61,8 +59,15 @@ public class GroupRealm extends RealmObject {
   public RealmList<SubjectRealm> getSubjectsList() {
     return subjectsList;
   }
-
   public void setSubjectsList(RealmList<SubjectRealm> subjectsList) {
     this.subjectsList = subjectsList;
   }
+
+  public RealmList<UserRealm> getUsersList() {
+    return usersList;
+  }
+  public void setUsersList(RealmList<UserRealm> usersList) {
+    this.usersList = usersList;
+  }
+
 }

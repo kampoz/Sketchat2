@@ -16,4 +16,9 @@
   <string name="navigation_drawer_close">Close navigation drawer</string>
 
   <string name="chat">Chat</string>
+
+  <string-array name="tabs">
+    <item>LOGIN</item>
+    <item>REGISTER</item>
+  </string-array>
 </resources>

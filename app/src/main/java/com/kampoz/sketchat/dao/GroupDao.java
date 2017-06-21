@@ -1,17 +1,14 @@
 package com.kampoz.sketchat.dao;
 
-import android.util.Log;
-import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.realm.DrawingRealm;
 import com.kampoz.sketchat.realm.GroupRealm;
-
 import com.kampoz.sketchat.realm.SubjectRealm;
+import com.kampoz.sketchat.realm.UserRealm;
 import io.realm.Case;
-import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wasili on 2017-04-25.
@@ -93,7 +90,6 @@ public class GroupDao {
     realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
-        //// TODO: 2017-05-31 zamienic subjectRealm tu na daoSubjectRealm jak juz bedzie
         SubjectDao subjectDao = new SubjectDao();
         subjectRealm.setId(subjectDao.generateSubjectId());
         subjectDao.closeRealmInstance();
@@ -103,10 +99,24 @@ public class GroupDao {
             .add(subjectRealm);
         DrawingRealm drawingRealm = realm
             .createObject(DrawingRealm.class, DrawingRealm.generateId());
-        ;
         realm.copyToRealmOrUpdate(drawingRealm);
         realm.where(SubjectRealm.class).equalTo("id", subjectRealm.getId()).findFirst()
             .setDrawing(drawingRealm);
+        realm.close();
+      }
+    });
+  }
+
+  public void addUserToGroup(final long groupId, final UserRealm userRealm) {
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        UserDao userDao = new UserDao();
+        userRealm.setId(userDao.generateUserId());
+        userDao.closeRealmInstance();
+        realm.copyToRealmOrUpdate(userRealm);
+        realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getUsersList()
+            .add(userRealm);
         realm.close();
       }
     });
@@ -139,18 +149,20 @@ public class GroupDao {
     List<SubjectRealm> subjects = new ArrayList<>();
     //RealmResults<SubjectRealm> all = Realm.getDefaultInstance()
     // .where(SubjectRealm.class).findAllSorted("subject");
-    RealmResults<SubjectRealm> subjectsFromGroup = realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().sort("subject");
+    RealmResults<SubjectRealm> subjectsFromGroup = realm.where(GroupRealm.class)
+        .equalTo("id", groupId).findFirst().getSubjectsList().sort("subject");
     for (SubjectRealm subjectRealm : subjectsFromGroup) {
       subjects.add(subjectRealm);
     }
     return subjects;
   }
 
-  public int getSubjectsCount(long groupId){
-    return realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().size();
+  public int getSubjectsCount(long groupId) {
+    return realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList()
+        .size();
   }
 
-  public void closeRealmInstance(){
+  public void closeRealmInstance() {
     //if(!realm.isClosed()) realm.close();
     realm.close();
   }

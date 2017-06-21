@@ -20,4 +20,12 @@
     android:layout_centerVertical="true"
     android:layout_centerHorizontal="true" />
 
+  <FrameLayout
+      android:id="@+id/fl_in_splash_activity"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      android:background="@color/colorMyPrimary">
+  </FrameLayout>
+
 </RelativeLayout>
