@@ -1,7 +1,6 @@
 package com.kampoz.sketchat.dao;
 
 import com.kampoz.sketchat.realm.UserRealm;
-
 import io.realm.Realm;
 
 /**
@@ -10,28 +9,43 @@ import io.realm.Realm;
 
 public class UserDao {
 
-    private Realm realm;
+  private Realm realm;
 
-    public UserDao() {
-        this.realm = Realm.getDefaultInstance();
-    }
+  public UserDao() {
+    this.realm = Realm.getDefaultInstance();
+  }
 
-    public void addNewUser(){
-        final UserRealm userRealm = new UserRealm();
-        userRealm.setId(generateUserId());
-    }
+  public void addNewUser(String userName) {
+    final UserRealm userRealm = new UserRealm();
+    userRealm.setId(generateUserId());
+    userRealm.setName(userName);
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        realm.copyToRealmOrUpdate(userRealm);
+      }
+    });
+  }
 
-    public void closeRealmInstance(){
-        realm.close();
-    }
+  public boolean ifUserNameExist(String userName){
+    UserRealm user = realm.where(UserRealm.class).equalTo("name", userName).findFirst();
+    if(user != null) return true;
+    else return false;
+  }
 
-    public long generateUserId() {
-        long newId = 0;
-        Number oldMaxId = realm.where(UserRealm.class).max("id");
-        if (oldMaxId == null) {
-            return newId;
-        } else {
-            return oldMaxId.intValue() + 1;
-        }
+
+
+  public long generateUserId() {
+    long newId = 0;
+    Number oldMaxId = realm.where(UserRealm.class).max("id");
+    if (oldMaxId == null) {
+      return newId;
+    } else {
+      return oldMaxId.intValue() + 1;
     }
+  }
+
+  public void closeRealmInstance() {
+    realm.close();
+  }
 }

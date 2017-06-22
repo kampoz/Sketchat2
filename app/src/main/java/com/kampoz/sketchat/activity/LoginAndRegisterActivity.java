@@ -8,16 +8,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.UserDao;
 import com.kampoz.sketchat.tab.SlidingTabLayout;
-import java.util.List;
+import io.realm.Realm;
 
 public class LoginAndRegisterActivity extends AppCompatActivity {
 
@@ -27,12 +31,14 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   //private List<Fragment> fragmentsList;
   private Fragment[] fragmentsList = new Fragment[2];
   private Context context;
+  private UserDao userDao;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login_and_register);
 
+    userDao = new UserDao();
     viewPager = (ViewPager) findViewById(R.id.VPviewPager);
     viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
     sTLTabs = (SlidingTabLayout) findViewById(R.id.STLtabs);
@@ -44,7 +50,6 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   }
 
   class MyPagerAdapter extends FragmentPagerAdapter {
-
 
 
     String[] tabs;
@@ -61,10 +66,13 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       Log.i("position: ", String.valueOf(position));
       //return fragmentsList[position];
 
-      switch(position){
-        case 0: return LoginFragment.getInstance(position);
-        case 1: return RegisterFragment.getInstance(position);
-        default: return LoginFragment.getInstance(position);
+      switch (position) {
+        case 0:
+          return LoginFragment.getInstance(position);
+        case 1:
+          return RegisterFragment.getInstance(position);
+        default:
+          return LoginFragment.getInstance(position);
       }
       /*Fragment currentFragment;
       if(position == 0){
@@ -93,7 +101,9 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   }
 
   public static class MyFragment extends Fragment {
+
     private TextView textView;
+
     public static MyFragment getInstance(int position) {
       MyFragment myFragment = new MyFragment();
       Bundle args = new Bundle();
@@ -117,12 +127,36 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   }
 
   public static class LoginFragment extends Fragment {
+    TextView tvLoginLabel;
+    EditText etLoginuser;
+    Button bLoginUser;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
         @Nullable Bundle savedInstanceState) {
       View loginFragmentView = inflater.inflate(R.layout.fragment_login, container, false);
+      tvLoginLabel = (TextView) loginFragmentView.findViewById(R.id.tvLoginLabel);
+      etLoginuser = (EditText) loginFragmentView.findViewById(R.id.etLoginUser);
+      bLoginUser = (Button) loginFragmentView.findViewById(R.id.bLoginUser);
+      bLoginUser.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          //// TODO: 22.06.2017 Logowanie zrobić, sprwdzenie czy user istnieje w bazie na serwerze; sprawdenie czy istnieje lokalnie
+          UserDao userDao = new UserDao();
+          if (etLoginuser.getText() != null) {
+            String username = etLoginuser.getText().toString();
+
+                Toast.makeText(getActivity(), "User " + username + " login", Toast.LENGTH_SHORT).show();
+          } else {
+            Toast.makeText(getActivity(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
+          }
+          userDao.closeRealmInstance();
+        }
+      });
+
       return loginFragmentView;
     }
+
     public static LoginFragment getInstance(int position) {
       LoginFragment myFragment = new LoginFragment();
       Bundle args = new Bundle();
@@ -133,12 +167,44 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   }
 
   public static class RegisterFragment extends Fragment {
+    TextView tvRegisterLabel;
+    EditText etRegisteruser;
+    Button bRegisterUser;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
         @Nullable Bundle savedInstanceState) {
-      View loginFragmentView = inflater.inflate(R.layout.fragment_register, container, false);
-      return loginFragmentView;
+      View registerFragmentView = inflater.inflate(R.layout.fragment_register, container, false);
+
+      tvRegisterLabel = (TextView) registerFragmentView.findViewById(R.id.tvRegisterLabel);
+      etRegisteruser = (EditText) registerFragmentView.findViewById(R.id.etRegisterUser);
+      bRegisterUser = (Button) registerFragmentView.findViewById(R.id.bRegisterUser);
+
+      bRegisterUser.setOnClickListener(new OnClickListener() {
+
+
+        @Override
+        public void onClick(View v) {
+          UserDao userDao = new UserDao();
+          if (etRegisteruser.getText() != null) {
+            String username = etRegisteruser.getText().toString();
+            if(userDao.ifUserNameExist(username)){
+              Toast.makeText(getActivity(), "User exists", Toast.LENGTH_SHORT).show();
+            }else{
+              userDao.addNewUser(username);
+              Toast.makeText(getActivity(), "Registration complete", Toast.LENGTH_SHORT).show();
+            }
+          } else {
+            Toast.makeText(getActivity(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
+          }
+          userDao.closeRealmInstance();
+        }
+
+      });
+
+      return registerFragmentView;
     }
+
     public static RegisterFragment getInstance(int position) {
       RegisterFragment myFragment = new RegisterFragment();
       Bundle args = new Bundle();
@@ -148,4 +214,9 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
     }
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    userDao.closeRealmInstance();
+  }
 }

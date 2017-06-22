@@ -11,7 +11,7 @@
     android:padding="20dp">
 
     <TextView
-      android:id="@+id/tvLogin"
+      android:id="@+id/tvLoginLabel"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="Login"
@@ -19,20 +19,20 @@
       android:textSize="30dp" />
 
     <EditText
-      android:id="@+id/etRegisteruser"
+      android:id="@+id/etLoginUser"
       android:layout_width="match_parent"
       android:layout_height="50dp"
-      android:layout_below="@+id/tvLogin"
+      android:layout_below="@+id/tvLoginLabel"
       android:layout_marginTop="20dp"
       android:hint="Set Username"
       android:padding="10dp"/>
 
     <Button
-      android:id="@+id/bRegisterUser"
+      android:id="@+id/bLoginUser"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"
-      android:layout_below="@+id/etRegisteruser"
+      android:layout_below="@+id/etLoginUser"
       android:layout_centerHorizontal="true"
       android:text="Login" />
 
