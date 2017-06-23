@@ -126,8 +126,8 @@ public class GroupsFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        Log.d(tagGlobalInstances, "onViewCreated() Realm.getGlobalInstanceCount(): " + String.
-                valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+//        Log.d(tagGlobalInstances, "onViewCreated() Realm.getGlobalInstanceCount(): " + String.
+//                valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
     }
 
     /**

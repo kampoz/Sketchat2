@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.UserDao;
+import com.kampoz.sketchat.realm.UserRealm;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -17,9 +19,9 @@ import io.realm.SyncUser;
 
 public class SplashActivity extends AppCompatActivity {
 
-  private static final String REALM_URL = "realm://" + "100.0.0.21" + ":9080/Draw888";
-  private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
-  private static final String ID = "kampoz@kaseka.net";
+  private static final String REALM_URL = "realm://" + "100.0.0.234" + ":9080/Draw888";
+  private static final String AUTH_URL = "http://" + "100.0.0.234" + ":9080/auth";
+    private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
   private volatile Realm realm;
   SharedPreferences preferences;
@@ -29,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
   public static int globalRealmInstancesCount = 0;
   boolean isFirst = true;
   public static SyncConfiguration publicSyncConfiguration;
+  public static RealmConfiguration publicRealmConfiguration;  /** local realm configuration for holding login data*/
+  private Realm localRealm;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +41,20 @@ public class SplashActivity extends AppCompatActivity {
 
     Log.d(tagGlobalInstances, "--------------- Start app --------------");
 
+    /**
+     * Configuration for local Realm
+     * */
+    publicRealmConfiguration = Realm.getDefaultInstance().getConfiguration();
+    localRealm = Realm.getInstance(publicRealmConfiguration);
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
     final SharedPreferences.Editor editor = preferences.edit();
 
     if(SyncUser.currentUser()!=null && SyncUser.currentUser().isValid()) {
-      final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(),
-          REALM_URL).build();
-
+      final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(), REALM_URL).build();
       publicSyncConfiguration = syncConfiguration;
-
       Realm.setDefaultConfiguration(syncConfiguration);
-
-      Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this,
-          GroupsAndSubjectsActivity.class);
-      SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-      SplashActivity.this.finish();
+      startGroupAndSubjectsActivity();
+      addUserSeedLocal("User 2");
       Log.d(tagGlobalInstances, "onCreate() <SyncUser exist> "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
 
     } else {
@@ -59,10 +62,10 @@ public class SplashActivity extends AppCompatActivity {
       SyncUser.loginAsync(syncCredentials, AUTH_URL, new SyncUser.Callback() {
         @Override
         public void onSuccess(SyncUser user) {
-          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-                  REALM_URL).build();
+          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).build();
 
-          Log.d("SyncConfiguration",
+          Log.d("SplashActivity", "   onSucces");
+          /*Log.d("SyncConfiguration",
                   "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
           Log.d("SyncConfiguration",
                   "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
@@ -70,26 +73,26 @@ public class SplashActivity extends AppCompatActivity {
           Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
           Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
           Log.d("SyncConfiguration",
-                  "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());
+                  "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());*/
           //Log.d(tagGlobalInstances, "onCreate() z else <SyncUser don't exist or isnt valid> "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
-          if (realm == null) {
+          /*if (realm == null) {
             Realm.removeDefaultConfiguration();
             Realm.setDefaultConfiguration(syncConfiguration);
             //realm = Realm.getDefaultInstance();
           } else {
             Realm.removeDefaultConfiguration();
             Realm.setDefaultConfiguration(syncConfiguration);
-          }
+          }*/
 
           editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
           editor.apply();
-          Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-          Log.d(tagGlobalInstances, "onCreate() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+          //Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
+          //Log.d(tagGlobalInstances, "onCreate() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
-          Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
-          SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-          SplashActivity.this.finish();
+          addUserSeed();
+
+          startGroupAndSubjectsActivity();
         }
 
         @Override
@@ -109,6 +112,32 @@ public class SplashActivity extends AppCompatActivity {
     }
   }
 
+  /**
+   * Checking if userRealm exist in local realm database.
+   * In argument local there is a local Realm with RealmConfiguration instead od SyncConfiguration
+   * **/
+
+  private boolean userIsLogin(Realm realm){
+    UserRealm userRealm = realm.where(UserRealm.class).findFirst();
+    if(userRealm!=null){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  private void startGroupAndSubjectsActivity(){
+    Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
+    SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
+    SplashActivity.this.finish();
+  }
+
+  private void startLoginAndRegisterActivity(){
+    Intent startIntent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
+    SplashActivity.this.startActivity(startIntent);
+    SplashActivity.this.finish();
+  }
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -116,8 +145,30 @@ public class SplashActivity extends AppCompatActivity {
       realm.close();
       realm = null;
       Log.d(tagGlobalInstances, "onDestroy(); Realm.getGlobalInstanceCount() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
-
+    }
+    if(localRealm != null){
+      localRealm.close();
+      localRealm = null;
     }
     Log.d(tag, "...onDestroy()...");
+
+
   }
+
+  public void addUserSeed(){
+    String userName = "Testowy";
+    UserDao userDao = new UserDao();
+    userDao.addNewUser(userName);
+    UserRealm user = userDao.getUserByName(userName);
+    /** Dodanie usera do bazy lokalnej*/
+    userDao.saveLoginUserLocally(user, publicRealmConfiguration);
+    userDao.closeRealmInstance();
+  }
+
+  public  void addUserSeedLocal(String userName){
+    UserDao userDao = new UserDao();
+    userDao.saveLoginUserLocally(userName, publicRealmConfiguration);
+    userDao.closeRealmInstance();
+  }
+
 }
