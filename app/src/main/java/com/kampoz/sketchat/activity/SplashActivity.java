@@ -3,9 +3,13 @@ package com.kampoz.sketchat.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.UserDao;
@@ -33,6 +37,9 @@ public class SplashActivity extends AppCompatActivity {
   public static SyncConfiguration publicSyncConfiguration;
   public static RealmConfiguration publicRealmConfiguration;  /** local realm configuration for holding login data*/
   private Realm localRealm;
+  private boolean isOfLine = true;
+  private LinearLayout llInternetConnetion;
+  private String SAThreadTag = "SA thread check";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +53,18 @@ public class SplashActivity extends AppCompatActivity {
      * */
     publicRealmConfiguration = Realm.getDefaultInstance().getConfiguration();
     localRealm = Realm.getInstance(publicRealmConfiguration);
+
+    llInternetConnetion = (LinearLayout)findViewById(R.id.llInternetConnection);
+
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
-    final SharedPreferences.Editor editor = preferences.edit();
+    //final SharedPreferences.Editor editor = preferences.edit();
 
     if(SyncUser.currentUser()!=null && SyncUser.currentUser().isValid()) {
       final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(), REALM_URL).build();
       publicSyncConfiguration = syncConfiguration;
       Realm.setDefaultConfiguration(syncConfiguration);
       startGroupAndSubjectsActivity();
-      addUserSeedLocal("User 2");
+      //addUserSeedLocal("User 2");
       Log.d(tagGlobalInstances, "onCreate() <SyncUser exist> "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
 
     } else {
@@ -85,31 +95,47 @@ public class SplashActivity extends AppCompatActivity {
             Realm.setDefaultConfiguration(syncConfiguration);
           }*/
 
-          editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
-          editor.apply();
+          //editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
+          //editor.apply();
           //Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
           //Log.d(tagGlobalInstances, "onCreate() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
-          addUserSeed();
+          //addUserSeed();
+
 
           startGroupAndSubjectsActivity();
         }
 
         @Override
         public void onError(ObjectServerError error) {
-          Toast.makeText(SplashActivity.this, "Connection error", Toast.LENGTH_LONG).show();
+
 
           Log.d("Connection error", "................1) Brak połaczenia");
           SyncUser user = SyncUser.currentUser();
-          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user,
-                  REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
+
+          CheckingInternetConnectionThead checkThread = new CheckingInternetConnectionThead();
+          checkThread.start();
+
+          if(user == null){
+            Toast.makeText(SplashActivity.this, "Connection error. Check internet connection", Toast.LENGTH_LONG).show();
+          }
+          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
           Realm.setDefaultConfiguration(syncConfiguration);
-          Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
-          SplashActivity.this.startActivity(startGroupsAndSubjectsActivity);
-          SplashActivity.this.finish();
+
+
+
+          startGroupAndSubjectsActivity();
         }
       });
     }
+  }
+
+  /** Method checking internet connection ***/
+  public boolean isOnline() {
+    ConnectivityManager cm =
+        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+    return netInfo != null && netInfo.isConnectedOrConnecting();
   }
 
   /**
@@ -169,6 +195,31 @@ public class SplashActivity extends AppCompatActivity {
     UserDao userDao = new UserDao();
     userDao.saveLoginUserLocally(userName, publicRealmConfiguration);
     userDao.closeRealmInstance();
+  }
+
+  class CheckingInternetConnectionThead extends Thread{
+    public void run(){
+      while(isOfLine){
+        Log.d(SAThreadTag, ".....thread is checking connection....");
+        if(isOnline()){
+          Log.d(SAThreadTag, ">>> thread detected connection <<<");
+          isOfLine = false;
+          runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+              findViewById(R.id.llInternetConnection).setVisibility(View.VISIBLE);
+            }
+          });
+        }else{
+
+        }
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
 }
