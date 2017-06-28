@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.UserDao;
 import com.kampoz.sketchat.tab.SlidingTabLayout;
-import io.realm.Realm;
 
 public class LoginAndRegisterActivity extends AppCompatActivity {
 
@@ -181,14 +180,13 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       bRegisterUser = (Button) registerFragmentView.findViewById(R.id.bRegisterUser);
 
       bRegisterUser.setOnClickListener(new OnClickListener() {
-
-
         @Override
         public void onClick(View v) {
           UserDao userDao = new UserDao();
           if (etRegisteruser.getText() != null) {
             String username = etRegisteruser.getText().toString();
-            if(userDao.ifUserNameExist(username)){
+            if(userDao.isUserExistDataBase(username)){
+              etRegisteruser.setError("User already exists");
               Toast.makeText(getActivity(), "User exists", Toast.LENGTH_SHORT).show();
             }else{
               userDao.addNewUser(username);

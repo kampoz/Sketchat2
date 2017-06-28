@@ -99,6 +99,7 @@ public class UserDao {
       Log.d(tagUserDao, "lokalnie zapisany jest user: "+userRealm.getName());
       return true;
     }else{
+      Log.d(tagUserDao, "lokalnie brak zalogowanego usera.");
       return false;
     }
   }
@@ -106,12 +107,20 @@ public class UserDao {
   /** Works when constructor of UserDao is used with SyncConfiguration */
   public boolean isUserExistDataBase(String userName){
     UserRealm userRealm = realm.where(UserRealm.class).equalTo("name", userName).findFirst();
-    if(userRealm!=null){
+    if(userRealm!=null)
       return true;
-    }else{
+    else
       return false;
-    }
+  }
 
+  /** Works when constructor of UserDao is used with RealmConfiguration */
+  public void cleanLocalRealm(){
+    realm.executeTransaction(new Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        realm.deleteAll();
+      }
+    });
   }
 
   public void closeRealmInstance() {

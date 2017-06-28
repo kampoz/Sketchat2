@@ -36,6 +36,14 @@
     android:visibility="invisible"
     android:animateLayoutChanges="true">
 
+    <TextView
+      android:id="@+id/tvConnectionInfo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Check internet Connection"
+      android:textSize="15dp"
+      android:textColor="@color/colorMyAlmostWhite"/>
+
     <View
       android:layout_width="0dp"
       android:layout_height="0dp"
@@ -50,6 +58,7 @@
       android:textAllCaps="false"
       android:textSize="20dp"
       android:textColor="@color/colorMyAlmostWhite"
+      android:visibility="gone"
       />
   </LinearLayout>
 
