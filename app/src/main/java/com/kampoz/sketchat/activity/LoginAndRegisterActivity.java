@@ -1,6 +1,7 @@
 package com.kampoz.sketchat.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -126,6 +127,7 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   }
 
   public static class LoginFragment extends Fragment {
+
     TextView tvLoginLabel;
     EditText etLoginuser;
     Button bLoginUser;
@@ -140,16 +142,22 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       bLoginUser.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          //// TODO: 22.06.2017 Logowanie zrobić, sprwdzenie czy user istnieje w bazie na serwerze; sprawdenie czy istnieje lokalnie
-          UserDao userDao = new UserDao();
-          if (etLoginuser.getText() != null) {
-            String username = etLoginuser.getText().toString();
-
-                Toast.makeText(getActivity(), "User " + username + " login", Toast.LENGTH_SHORT).show();
+          UserDao userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
+          UserDao userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
+          String userName = etLoginuser.getText().toString();
+          if (!userName.matches("")) {
+            if (userDaoSync.ifUserExistInDataBase(userName)) {
+              userDaoLocal.saveLoginUserLocally(userName);
+              Toast.makeText(getActivity(), "User log in", Toast.LENGTH_SHORT).show();
+              startGroupAndSubjectsActivity();
+            } else {
+              etLoginuser.setError("User does not exist");
+            }
           } else {
             etLoginuser.setError("Username cannot be empty");
           }
-          userDao.closeRealmInstance();
+          userDaoSync.closeRealmInstance();
+          userDaoLocal.closeRealmInstance();
         }
       });
 
@@ -163,9 +171,17 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       myFragment.setArguments(args);
       return myFragment;
     }
+
+    private void startGroupAndSubjectsActivity() {
+      Intent startGroupsAndSubjectsActivity = new Intent(getActivity(),
+          GroupsAndSubjectsActivity.class);
+      getActivity().startActivity(startGroupsAndSubjectsActivity);
+      getActivity().finish();
+    }
   }
 
   public static class RegisterFragment extends Fragment {
+
     TextView tvRegisterLabel;
     EditText etRegisteruser;
     Button bRegisterUser;
@@ -174,26 +190,23 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
         @Nullable Bundle savedInstanceState) {
       View registerFragmentView = inflater.inflate(R.layout.fragment_register, container, false);
-
       tvRegisterLabel = (TextView) registerFragmentView.findViewById(R.id.tvRegisterLabel);
       etRegisteruser = (EditText) registerFragmentView.findViewById(R.id.etRegisterUser);
       bRegisterUser = (Button) registerFragmentView.findViewById(R.id.bRegisterUser);
-
       bRegisterUser.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          /** Dodajemy zdalnie usera */
           UserDao userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
           UserDao userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
           String userName = etRegisteruser.getText().toString();
           if (!userName.matches("")) {
-            userName = etRegisteruser.getText().toString();
-            if(userDaoSync.isUserExistDataBase(userName)){
+            if (userDaoSync.ifUserExistInDataBase(userName)) {
               etRegisteruser.setError("User already exists");
-            }else{
+            } else {
               userDaoSync.registerNewUser(userName);
               userDaoLocal.saveLoginUserLocally(userName);
               Toast.makeText(getActivity(), "Registration complete", Toast.LENGTH_SHORT).show();
+              //startGroupAndSubjectsActivity();
             }
           } else {
             etRegisteruser.setError("Username cannot be empty");
@@ -214,6 +227,13 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       myFragment.setArguments(args);
       return myFragment;
     }
+
+    private void startGroupAndSubjectsActivity() {
+      Intent startGroupsAndSubjectsActivity = new Intent(getActivity(),
+          GroupsAndSubjectsActivity.class);
+      getActivity().startActivity(startGroupsAndSubjectsActivity);
+      getActivity().finish();
+    }
   }
 
   @Override
@@ -221,4 +241,6 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
     super.onDestroy();
     userDao.closeRealmInstance();
   }
+
+
 }

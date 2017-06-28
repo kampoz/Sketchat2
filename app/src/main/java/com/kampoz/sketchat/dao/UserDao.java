@@ -118,7 +118,7 @@ public class UserDao {
   }
 
   /** Works when constructor of UserDao is used with SyncConfiguration */
-  public boolean isUserExistDataBase(String userName){
+  public boolean ifUserExistInDataBase(String userName){
     UserRealm userRealm = realm.where(UserRealm.class).equalTo("name", userName).findFirst();
     if(userRealm!=null)
       return true;
