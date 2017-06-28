@@ -147,7 +147,7 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
 
                 Toast.makeText(getActivity(), "User " + username + " login", Toast.LENGTH_SHORT).show();
           } else {
-            Toast.makeText(getActivity(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
+            etLoginuser.setError("Username cannot be empty");
           }
           userDao.closeRealmInstance();
         }
@@ -182,20 +182,24 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       bRegisterUser.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          UserDao userDao = new UserDao();
-          if (etRegisteruser.getText() != null) {
-            String username = etRegisteruser.getText().toString();
-            if(userDao.isUserExistDataBase(username)){
+          /** Dodajemy zdalnie usera */
+          UserDao userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
+          UserDao userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
+          String userName = etRegisteruser.getText().toString();
+          if (!userName.matches("")) {
+            userName = etRegisteruser.getText().toString();
+            if(userDaoSync.isUserExistDataBase(userName)){
               etRegisteruser.setError("User already exists");
-              Toast.makeText(getActivity(), "User exists", Toast.LENGTH_SHORT).show();
             }else{
-              userDao.addNewUser(username);
+              userDaoSync.registerNewUser(userName);
+              userDaoLocal.saveLoginUserLocally(userName);
               Toast.makeText(getActivity(), "Registration complete", Toast.LENGTH_SHORT).show();
             }
           } else {
-            Toast.makeText(getActivity(), "Username cannot be empty", Toast.LENGTH_SHORT).show();
+            etRegisteruser.setError("Username cannot be empty");
           }
-          userDao.closeRealmInstance();
+          userDaoSync.closeRealmInstance();
+          userDaoLocal.closeRealmInstance();
         }
 
       });

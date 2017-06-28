@@ -31,9 +31,22 @@ public class UserDao {
     this.realm = Realm.getInstance(syncConfiguration);
   }
 
-  public void addNewUser(String userName) {
+  public void registerNewUser(String userName) {
     final UserRealm userRealm = new UserRealm();
     userRealm.setId(generateUserId());
+    userRealm.setName(userName);
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        realm.copyToRealmOrUpdate(userRealm);
+      }
+    });
+  }
+
+  /** Saves login user locally with id 0 **/
+  public void saveLoginUserLocally(String userName){
+    final UserRealm userRealm = new UserRealm();
+    userRealm.setId(0);
     userRealm.setName(userName);
     realm.executeTransaction(new Realm.Transaction() {
       @Override

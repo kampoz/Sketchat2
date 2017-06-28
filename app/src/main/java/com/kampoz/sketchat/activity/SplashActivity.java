@@ -79,7 +79,6 @@ public class SplashActivity extends AppCompatActivity {
         }*/
       }
     });
-
     connectionMethod();
     //addUserSeedLocal("Zenek");
   }
@@ -191,7 +190,7 @@ public class SplashActivity extends AppCompatActivity {
   public void addUserSeed() {
     String userName = "Testowy";
     UserDao userDao = new UserDao();
-    userDao.addNewUser(userName);
+    userDao.registerNewUser(userName);
     UserRealm user = userDao.getUserByName(userName);
     /** Dodanie usera do bazy lokalnej*/
     userDao.saveLoginUserLocally(user, publicRealmConfiguration);
