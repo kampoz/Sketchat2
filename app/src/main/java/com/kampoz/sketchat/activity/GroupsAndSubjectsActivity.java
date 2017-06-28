@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.GroupDao;
@@ -22,10 +21,8 @@ import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
-
-import java.util.ArrayList;
-
 import io.realm.Realm;
+import java.util.ArrayList;
 
 public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         GroupsFragment.FragmentListener,
@@ -49,6 +46,7 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private String threadTag = "G&SA thread";
     private GroupDao groupDao;
     private SubjectDao subjectDao;
+    //private Realm realm;
 
 
     @Override
@@ -62,6 +60,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         currentFragment = fragmentManager.findFragmentById(R.id.fl_subjects_and_groups_container);
         setGroupsFragment();
         myConnectionChecker = new MyConnectionChecker();
+
+        //Realm.getDefaultInstance();
+        Realm.setDefaultConfiguration(SplashActivity.publicSyncConfiguration);
 
         groupDao = new GroupDao();
         subjectDao = new SubjectDao();
@@ -81,6 +82,17 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
         GettingActualGroupsThread thread = new GettingActualGroupsThread();
         thread.start();
+
+        //SyncConfiguration syncConfiguration = Realm.get
+        /*Log.d("SyncConfiguration",
+            "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
+        Log.d("SyncConfiguration",
+            "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
+        Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
+        Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
+        Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
+        Log.d("SyncConfiguration",
+            "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());*/
     }
 
     @Override
@@ -106,7 +118,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         Log.d(tag, "...onStart()...");
-        Log.d(tagGlobalInstances, "onStart(); Realm.getGlobalInstanceCount()" + String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+        Log.d(tagGlobalInstances, "onStart(); Realm.getGlobalInstanceCount()" + String.valueOf(
+            Realm.getGlobalInstanceCount(
+                SplashActivity.publicSyncConfiguration)));
     }
 
     @Override

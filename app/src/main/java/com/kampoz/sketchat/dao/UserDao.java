@@ -1,9 +1,11 @@
 package com.kampoz.sketchat.dao;
 
+import android.util.Log;
 import com.kampoz.sketchat.realm.UserRealm;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.RealmConfiguration;
+import io.realm.SyncConfiguration;
 
 /**
  * Created by Kamil on 15.06.2017.
@@ -12,9 +14,21 @@ import io.realm.RealmConfiguration;
 public class UserDao {
 
   private Realm realm;
+  private String tagUserDao = "UserDao tag";
+
 
   public UserDao() {
     this.realm = Realm.getDefaultInstance();
+  }
+
+  /** This constructor using when local realm instance with RealmConfiguration is needed */
+  public UserDao(RealmConfiguration realmConfiguration){
+    this.realm = Realm.getInstance(realmConfiguration);
+  }
+
+  /** This constructor can be used when realm with Syncconfigiration is needed */
+  public UserDao(SyncConfiguration syncConfiguration){
+    this.realm = Realm.getInstance(syncConfiguration);
   }
 
   public void addNewUser(String userName) {
@@ -42,6 +56,7 @@ public class UserDao {
   public void saveLoginUserLocally(String userName, RealmConfiguration realmConfiguration){
     Realm realm = Realm.getInstance(realmConfiguration);
     final UserRealm userRealm = new UserRealm();
+    userRealm.setId(0);
     userRealm.setName(userName);
     realm.executeTransaction(new Transaction() {
       @Override
@@ -75,6 +90,28 @@ public class UserDao {
     } else {
       return oldMaxId.intValue() + 1;
     }
+  }
+
+  /** Works when constructor of UserDao is used with RealmConfiguration */
+  public boolean isUserLogin(){
+    UserRealm userRealm = realm.where(UserRealm.class).findFirst();
+    if(userRealm!=null){
+      Log.d(tagUserDao, "lokalnie zapisany jest user: "+userRealm.getName());
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  /** Works when constructor of UserDao is used with SyncConfiguration */
+  public boolean isUserExistDataBase(String userName){
+    UserRealm userRealm = realm.where(UserRealm.class).equalTo("name", userName).findFirst();
+    if(userRealm!=null){
+      return true;
+    }else{
+      return false;
+    }
+
   }
 
   public void closeRealmInstance() {

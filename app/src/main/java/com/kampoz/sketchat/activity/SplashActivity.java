@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
@@ -38,33 +40,58 @@ public class SplashActivity extends AppCompatActivity {
   public static RealmConfiguration publicRealmConfiguration;  /** local realm configuration for holding login data*/
   private Realm localRealm;
   private boolean isOfLine = true;
+  private boolean checkingSyncUser = false;
   private LinearLayout llInternetConnetion;
   private String SAThreadTag = "SA thread check";
+  private Button bConnect;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_splash);
 
-    Log.d(tagGlobalInstances, "--------------- Start app --------------");
-
-    /**
-     * Configuration for local Realm
-     * */
-    publicRealmConfiguration = Realm.getDefaultInstance().getConfiguration();
-    localRealm = Realm.getInstance(publicRealmConfiguration);
+    /** Configuration for local Realm */
+    publicRealmConfiguration = new RealmConfiguration.Builder().build();
 
     llInternetConnetion = (LinearLayout)findViewById(R.id.llInternetConnection);
-
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
-    //final SharedPreferences.Editor editor = preferences.edit();
+    bConnect = (Button)findViewById(R.id.bConnect);
+    bConnect.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        connectionMethod();
+        checkingSyncUser = true;
+        CheckingIsSyncUserNotNullThread checkingSyncUserThread = new CheckingIsSyncUserNotNullThread();
+        checkingSyncUserThread.start();
+        SyncUser user = SyncUser.currentUser();
+        if (user == null) {
+          Toast.makeText(SplashActivity.this, "SyncUser error. Server offline", Toast.LENGTH_LONG).show();
+        }
 
+      }
+    });
+
+    connectionMethod();
+    addUserSeedLocal("Zenek");
+  }
+
+  /** Method connectionMethod() checks if:
+   * 1) (if) Is there an active SyncUser
+   * 2) (else) If syncUser is not valid creates a new SyncUser and:
+   *    a) (onSuccess) If device hes connection to Realm database creates SyncConfiguration and connect to data base
+   *    b) (onError) If device has no connection to data base runs a CheckingInternetConnectionThead instance */
+
+  private void connectionMethod(){
     if(SyncUser.currentUser()!=null && SyncUser.currentUser().isValid()) {
       final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(SyncUser.currentUser(), REALM_URL).build();
       publicSyncConfiguration = syncConfiguration;
       Realm.setDefaultConfiguration(syncConfiguration);
-      startGroupAndSubjectsActivity();
-      //addUserSeedLocal("User 2");
+      if(isUserLogin()) {
+        startGroupAndSubjectsActivity();
+      }else{
+        startLoginAndRegisterActivity();
+      }
       Log.d(tagGlobalInstances, "onCreate() <SyncUser exist> "+String.valueOf(Realm.getGlobalInstanceCount(syncConfiguration)));
 
     } else {
@@ -73,58 +100,18 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void onSuccess(SyncUser user) {
           final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).build();
-
-          Log.d("SplashActivity", "   onSucces");
-          /*Log.d("SyncConfiguration",
-                  "..1)getRealmFileName() " + syncConfiguration.getRealmFileName());
-          Log.d("SyncConfiguration",
-                  "..2)getRealmDirectory() " + syncConfiguration.getRealmDirectory().toString());
-          Log.d("SyncConfiguration", "..3)getPath() " + syncConfiguration.getPath());
-          Log.d("SyncConfiguration", "..4)getUser() " + syncConfiguration.getUser());
-          Log.d("SyncConfiguration", "..5)getServerUrl() " + syncConfiguration.getServerUrl());
-          Log.d("SyncConfiguration",
-                  "..6)getRealmObjectClasses() " + syncConfiguration.getRealmObjectClasses());*/
-          //Log.d(tagGlobalInstances, "onCreate() z else <SyncUser don't exist or isnt valid> "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
-
-          /*if (realm == null) {
-            Realm.removeDefaultConfiguration();
-            Realm.setDefaultConfiguration(syncConfiguration);
-            //realm = Realm.getDefaultInstance();
-          } else {
-            Realm.removeDefaultConfiguration();
-            Realm.setDefaultConfiguration(syncConfiguration);
-          }*/
-
-          //editor.putString("dbLocalPath", syncConfiguration.getRealmDirectory().toString());
-          //editor.apply();
-          //Log.d("SyncConfiguration", preferences.getString("dbLocalPath", "default value"));
-          //Log.d(tagGlobalInstances, "onCreate() z else "+String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
-
-          //addUserSeed();
-
-
-          startGroupAndSubjectsActivity();
+          publicSyncConfiguration = syncConfiguration;
+          if(isUserLogin()) {
+            startGroupAndSubjectsActivity();
+          }else{
+            startLoginAndRegisterActivity();
+          }
         }
 
         @Override
         public void onError(ObjectServerError error) {
-
-
-          Log.d("Connection error", "................1) Brak połaczenia");
-          SyncUser user = SyncUser.currentUser();
-
           CheckingInternetConnectionThead checkThread = new CheckingInternetConnectionThead();
           checkThread.start();
-
-          if(user == null){
-            Toast.makeText(SplashActivity.this, "Connection error. Check internet connection", Toast.LENGTH_LONG).show();
-          }
-          final SyncConfiguration syncConfiguration = new SyncConfiguration.Builder(user, REALM_URL).directory(SplashActivity.this.getFilesDir()).build();
-          Realm.setDefaultConfiguration(syncConfiguration);
-
-
-
-          startGroupAndSubjectsActivity();
         }
       });
     }
@@ -139,18 +126,16 @@ public class SplashActivity extends AppCompatActivity {
   }
 
   /**
-   * Checking if userRealm exist in local realm database.
-   * In argument local there is a local Realm with RealmConfiguration instead od SyncConfiguration
-   * **/
+   * Checking if userRealm exist in local realm database. **/
 
-  private boolean userIsLogin(Realm realm){
-    UserRealm userRealm = realm.where(UserRealm.class).findFirst();
-    if(userRealm!=null){
-      return true;
-    }else{
-      return false;
-    }
+  private boolean isUserLogin(){
+    UserDao userDao = new UserDao(publicRealmConfiguration);
+    boolean isLogin = userDao.isUserLogin();
+    userDao.closeRealmInstance();
+    return  isLogin;
   }
+
+
 
   private void startGroupAndSubjectsActivity(){
     Intent startGroupsAndSubjectsActivity = new Intent(SplashActivity.this, GroupsAndSubjectsActivity.class);
@@ -177,8 +162,6 @@ public class SplashActivity extends AppCompatActivity {
       localRealm = null;
     }
     Log.d(tag, "...onDestroy()...");
-
-
   }
 
   public void addUserSeed(){
@@ -197,12 +180,24 @@ public class SplashActivity extends AppCompatActivity {
     userDao.closeRealmInstance();
   }
 
+  /** Thread cheking if device has internet connection */
   class CheckingInternetConnectionThead extends Thread{
     public void run(){
+      Log.d("Connection error", "....NO INTERNET....");
+
+      if(!isOnline()){
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Toast.makeText(SplashActivity.this, "Check internet connection", Toast.LENGTH_LONG).show();
+          }
+        });
+
+      }
       while(isOfLine){
         Log.d(SAThreadTag, ".....thread is checking connection....");
         if(isOnline()){
-          Log.d(SAThreadTag, ">>> thread detected connection <<<");
+          Log.d(SAThreadTag, ">>> Thread detect INTERNET CONNECTION <<<");
           isOfLine = false;
           runOnUiThread(new Runnable() {
             @Override
@@ -219,7 +214,29 @@ public class SplashActivity extends AppCompatActivity {
           e.printStackTrace();
         }
       }
+
     }
   }
 
+  /** Thread cheking if server is online and there is a possibility to create SyncUser for the first time.
+   * This is nessesery only when app is started for the first time and SyncUser must be created. **/
+  class CheckingIsSyncUserNotNullThread extends Thread{
+    public void run(){
+      while(checkingSyncUser) {
+        SyncUser user = SyncUser.currentUser();
+        if (user != null) {
+          Toast.makeText(SplashActivity.this, "Server online. You can connect now", Toast.LENGTH_LONG)
+              .show();
+        }else{
+          checkingSyncUser = false;
+          //startGroupAndSubjectsActivity();
+        }
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
 }
