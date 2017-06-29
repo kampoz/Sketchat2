@@ -2,8 +2,8 @@ package com.kampoz.sketchat.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.ConversationAdapter;
 import com.kampoz.sketchat.helper.MyRandomValuesGenerator;
@@ -41,7 +40,7 @@ public class ConversationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MyRandomValuesGenerator generator = new MyRandomValuesGenerator();
 
-        adapter = new ConversationAdapter(generator.generateMessagesArrayList(30), recyclerView);
+        //adapter = new ConversationAdapter(generator.generateMessagesArrayList(30), recyclerView);
         recyclerView.setAdapter(adapter);
 
         bSend.setOnClickListener(new View.OnClickListener() {

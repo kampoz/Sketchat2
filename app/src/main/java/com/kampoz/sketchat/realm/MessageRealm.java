@@ -2,6 +2,7 @@ package com.kampoz.sketchat.realm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import java.util.Date;
 
 /**
  * Created by wasili on 2017-04-15.
@@ -10,58 +11,61 @@ import io.realm.annotations.PrimaryKey;
 public class MessageRealm extends RealmObject{
 
     @PrimaryKey
-    private int id;
-    private boolean left;
-    private String userName;
-    private String stringMessageText;
+    private long id;
+    private long userId;
+    private String messageText;
+    private Date messageTime;
 
     public MessageRealm(){
     }
 
-    public MessageRealm(boolean left, String message) {
+    public MessageRealm(String message) {
         super();
-        this.left = left;
-        this.stringMessageText = message;
+        this.messageText = message;
     }
 
-    public MessageRealm(boolean left, String userName, String message) {
+    public MessageRealm(long userId, String messageText) {
         super();
-        this.left = left;
-        this.userName = userName;
-        this.stringMessageText = message;
+        this.userId = userId;
+        this.messageText = messageText;
     }
 
-    public int getId() {
+    public MessageRealm(long userId, String message, Date messageTime){
+        super();
+        this.userId = userId;
+        this.messageText = message;
+        this.messageTime = messageTime;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public boolean isLeft() {
-        return left;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setLeft(boolean left) {
-        this.left = left;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
-    public String getStringMessageText() {
-        return stringMessageText;
+    public String getMessageText() {
+        return messageText;
     }
 
-    public void setStringMessageText(String messageText) {
-        this.stringMessageText = messageText;
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
     }
 
-    public String getUserName() {
-        return userName;
+    public Date getMessageTime() {
+        return messageTime;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setMessageTime(Date messageTime) {
+        this.messageTime = messageTime;
     }
-
-
 }

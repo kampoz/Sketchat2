@@ -1,6 +1,5 @@
 package com.kampoz.sketchat.realm;
 
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -40,13 +39,4 @@ public class DrawingRealm extends RealmObject {
     this.paths = paths;
   }
 
-  public static int generateId() {
-    Realm defaultInstance = Realm.getDefaultInstance();
-    int newId = 0;
-    Number oldMaxId = defaultInstance.where(DrawingRealm.class).max("id");
-    if(oldMaxId==null){
-      return newId;
-    }else
-      return oldMaxId.intValue()+1;
-  }
 }

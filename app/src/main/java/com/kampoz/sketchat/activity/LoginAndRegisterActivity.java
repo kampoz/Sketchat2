@@ -206,7 +206,7 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
               userDaoSync.registerNewUser(userName);
               userDaoLocal.saveLoginUserLocally(userName);
               Toast.makeText(getActivity(), "Registration complete", Toast.LENGTH_SHORT).show();
-              //startGroupAndSubjectsActivity();
+              startGroupAndSubjectsActivity();
             }
           } else {
             etRegisteruser.setError("Username cannot be empty");

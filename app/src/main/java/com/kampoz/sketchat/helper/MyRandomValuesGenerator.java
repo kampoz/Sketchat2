@@ -1,13 +1,10 @@
 package com.kampoz.sketchat.helper;
 
 import com.kampoz.sketchat.realm.GroupRealm;
-import com.kampoz.sketchat.realm.MessageRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
-
+import io.realm.Realm;
 import java.util.ArrayList;
 import java.util.Random;
-
-import io.realm.Realm;
 
 /**
  * Created by wasili on 2017-04-15.
@@ -67,7 +64,7 @@ public class MyRandomValuesGenerator {
     }
 
         //Generuje ArrayLIst z obiektami MessageRealm
-    public ArrayList<MessageRealm> generateMessagesArrayList(int elementsNumber){
+    /*public ArrayList<MessageRealm> generateMessagesArrayList(int elementsNumber){
         ArrayList<MessageRealm> messagesList = new ArrayList<>();
         for(int i=0; i<elementsNumber; i++){
             boolean isLeft = true;
@@ -76,7 +73,7 @@ public class MyRandomValuesGenerator {
             messagesList.add(messageObject);
         }
         return messagesList;
-    }
+    }*/
 
         //generuje losowe nazwy grup
     public void generateGroupsList(int groupsNumber){

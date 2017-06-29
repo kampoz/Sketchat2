@@ -1,12 +1,6 @@
 package com.kampoz.sketchat.realm;
 
-import io.realm.Case;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.realm.Realm;
 import io.realm.RealmObject;
-import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -21,6 +15,7 @@ public class SubjectRealm extends RealmObject{
     private String subject;
     private int interlocutorsNumber;
     private DrawingRealm drawing;
+    private ConversationRealm conversationRealm;
 
     public long getId() {
         return id;
@@ -52,21 +47,10 @@ public class SubjectRealm extends RealmObject{
     public void setDrawing(DrawingRealm drawing) {
         this.drawing = drawing;
     }
-
-
-    public static int generateSubjectId() {
-        Realm realm = Realm.getDefaultInstance();
-        int newId = 0;
-        Number oldMaxId = realm.where(SubjectRealm.class).max("id");
-        if(oldMaxId==null){
-            realm.close();
-            return newId;
-        }else{
-            realm.close();
-            return oldMaxId.intValue()+1;
-        }
-        //Realm.getDefaultInstance().where(GroupRealm.class).max("id").intValue() + 1;
+    public ConversationRealm getConversationRealm() {
+        return conversationRealm;
     }
-
-
+    public void setConversationRealm(ConversationRealm conversationRealm) {
+        this.conversationRealm = conversationRealm;
+    }
 }

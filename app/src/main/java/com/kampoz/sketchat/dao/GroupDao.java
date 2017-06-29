@@ -1,5 +1,6 @@
 package com.kampoz.sketchat.dao;
 
+import com.kampoz.sketchat.realm.ConversationRealm;
 import com.kampoz.sketchat.realm.DrawingRealm;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
@@ -93,15 +94,25 @@ public class GroupDao {
         SubjectDao subjectDao = new SubjectDao();
         subjectRealm.setId(subjectDao.generateSubjectId());
         subjectDao.closeRealmInstance();
+
         subjectRealm.setGroupId(groupId);
         realm.copyToRealm(subjectRealm);
-        realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList()
-            .add(subjectRealm);
-        DrawingRealm drawingRealm = realm
-            .createObject(DrawingRealm.class, DrawingRealm.generateId());
+        realm.where(GroupRealm.class).equalTo("id", groupId).findFirst().getSubjectsList().add(subjectRealm);
+
+        DrawingDao drawingDao = new DrawingDao();
+        DrawingRealm drawingRealm = realm.createObject(DrawingRealm.class, drawingDao.generateDrawingId());
+        drawingDao.closeRealmInstance();
+
         realm.copyToRealmOrUpdate(drawingRealm);
-        realm.where(SubjectRealm.class).equalTo("id", subjectRealm.getId()).findFirst()
-            .setDrawing(drawingRealm);
+        realm.where(SubjectRealm.class).equalTo("id", subjectRealm.getId()).findFirst().setDrawing(drawingRealm);
+
+        ConversationDao conversationDao = new ConversationDao();
+        ConversationRealm conversationRealm = realm.createObject(ConversationRealm.class, conversationDao.generateConversationId());
+        conversationDao.closeRealmInstance();
+
+        realm.copyToRealmOrUpdate(conversationRealm);
+        realm.where(SubjectRealm.class).equalTo("id", subjectRealm.getId()).findFirst().setConversationRealm(conversationRealm);
+
         realm.close();
       }
     });

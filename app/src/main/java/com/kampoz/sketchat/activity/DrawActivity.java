@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -33,19 +34,16 @@ import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.helper.MyColorRGB;
+import com.kampoz.sketchat.model.PencilView;
 import com.kampoz.sketchat.realm.DrawPathRealm;
 import com.kampoz.sketchat.realm.DrawPointRealm;
-import com.kampoz.sketchat.model.PencilView;
 import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-
 import java.util.HashMap;
 import java.util.Iterator;
-
-import android.view.MenuItem;
 
 public class DrawActivity extends AppCompatActivity
     implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback,
@@ -233,7 +231,6 @@ public class DrawActivity extends AppCompatActivity
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
     Log.d(tagGlobalInstances,"onCreate()  Realm.getGlobalInstanceCount: "+String.
             valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
-
 
     realmThread = new RealmThread(SplashActivity.publicSyncConfiguration, new RealmThread.RealmRunnable() {
       @Override

@@ -4,12 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.realm.MessageRealm;
-
 import java.util.ArrayList;
 
 /**
@@ -43,7 +40,8 @@ public class ConversationAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     MessageRealm messageObject = messages.get(position);
-    return messageObject.isLeft() ? TYPE_LEFT : TYPE_RIGHT;
+    //return messageObject.isLeft() ? TYPE_LEFT : TYPE_RIGHT;
+    return TYPE_RIGHT;
   }
 
   @Override
@@ -66,7 +64,7 @@ public class ConversationAdapter extends RecyclerView.Adapter {
 
   @Override
   public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-    ((MyViewHolder) viewHolder).tvMessageText.setText(messages.get(position).getStringMessageText());
+    ((MyViewHolder) viewHolder).tvMessageText.setText(messages.get(position).getMessageText());
   }
 
   @Override
