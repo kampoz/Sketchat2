@@ -40,7 +40,8 @@
 
   </android.support.v7.widget.Toolbar>
 
-  <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  <android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -68,13 +69,63 @@
     </LinearLayout>
 
     <FrameLayout
-      android:id="@+id/left_drawer"
+      android:id="@+id/fl_left_in_drawer"
       android:layout_width="500dp"
       android:layout_height="match_parent"
       android:layout_gravity="start"
       android:choiceMode="singleChoice"
       android:clickable="true"
-      android:background="@color/colorMyPrimary"/>
+      android:background="@color/colorMyPrimary">
+
+      <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_conversation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.kampoz.sketchat.activity.ConversationActivity">
+
+
+        <android.support.v7.widget.RecyclerView
+          android:id="@+id/rvConversation"
+          android:layout_width="match_parent"
+          android:layout_height="0dip"
+          android:layout_below="@+id/app_bar"
+          android:layout_above="@+id/llToSendMessage"
+          android:layout_marginTop="10dp"
+          android:background="@color/colorMyAlmostWhite" />
+
+        <LinearLayout
+          android:id="@+id/llToSendMessage"
+          android:layout_width="match_parent"
+          android:layout_height="100dp"
+          android:padding="10dp"
+          android:layout_alignParentBottom="true"
+          android:background="@color/colorMyPrimary"
+          android:weightSum="5">
+
+          <EditText
+            android:id="@+id/etToWriteMessage"
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:gravity="top"
+            android:background="@color/colorMyAlmostWhite"
+            />
+
+          <ImageButton
+            android:id="@+id/bSend"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_send_white_36dp"
+            android:background="@color/colorPrimary"
+            />
+        </LinearLayout>
+
+      </RelativeLayout>
+
+    </FrameLayout>
 
   </android.support.v4.widget.DrawerLayout>
 

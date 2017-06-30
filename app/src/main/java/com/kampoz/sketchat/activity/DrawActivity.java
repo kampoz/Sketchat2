@@ -60,7 +60,7 @@ public class DrawActivity extends AppCompatActivity
   private double marginLeft;
   private double marginTop;
   private DrawThread drawThread;
-  private MyDrawThread myDrawThread;
+
   private DrawPathRealm currentPath = new DrawPathRealm();
   private long idOfLastDrawPath;
   private int currentColor;
@@ -110,10 +110,6 @@ public class DrawActivity extends AppCompatActivity
     Intent intent = getIntent();
 
     realm = Realm.getDefaultInstance();
-    countDA++;
-    SplashActivity.globalRealmInstancesCount++;
-    Log.d(tag2,"---------DrawActivity OnCreate()------------");
-
     toolbar = (Toolbar) findViewById(R.id.app_bar);
 
     setSupportActionBar(toolbar);
@@ -229,6 +225,7 @@ public class DrawActivity extends AppCompatActivity
       }
     });
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
+
     Log.d(tagGlobalInstances,"onCreate()  Realm.getGlobalInstanceCount: "+String.
             valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
