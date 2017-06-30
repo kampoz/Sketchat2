@@ -31,6 +31,8 @@
         android:textColor="@android:color/black"
         android:layout_centerVertical="true"/>
 
+
+
     <ImageView
         android:id="@+id/ivPencil"
         android:layout_toLeftOf="@id/tvGroupSubjectsNumber"
@@ -39,6 +41,16 @@
         android:background="@drawable/pencil"
         android:layout_marginRight="10dp"
         android:layout_centerVertical="true"/>
+
+    <ImageView
+      android:id="@+id/ivAddUserToGroup"
+      android:layout_toLeftOf="@id/ivPencil"
+      android:src="@drawable/ic_add_circle_outline_black_24dp"
+      android:textColor="@color/colorBlack"
+      android:layout_width="18dp"
+      android:layout_height="18dp"
+      android:layout_marginRight="10dp"
+      android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/tvGroupName"

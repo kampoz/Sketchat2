@@ -12,8 +12,6 @@ import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.realm.GroupRealm;
 import java.util.ArrayList;
 
-import io.realm.Realm;
-
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder>{
     public interface OnGroupItemSelectedListener{
         void onItemSelect(long groupId);
@@ -30,6 +28,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         private Button bEditGroup;
         private TextView tvGroupSubjectsNumber;
         private ImageView ivPencil;
+        private ImageView ivAddUserToGroup;
 
         public MyViewHolder(View view) {
             super(view);
@@ -37,6 +36,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
             bEditGroup = (Button)view.findViewById(R.id.bEditGroup);
             tvGroupSubjectsNumber = (TextView) view.findViewById(R.id.tvGroupSubjectsNumber);
             ivPencil = (ImageView)view.findViewById(R.id.ivPencil);
+            ivAddUserToGroup = (ImageView)view.findViewById(R.id.ivAddUserToGroup);
         }
     }
 
@@ -56,6 +56,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         final Button bEditGroup = viewHolder.bEditGroup;
         final TextView tvGroupSubjectsNumber = viewHolder.tvGroupSubjectsNumber;
         final ImageView ivPencil = viewHolder.ivPencil;
+        final ImageView ivAddUserToGroup = viewHolder.ivAddUserToGroup;
         GroupRealm groupRealm = groupsList.get(position);
         long groupId = groupRealm.getId();
         //GroupDao groupDao = new GroupDao();
@@ -68,10 +69,12 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
             bEditGroup.setVisibility(View.VISIBLE);
             tvGroupSubjectsNumber.setVisibility(View.INVISIBLE);
             ivPencil.setVisibility(View.INVISIBLE);
+            ivAddUserToGroup.setVisibility(View.INVISIBLE);
         }else{
             bEditGroup.setVisibility(View.GONE);
             tvGroupSubjectsNumber.setVisibility(View.VISIBLE);
             ivPencil.setVisibility(View.VISIBLE);
+            ivAddUserToGroup.setVisibility(View.VISIBLE);
         }
         viewHolder.tvGroupName.setText(groupsList.get(position).getGroupName());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

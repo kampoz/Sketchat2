@@ -43,7 +43,7 @@ public class UserDao {
     });
   }
 
-  /** Saves login user locally with id 0 **/
+  /** Saves login userRealm locally with id 0 **/
   public void saveLoginUserLocally(String userName){
     final UserRealm userRealm = new UserRealm();
     userRealm.setId(0);
@@ -52,6 +52,19 @@ public class UserDao {
       @Override
       public void execute(Realm realm) {
         realm.copyToRealmOrUpdate(userRealm);
+      }
+    });
+  }
+
+  /** Saves login userRealm locally with name and id like in global Realm **/
+  public void saveLoginUserLocally(UserRealm userRealm){
+    final UserRealm userRealmLocally = new UserRealm();
+    userRealm.setId(userRealm.getId());
+    userRealm.setName(userRealm.getName());
+    realm.executeTransaction(new Realm.Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        realm.copyToRealmOrUpdate(userRealmLocally);
       }
     });
   }

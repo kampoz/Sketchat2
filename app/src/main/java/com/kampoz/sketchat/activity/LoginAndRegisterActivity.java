@@ -126,8 +126,9 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
     }
   }
 
-  public static class LoginFragment extends Fragment {
 
+  /** Login **/
+  public static class LoginFragment extends Fragment {
     TextView tvLoginLabel;
     EditText etLoginuser;
     Button bLoginUser;
@@ -180,8 +181,8 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
     }
   }
 
+  /** Registration **/
   public static class RegisterFragment extends Fragment {
-
     TextView tvRegisterLabel;
     EditText etRegisteruser;
     Button bRegisterUser;
@@ -204,7 +205,8 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
               etRegisteruser.setError("User already exists");
             } else {
               userDaoSync.registerNewUser(userName);
-              userDaoLocal.saveLoginUserLocally(userName);
+              //userDaoLocal.saveLoginUserLocally(userName);
+              userDaoLocal.saveLoginUserLocally(userDaoSync.getUserByName(userName));
               Toast.makeText(getActivity(), "Registration complete", Toast.LENGTH_SHORT).show();
               startGroupAndSubjectsActivity();
             }
