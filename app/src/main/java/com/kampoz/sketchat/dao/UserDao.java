@@ -1,11 +1,13 @@
 package com.kampoz.sketchat.dao;
 
 import android.util.Log;
+import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.UserRealm;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.RealmConfiguration;
 import io.realm.SyncConfiguration;
+import io.realm.exceptions.RealmException;
 
 /**
  * Created by Kamil on 15.06.2017.
@@ -57,14 +59,12 @@ public class UserDao {
   }
 
   /** Saves login userRealm locally with name and id like in global Realm **/
-  public void saveLoginUserLocally(UserRealm userRealm){
-    final UserRealm userRealmLocally = new UserRealm();
-    userRealm.setId(userRealm.getId());
-    userRealm.setName(userRealm.getName());
+  public void saveLoginUserLocally(final UserRealm userRealm){
     realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
-        realm.copyToRealmOrUpdate(userRealmLocally);
+        realm.deleteAll();
+        realm.copyToRealmOrUpdate(userRealm);
       }
     });
   }
@@ -88,6 +88,33 @@ public class UserDao {
       @Override
       public void execute(Realm realm) {
         realm.copyToRealmOrUpdate(userRealm);
+      }
+    });
+  }
+
+  /** Works only with realm local RealmConfiguration */
+  public UserRealm getCurrentLoginUser(){
+    UserRealm userRealmLocally = new UserRealm();
+    if(realm.where(UserRealm.class).count()==1)
+    {
+      userRealmLocally = realm.where(UserRealm.class).findFirst();
+    }else{
+      throw new RealmException("Wrong RealmUser objects amount in local realm database, not equals 1");
+    }
+    return userRealmLocally;
+  }
+
+  /** Used with SyncConfiguration */
+  public void addingUserToGroupAndGroupToUser(final long userId, final long groupId){
+    realm.executeTransaction(new Transaction() {
+      @Override
+      public void execute(Realm realm) {
+        GroupRealm groupRealm = realm.where(GroupRealm.class).equalTo("id", groupId).findFirst();
+        UserRealm userRealm  = realm.where(UserRealm.class).equalTo("id", userId).findFirst();
+        groupRealm.getUsersList().add(userRealm);
+        userRealm.getUsersGroups().add(groupRealm);
+        realm.copyToRealmOrUpdate(userRealm);
+        realm.copyToRealmOrUpdate(groupRealm);
       }
     });
   }

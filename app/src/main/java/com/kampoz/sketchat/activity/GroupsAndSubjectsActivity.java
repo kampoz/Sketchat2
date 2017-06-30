@@ -16,11 +16,13 @@ import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dao.SubjectDao;
+import com.kampoz.sketchat.dao.UserDao;
 import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
+import com.kampoz.sketchat.realm.UserRealm;
 import io.realm.Realm;
 import java.util.ArrayList;
 
@@ -46,7 +48,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private String threadTag = "G&SA thread";
     private GroupDao groupDao;
     private SubjectDao subjectDao;
-    //private Realm realm;
+    UserDao userDaoLocal;
+    UserDao userDaoSync;
 
 
     @Override
@@ -66,6 +69,9 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
         groupDao = new GroupDao();
         subjectDao = new SubjectDao();
+
+        userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
+        userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
 
         Log.d("Cykl życia", "...onCreate()...");
         Log.d(backStackTag, "...onCreate()..getSupportFragmentManager().getBackStackEntryCount()" + fragmentManager.getBackStackEntryCount());
@@ -100,6 +106,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         isThreadActive = false;
         groupDao.closeRealmInstance();
         subjectDao.closeRealmInstance();
+        userDaoLocal.closeRealmInstance();
+        userDaoSync.closeRealmInstance();
 
         Log.d(tag, "...onDestroy()...");
         Log.d(tagGlobalInstances, "onDestroy(); Realm.getGlobalInstanceCount()" + String.valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
@@ -253,6 +261,12 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
         mCurrentGroupId = groupId;
         setSubjectsFragment(groupId);
         this.fragmentManager.executePendingTransactions();
+    }
+
+    @Override
+    public void addUserToGroup(GroupRealm groupRealm){
+        UserRealm userRealmLocally = userDaoLocal.getCurrentLoginUser();
+        userDaoSync.addingUserToGroupAndGroupToUser(userRealmLocally.getId(), groupRealm.getId());
     }
     /** end of interface methods */
 

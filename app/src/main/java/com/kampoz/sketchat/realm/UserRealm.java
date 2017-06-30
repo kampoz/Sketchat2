@@ -1,7 +1,6 @@
 package com.kampoz.sketchat.realm;
 
-import java.util.ArrayList;
-
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -16,6 +15,7 @@ public class UserRealm extends RealmObject{
     private long id;
     private String name;
     private String password;
+    private RealmList<GroupRealm> usersGroups;
 
     @Ignore
     private int sessionId;
@@ -39,5 +39,21 @@ public class UserRealm extends RealmObject{
     }
     public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public RealmList<GroupRealm> getUsersGroups() {
+        return usersGroups;
+    }
+
+    public void setUsersGroups(RealmList<GroupRealm> usersGroups) {
+        this.usersGroups = usersGroups;
     }
 }

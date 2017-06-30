@@ -18,24 +18,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.activity.GroupsAndSubjectsActivity;
 import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.adapter.GroupsAdapter;
-//import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dialog.AddGroupDialogFragment;
 import com.kampoz.sketchat.dialog.EditGroupDialogFragment;
 import com.kampoz.sketchat.realm.GroupRealm;
-
+import io.realm.Realm;
 import java.util.ArrayList;
 
-import io.realm.Realm;
+//import com.kampoz.sketchat.dao.GroupDao;
 
 public class GroupsFragment extends Fragment implements
         GroupsAdapter.OnGroupItemSelectedListener,
         EditGroupDialogFragment.EditGroupDialogFragmentListener,
         AddGroupDialogFragment.AddGroupDialogFragmentListener {
+
+    public interface FragmentListener {
+        void onGroupItemSelected(long position);
+        void addUserToGroup(GroupRealm groupRealm);
+    }
 
     ArrayList<GroupRealm> groupsList = new ArrayList<>();
     GroupRealm groupRealm;
@@ -218,16 +221,13 @@ public class GroupsFragment extends Fragment implements
         super.onStop();
     }
 
-
+    /** INTERFACES METHODS **/
 
     /*** 1) From interface GroupsAdapter.OnGroupItemSelectedListener (2 methods)**/
     @Override
     public void onItemSelect(long groupId) {
         listener.onGroupItemSelected(groupId);
     }
-
-
-    /************** INTERFACES: *********************/
 
     @Override
     public void onEditItem(GroupRealm groupRealm) {
@@ -238,6 +238,17 @@ public class GroupsFragment extends Fragment implements
         editGroupDialog.setContext(context);
         editGroupDialog.setCancelable(false);
         editGroupDialog.show(fragmentManager, "tag");
+    }
+
+    @Override
+    public void addUserToGroupAndGroupToUser(GroupRealm groupRealm){
+        /** ma dodac uzytkownika do grupy a grupe do uzytkownika */
+        listener.addUserToGroup(groupRealm);
+
+
+
+
+
     }
 
     /***
@@ -276,9 +287,6 @@ public class GroupsFragment extends Fragment implements
         adapter.notifyDataSetChanged();
     }
 
-    public interface FragmentListener {
-        void onGroupItemSelected(long position);
-    }
     /** End of interfece EditGroupDialogFragment.EditGroupDialogFragmentListener */
 
     public ArrayList<GroupRealm> getGroupsList() {

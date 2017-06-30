@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.UserDao;
@@ -26,7 +27,7 @@ import io.realm.SyncUser;
 
 public class SplashActivity extends AppCompatActivity {
 
-  private static final String REALM_URL = "realm://" + "192.168.0.111" + ":9080/Draw555";
+  private static final String REALM_URL = "realm://" + "192.168.0.111" + ":9080/Draw444";
   private static final String AUTH_URL = "http://" + "192.168.0.111" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -48,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
   private LinearLayout llInternetConnection;
   private String SAThreadTag = "SA thread check";
   private Button bConnect;
-
+  private TextView tvConnectionInfo;
 
 
   @Override
@@ -64,6 +65,7 @@ public class SplashActivity extends AppCompatActivity {
 
     llInternetConnection = (LinearLayout) findViewById(R.id.llInternetConnection);
     preferences = getSharedPreferences("com.kampoz.sketchat", MODE_PRIVATE);
+    tvConnectionInfo = (TextView)findViewById(R.id.tvConnectionInfo);
     bConnect = (Button) findViewById(R.id.bConnect);
     bConnect.setOnClickListener(new OnClickListener() {
       @Override
@@ -219,6 +221,17 @@ public class SplashActivity extends AppCompatActivity {
             Log.d("Connection error", "....NO INTERNET....");
             Toast.makeText(SplashActivity.this, "Check internet connection", Toast.LENGTH_LONG)
                 .show();
+          }
+        });
+      }else{
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Log.d("Server error", "....No server connection....");
+            Toast.makeText(SplashActivity.this, "No server connection", Toast.LENGTH_LONG)
+                .show();
+            tvConnectionInfo.setText("Server error");
+            tvConnectionInfo.setVisibility(View.VISIBLE);
           }
         });
       }

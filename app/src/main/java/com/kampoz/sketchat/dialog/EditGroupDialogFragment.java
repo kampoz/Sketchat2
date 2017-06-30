@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.realm.GroupRealm;
@@ -94,7 +93,6 @@ public class EditGroupDialogFragment extends DialogFragment {
     public void setEditGroupDialogFragmentListener(EditGroupDialogFragmentListener listener) {
         this.listener = listener;
     }
-
 
     @Override
     public void onDetach() {

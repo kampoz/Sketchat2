@@ -87,6 +87,7 @@ public class GroupDao {
     });
   }
 
+  /** Adding subject to group and creates Conversation object in Subject realm object */
   public void addSubjectToGroup(final long groupId, final SubjectRealm subjectRealm) {
     realm.executeTransaction(new Realm.Transaction() {
       @Override
