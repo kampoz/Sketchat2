@@ -20,7 +20,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.dao.UserDao;
+import com.kampoz.sketchat.dao.UserRealmLocalDao;
+import com.kampoz.sketchat.dao.UserRealmSyncDao;
+import com.kampoz.sketchat.realm.UserRealmLocal;
+import com.kampoz.sketchat.realm.UserRealmSync;
 import com.kampoz.sketchat.tab.SlidingTabLayout;
 
 public class LoginAndRegisterActivity extends AppCompatActivity {
@@ -31,14 +34,14 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
   //private List<Fragment> fragmentsList;
   private Fragment[] fragmentsList = new Fragment[2];
   private Context context;
-  private UserDao userDao;
+  private UserRealmSyncDao userDao;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login_and_register);
 
-    userDao = new UserDao();
+    userDao = new UserRealmSyncDao();
     viewPager = (ViewPager) findViewById(R.id.VPviewPager);
     viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
     sTLTabs = (SlidingTabLayout) findViewById(R.id.STLtabs);
@@ -143,13 +146,21 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       bLoginUser.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          UserDao userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
-          UserDao userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
+          UserRealmSyncDao userDaoSync = new UserRealmSyncDao();
+          UserRealmLocalDao userDaoLocal = new UserRealmLocalDao();
+
           String userName = etLoginuser.getText().toString();
           if (!userName.matches("")) {
             if (userDaoSync.ifUserExistInDataBase(userName)) {
-              userDaoLocal.saveLoginUserLocally(userName);
-              Toast.makeText(getActivity(), "User log in", Toast.LENGTH_SHORT).show();
+              UserRealmLocal userRealmLocal = new UserRealmLocal();
+              UserRealmSync userRealmSync = userDaoSync.getUserByName(userName);
+              userRealmLocal.setId(userRealmSync.getId());
+              userRealmLocal.setName(userRealmSync.getName());
+              userRealmLocal.setUsersGroups(userRealmSync.getUsersGroups());
+              userDaoLocal.saveLoginUserLocally(userRealmLocal);
+              Toast.makeText(getActivity(), "User log in"+userDaoLocal
+                  .getCurrentLoginUser().getName()+" "+userDaoLocal
+                  .getCurrentLoginUser().getId(), Toast.LENGTH_LONG).show();
               startGroupAndSubjectsActivity();
             } else {
               etLoginuser.setError("User does not exist");
@@ -197,8 +208,8 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
       bRegisterUser.setOnClickListener(new OnClickListener() {
         @Override
         public void onClick(View v) {
-          UserDao userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
-          UserDao userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
+          UserRealmSyncDao userDaoSync = new UserRealmSyncDao();
+          UserRealmLocalDao userDaoLocal = new UserRealmLocalDao();
           String userName = etRegisteruser.getText().toString();
           if (!userName.matches("")) {
             if (userDaoSync.ifUserExistInDataBase(userName)) {
@@ -206,7 +217,11 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
             } else {
               userDaoSync.registerNewUser(userName);
               //userDaoLocal.saveLoginUserLocally(userName);
-              userDaoLocal.saveLoginUserLocally(userDaoSync.getUserByName(userName));
+              UserRealmSync userSync = userDaoSync.getUserByName(userName);
+              UserRealmLocal userLocal = new UserRealmLocal();
+              userLocal.setId(userSync.getId());
+              userLocal.setName(userSync.getName());
+              userDaoLocal.saveLoginUserLocally(userLocal);
               Toast.makeText(getActivity(), "Registration complete", Toast.LENGTH_SHORT).show();
               startGroupAndSubjectsActivity();
             }

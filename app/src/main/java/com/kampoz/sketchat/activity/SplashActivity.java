@@ -15,9 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.dao.UserDao;
+import com.kampoz.sketchat.dao.UserRealmLocalDao;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
-import com.kampoz.sketchat.realm.UserRealm;
 import io.realm.ObjectServerError;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -27,7 +26,7 @@ import io.realm.SyncUser;
 
 public class SplashActivity extends AppCompatActivity {
 
-  private static final String REALM_URL = "realm://" + "192.168.0.111" + ":9080/Draw444";
+  private static final String REALM_URL = "realm://" + "192.168.0.111" + ":9080/Draw2222";
   private static final String AUTH_URL = "http://" + "192.168.0.111" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -148,16 +147,16 @@ public class SplashActivity extends AppCompatActivity {
    **/
 
   private boolean isUserLogin() {
-    UserDao userDao = new UserDao(publicRealmConfiguration);
-    boolean isLogin = userDao.isUserLogin();
-    userDao.closeRealmInstance();
+    UserRealmLocalDao userDaoLocal = new UserRealmLocalDao();
+    boolean isLogin = userDaoLocal.isUserLogin();
+    userDaoLocal.closeRealmInstance();
     return isLogin;
   }
 
   private void cleanLocalRealm() {
-    UserDao userDao = new UserDao(publicRealmConfiguration);
-    userDao.cleanLocalRealm();
-    userDao.closeRealmInstance();
+    UserRealmLocalDao userLocalDao = new UserRealmLocalDao();
+    userLocalDao.cleanLocalRealm();
+    userLocalDao.closeRealmInstance();
   }
 
   private void startGroupAndSubjectsActivity() {
@@ -187,22 +186,6 @@ public class SplashActivity extends AppCompatActivity {
       localRealm = null;
     }
     Log.d(tag, "...onDestroy()...");
-  }
-
-  public void addUserSeed() {
-    String userName = "Testowy";
-    UserDao userDao = new UserDao();
-    userDao.registerNewUser(userName);
-    UserRealm user = userDao.getUserByName(userName);
-    /** Dodanie usera do bazy lokalnej*/
-    userDao.saveLoginUserLocally(user, publicRealmConfiguration);
-    userDao.closeRealmInstance();
-  }
-
-  public void addUserSeedLocal(String userName) {
-    UserDao userDao = new UserDao();
-    userDao.saveLoginUserLocally(userName, publicRealmConfiguration);
-    userDao.closeRealmInstance();
   }
 
 

@@ -1,11 +1,14 @@
 package com.kampoz.sketchat.activity;
 
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,13 +19,14 @@ import com.kampoz.sketchat.BuildConfig;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.dao.GroupDao;
 import com.kampoz.sketchat.dao.SubjectDao;
-import com.kampoz.sketchat.dao.UserDao;
+import com.kampoz.sketchat.dao.UserRealmLocalDao;
+import com.kampoz.sketchat.dao.UserRealmSyncDao;
 import com.kampoz.sketchat.fragments.GroupsFragment;
 import com.kampoz.sketchat.fragments.SubjectsFragment;
 import com.kampoz.sketchat.helper.MyConnectionChecker;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
-import com.kampoz.sketchat.realm.UserRealm;
+import com.kampoz.sketchat.realm.UserRealmLocal;
 import io.realm.Realm;
 import java.util.ArrayList;
 
@@ -48,8 +52,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     private String threadTag = "G&SA thread";
     private GroupDao groupDao;
     private SubjectDao subjectDao;
-    UserDao userDaoLocal;
-    UserDao userDaoSync;
+    UserRealmLocalDao userDaoLocal;
+    UserRealmSyncDao userDaoSync;
 
 
     @Override
@@ -69,9 +73,8 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
         groupDao = new GroupDao();
         subjectDao = new SubjectDao();
-
-        userDaoLocal = new UserDao(SplashActivity.publicRealmConfiguration);
-        userDaoSync = new UserDao(SplashActivity.publicSyncConfiguration);
+        userDaoLocal = new UserRealmLocalDao();
+        userDaoSync = new UserRealmSyncDao();
 
         Log.d("Cykl życia", "...onCreate()...");
         Log.d(backStackTag, "...onCreate()..getSupportFragmentManager().getBackStackEntryCount()" + fragmentManager.getBackStackEntryCount());
@@ -196,9 +199,12 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 //            this.startActivity(startSettingsActivityIntent);
 //            this.finish();
         }
-        if (id == R.id.action_last_conversation) {
-            Intent startLastConversationActivityIntent = new Intent(this, ConversationActivity.class);
-            this.startActivity(startLastConversationActivityIntent);
+        if (id == R.id.action_logout) {
+            userDaoLocal.logoutCurrentUser();
+            Intent startRegisterIntent = new Intent(this, LoginAndRegisterActivity.class);
+            this.startActivity(startRegisterIntent);
+            this.finish();
+            Toast.makeText(this, "User logout", Toast.LENGTH_LONG).show();
         }
         if (id == R.id.action_draw_activity) {
             if (!myConnectionChecker.isOnline(this)) {
@@ -264,9 +270,24 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void addUserToGroup(GroupRealm groupRealm){
-        UserRealm userRealmLocally = userDaoLocal.getCurrentLoginUser();
-        userDaoSync.addingUserToGroupAndGroupToUser(userRealmLocally.getId(), groupRealm.getId());
+    public void addUserToGroup(final GroupRealm groupRealm){
+        final Builder alert = new AlertDialog.Builder(GroupsAndSubjectsActivity.this);
+        alert.setMessage("Do you want to join group "+ groupRealm.getGroupName()+" ?");
+        alert.setPositiveButton("OK", new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UserRealmLocal userRealmLocal = userDaoLocal.getCurrentLoginUser();
+                userDaoSync.addingUserToGroupAndGroupToUser(userRealmLocal.getId(), groupRealm.getId());
+                dialog.dismiss();
+            }
+        });
+        alert.setNegativeButton("Cancel", new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
     /** end of interface methods */
 

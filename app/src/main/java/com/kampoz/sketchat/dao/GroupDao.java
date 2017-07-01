@@ -4,7 +4,7 @@ import com.kampoz.sketchat.realm.ConversationRealm;
 import com.kampoz.sketchat.realm.DrawingRealm;
 import com.kampoz.sketchat.realm.GroupRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
-import com.kampoz.sketchat.realm.UserRealm;
+import com.kampoz.sketchat.realm.UserRealmSync;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -119,11 +119,11 @@ public class GroupDao {
     });
   }
 
-  public void addUserToGroup(final long groupId, final UserRealm userRealm) {
+  public void addUserToGroup(final long groupId, final UserRealmSync userRealm) {
     realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
-        UserDao userDao = new UserDao();
+        UserRealmSyncDao userDao = new UserRealmSyncDao();
         userRealm.setId(userDao.generateUserId());
         userDao.closeRealmInstance();
         realm.copyToRealmOrUpdate(userRealm);

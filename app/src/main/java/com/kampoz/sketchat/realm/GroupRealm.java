@@ -1,15 +1,9 @@
 package com.kampoz.sketchat.realm;
 
-import com.kampoz.sketchat.dao.GroupDao;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.realm.Case;
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
+import java.util.ArrayList;
 
 /**
  * Created by wasili on 2017-04-16.
@@ -22,7 +16,7 @@ public class GroupRealm extends RealmObject {
   private long ownersId;
   private String groupName;
   private RealmList<SubjectRealm> subjectsList;
-  private RealmList<UserRealm> usersList;
+  private RealmList<UserRealmSync> usersList;
 
   public GroupRealm() {
   }
@@ -31,7 +25,7 @@ public class GroupRealm extends RealmObject {
     this.groupName = groupName;
     this.id = id;
   }
-  public GroupRealm(String groupName, ArrayList<UserRealm> usersArrayList) {
+  public GroupRealm(String groupName, ArrayList<UserRealmSync> usersArrayList) {
     this.groupName = groupName;
   }
 
@@ -63,10 +57,10 @@ public class GroupRealm extends RealmObject {
     this.subjectsList = subjectsList;
   }
 
-  public RealmList<UserRealm> getUsersList() {
+  public RealmList<UserRealmSync> getUsersList() {
     return usersList;
   }
-  public void setUsersList(RealmList<UserRealm> usersList) {
+  public void setUsersList(RealmList<UserRealmSync> usersList) {
     this.usersList = usersList;
   }
 

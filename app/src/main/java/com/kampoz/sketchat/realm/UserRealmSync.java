@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by wasili on 2017-04-13.
  */
 
-public class UserRealm extends RealmObject{
+public class UserRealmSync extends RealmObject{
 
     @PrimaryKey
     private long id;

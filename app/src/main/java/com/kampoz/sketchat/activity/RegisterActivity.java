@@ -2,8 +2,8 @@ package com.kampoz.sketchat.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,10 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.kampoz.sketchat.R;
-import com.kampoz.sketchat.realm.UserRealm;
-
+import com.kampoz.sketchat.realm.UserRealmSync;
 import io.realm.Realm;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -79,13 +77,13 @@ public class RegisterActivity extends AppCompatActivity {
                     Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            UserRealm userRealm = realm.createObject(UserRealm.class, userName);
+                            UserRealmSync userRealm = realm.createObject(UserRealmSync.class, userName);
 
                             //realm.copyToRealmOrUpdate(userRealm);
                         }
                     });
 
-                    Log.d("Users count", Integer.toString( Realm.getDefaultInstance().where(UserRealm.class).findAll().size()));
+                    Log.d("Users count", Integer.toString( Realm.getDefaultInstance().where(UserRealmSync.class).findAll().size()));
                     Log.d("Path",  Realm.getDefaultInstance().getPath());
                     Log.d("Conf filename",  Realm.getDefaultInstance().getConfiguration().getRealmFileName());
                     //intent
