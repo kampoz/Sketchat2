@@ -2,6 +2,7 @@ package com.kampoz.sketchat.dao;
 
 import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.realm.MessageRealm;
+import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class MessageDao {
     this.realm = Realm.getInstance(SplashActivity.publicSyncConfiguration);
   }
   /** Public methods */
-  public void saveMessageGlobally(long userId, String mesageText){
+  public void saveMessageGlobally(final long subjectId, long userId, String mesageText){
     final MessageRealm messageRealm = new MessageRealm(userId, mesageText);
     messageRealm.setId(generateMessageId());
     messageRealm.setMessageTime(new Date());
@@ -25,6 +26,7 @@ public class MessageDao {
       @Override
       public void execute(Realm realm) {
         realm.copyToRealmOrUpdate(messageRealm);
+        realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().add(messageRealm);
       }
     });
   }

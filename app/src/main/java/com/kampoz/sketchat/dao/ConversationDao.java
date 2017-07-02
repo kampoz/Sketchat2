@@ -5,7 +5,8 @@ import com.kampoz.sketchat.realm.ConversationRealm;
 import com.kampoz.sketchat.realm.MessageRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
-import io.realm.RealmList;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.SyncConfiguration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,11 +45,13 @@ public class ConversationDao {
   }
 
   public ArrayList<MessageRealm> getMessages(long subjectId){
-    RealmList<MessageRealm> messagesRealmList = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList();
+    RealmResults<MessageRealm> messagesRealmList = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().sort("messageTime", Sort.ASCENDING);
     ArrayList<MessageRealm> messagesList = new ArrayList<>();
     messagesList.addAll(messagesRealmList);
     return messagesList;
   }
+
+  //Realm.getDefaultInstance().where(CGMeeting.class).equalTo("organisationId", Globals.mCurrentCompanyId).findAllSorted("date", Sort.DESCENDING);
 
   public ArrayList<MessageRealm> generteMessagesSeedList(int elementsNumber){
     ArrayList<MessageRealm> messagesList = new ArrayList<>();

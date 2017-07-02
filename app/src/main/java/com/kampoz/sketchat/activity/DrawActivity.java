@@ -143,9 +143,9 @@ public class DrawActivity extends AppCompatActivity
     userLocalDao.closeRealmInstance();
     ConversationDao conversationDao = new ConversationDao();
 
-    //// TODO: 02.07.2017 zrobic watek wczytujacy dane lub zastowowac jakieos obserwatora wczytujacego dane gdy dane w BD sie zmienia
-    //ArrayList<MessageRealm> messagesList = conversationDao.getMessages(currentSubjectId);
-    ArrayList<MessageRealm> messagesList = conversationDao.generteMessagesSeedList(20);
+    //ArrayList<MessageRealm> messagesList = conversationDao.generteMessagesSeedList(20);
+
+    ArrayList<MessageRealm> messagesList = conversationDao.getMessages(currentSubjectId);
     conversationDao.closeRealmInstance();
 
     adapter = new ConversationAdapter(messagesList, rvConversation);
@@ -335,7 +335,7 @@ public class DrawActivity extends AppCompatActivity
     String messageText = etToWriteMessage.getText().toString();
     if (messageText != "") {
       MessageDao messageDao = new MessageDao();
-      messageDao.saveMessageGlobally(currentUserId, messageText);
+      messageDao.saveMessageGlobally(currentSubjectId, currentUserId, messageText);
       messageDao.closeRealmInstance();
       etToWriteMessage.setText("");
     } else {
