@@ -30,11 +30,15 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.ConversationAdapter;
 import com.kampoz.sketchat.dao.ConversationDao;
+import com.kampoz.sketchat.dao.MessageDao;
+import com.kampoz.sketchat.dao.UserRealmLocalDao;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.helper.MyColorRGB;
@@ -66,7 +70,6 @@ public class DrawActivity extends AppCompatActivity
   private double marginLeft;
   private double marginTop;
   private DrawThread drawThread;
-
   private DrawPathRealm currentPath = new DrawPathRealm();
   private long idOfLastDrawPath;
   private int currentColor;
@@ -105,10 +108,13 @@ public class DrawActivity extends AppCompatActivity
   private String tagGlobalInstances = "Realm global inst. DA";
   private String tagMyThread = "DA myThread";
   private static String tagRealmThread = "DA inst realm2";
-  private  boolean realmCloseFlag = false;
+  private boolean realmCloseFlag = false;
   private RealmThread realmThread;
   private RecyclerView rvConversation;
   private ConversationAdapter adapter;
+  private ImageButton ibSend;
+  private EditText etToWriteMessage;
+  private long currentUserId;
 
 
   @Override
@@ -128,9 +134,13 @@ public class DrawActivity extends AppCompatActivity
     rvConversation = (RecyclerView) findViewById(R.id.rvConversation);
     rvConversation.setHasFixedSize(true);
     rvConversation.setLayoutManager(new LinearLayoutManager(this));
+    ibSend = (ImageButton) findViewById(R.id.ibSend);
+    etToWriteMessage = (EditText) findViewById(R.id.etToWriteMessage);
 
     currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
-
+    UserRealmLocalDao userLocalDao = new UserRealmLocalDao();
+    currentUserId = userLocalDao.getCurrentLoginUser().getId();
+    userLocalDao.closeRealmInstance();
     ConversationDao conversationDao = new ConversationDao();
 
     //// TODO: 02.07.2017 zrobic watek wczytujacy dane lub zastowowac jakieos obserwatora wczytujacego dane gdy dane w BD sie zmienia
@@ -154,6 +164,12 @@ public class DrawActivity extends AppCompatActivity
       }
     });
 
+    ibSend.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        sendChatMessage();
+      }
+    });
 
     tvSubjectTitle.setText(getCurrentSubjectTitle(currentSubjectId));
     currentColor = -16777216;
@@ -250,66 +266,81 @@ public class DrawActivity extends AppCompatActivity
     });
     drawer.getParent().requestDisallowInterceptTouchEvent(true);
 
-    Log.d(tagGlobalInstances,"onCreate()  Realm.getGlobalInstanceCount: "+String.
-            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+    Log.d(tagGlobalInstances, "onCreate()  Realm.getGlobalInstanceCount: " + String.
+        valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
-    realmThread = new RealmThread(SplashActivity.publicSyncConfiguration, new RealmThread.RealmRunnable() {
-      @Override
-      public void run(Realm realm) {
-        final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
-        do {
-          try {
-            final SurfaceHolder holder = surfaceView.getHolder();
-            canvas = holder.lockCanvas();
-            synchronized (holder) {
-              if (canvas != null) {
-                canvas.drawColor(Color.WHITE);
-              }
-              final Paint paint = new Paint();
-              for (DrawPathRealm drawPath : results) {
-                final RealmList<DrawPointRealm> points = drawPath.getPoints();
-                final Integer color = drawPath.getColor();//nameToColorMap.get(drawPath.getColor());
-                if (color != null) {
-                  paint.setColor(color);
-                } else {
-                  paint.setColor(currentColor);
+    realmThread = new RealmThread(SplashActivity.publicSyncConfiguration,
+        new RealmThread.RealmRunnable() {
+          @Override
+          public void run(Realm realm) {
+            final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class)
+                .equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
+            do {
+              try {
+                final SurfaceHolder holder = surfaceView.getHolder();
+                canvas = holder.lockCanvas();
+                synchronized (holder) {
+                  if (canvas != null) {
+                    canvas.drawColor(Color.WHITE);
+                  }
+                  final Paint paint = new Paint();
+                  for (DrawPathRealm drawPath : results) {
+                    final RealmList<DrawPointRealm> points = drawPath.getPoints();
+                    final Integer color = drawPath
+                        .getColor();//nameToColorMap.get(drawPath.getColor());
+                    if (color != null) {
+                      paint.setColor(color);
+                    } else {
+                      paint.setColor(currentColor);
+                    }
+                    paint.setStyle(Style.STROKE);
+                    paint.setStrokeWidth((float) (4 / ratio));
+                    final Iterator<DrawPointRealm> iterator = points.iterator();
+                    final DrawPointRealm firstPoint = iterator.next();
+                    final Path path = new Path();
+                    final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
+                    final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
+                    path.moveTo(firstX, firstY);
+                    while (iterator.hasNext()) {
+                      DrawPointRealm point = iterator.next();
+                      final float x = (float) ((point.getX() / ratio) + marginLeft);
+                      final float y = (float) ((point.getY() / ratio) + marginTop);
+                      path.lineTo(x, y);
+                    }
+                    if (canvas != null) {
+                      canvas.drawPath(path, paint);
+                    }
+                  }
+                  if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                  }
+
                 }
-                paint.setStyle(Style.STROKE);
-                paint.setStrokeWidth((float) (4 / ratio));
-                final Iterator<DrawPointRealm> iterator = points.iterator();
-                final DrawPointRealm firstPoint = iterator.next();
-                final Path path = new Path();
-                final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
-                final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
-                path.moveTo(firstX, firstY);
-                while (iterator.hasNext()) {
-                  DrawPointRealm point = iterator.next();
-                  final float x = (float) ((point.getX() / ratio) + marginLeft);
-                  final float y = (float) ((point.getY() / ratio) + marginTop);
-                  path.lineTo(x, y);
-                }
+              } finally {
                 if (canvas != null) {
-                  canvas.drawPath(path, paint);
+                  surfaceView.getHolder().unlockCanvasAndPost(canvas);
                 }
               }
-              if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-                progressDialog = null;
-              }
 
-            }
-          } finally {
-            if (canvas != null) {
-              surfaceView.getHolder().unlockCanvasAndPost(canvas);
-            }
+              Log.d("RealmThread", " wątek RealmThread działa ...");
+
+            } while (realm.waitForChange());
           }
+        });
 
-          Log.d("RealmThread", " wątek RealmThread działa ...");
+  }
 
-        } while (realm.waitForChange());
-      }
-    });
-
+  public void sendChatMessage() {
+    String messageText = etToWriteMessage.getText().toString();
+    if (messageText != "") {
+      MessageDao messageDao = new MessageDao();
+      messageDao.saveMessageGlobally(currentUserId, messageText);
+      messageDao.closeRealmInstance();
+      etToWriteMessage.setText("");
+    } else {
+      Toast.makeText(context, "Field can not be empty", Toast.LENGTH_SHORT).show();
+    }
   }
 
   public String getCurrentSubjectTitle(Long currentSubjectId) {
@@ -321,8 +352,8 @@ public class DrawActivity extends AppCompatActivity
     super.onStop();
     realmThread.shutdown();
     Log.d(tag, "...onStop()...");
-    Log.d(tagGlobalInstances,"onStop()  Realm.getGlobalInstanceCount: "+String.
-            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+    Log.d(tagGlobalInstances, "onStop()  Realm.getGlobalInstanceCount: " + String.
+        valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
   }
 
@@ -330,16 +361,16 @@ public class DrawActivity extends AppCompatActivity
   protected void onStart() {
     super.onStart();
     Log.d(tag, "...onStart()...");
-    Log.d(tagGlobalInstances,"onStart() Realm.getGlobalInstanceCount: "+String.
-            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+    Log.d(tagGlobalInstances, "onStart() Realm.getGlobalInstanceCount: " + String.
+        valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
   protected void onResume() {
     super.onResume();
     Log.d(tag, "...onResume()...");
-    Log.d(tagGlobalInstances,"onResume() Realm.getGlobalInstanceCount: "+String.
-            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+    Log.d(tagGlobalInstances, "onResume() Realm.getGlobalInstanceCount: " + String.
+        valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
@@ -347,8 +378,8 @@ public class DrawActivity extends AppCompatActivity
     super.onPause();
     realmCloseFlag = true;
     Log.d(tag, "...onPause()...");
-    Log.d(tagGlobalInstances,"onPause() Realm.getGlobalInstanceCount: "+String.
-            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+    Log.d(tagGlobalInstances, "onPause() Realm.getGlobalInstanceCount: " + String.
+        valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
@@ -359,8 +390,8 @@ public class DrawActivity extends AppCompatActivity
     } else {
       super.onBackPressed();
     }
-    Log.d(tagGlobalInstances,"onBackPressed() Realm.getGlobalInstanceCount: "+String.
-            valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+    Log.d(tagGlobalInstances, "onBackPressed() Realm.getGlobalInstanceCount: " + String.
+        valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
   }
 
   @Override
@@ -376,9 +407,9 @@ public class DrawActivity extends AppCompatActivity
       realm.close();
       realm = null;
       realmCloseFlag = true;
-      Log.d(tag1,"---------DrawActivity OnDestroy()------------");
-      Log.d(tagGlobalInstances,"onDestroy() Realm.getGlobalInstanceCount: "+String.
-              valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+      Log.d(tag1, "---------DrawActivity OnDestroy()------------");
+      Log.d(tagGlobalInstances, "onDestroy() Realm.getGlobalInstanceCount: " + String.
+          valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
 
       //realmThread.interrupt();
       //realmThread.shutdown();
@@ -435,6 +466,7 @@ public class DrawActivity extends AppCompatActivity
 
     // Runnable interface
     public interface RealmRunnable {
+
       void run(final Realm realm);
     }
 
@@ -472,19 +504,23 @@ public class DrawActivity extends AppCompatActivity
 
     @Override
     public void run() {
-      try{
-      realm2 = Realm.getInstance(realmConfig);
-      Log.d(tagRealmThread, " >>> >>> >>> realm2 NEW INSTANCE OPEN >>> INSTANCE OPEN >>> INSTANCE OPEN >>>>>>>>>>>>>>> INSTANCE OPEN ");
-      if (task != null) {
-        task.run(realm2);
-      }} finally {
-      synchronized(this) {
-        if (!realm2.isClosed()) {
-          realm2.close();
-          Log.d(tagRealmThread, " >>> >>> >>> realm2 INSTANCE CLOSE INSTANCE CLOSE INSTANCE CLOSE INSTANCE CLOSE INSTANCE CLOSE <<<<<<<<<<");
+      try {
+        realm2 = Realm.getInstance(realmConfig);
+        Log.d(tagRealmThread,
+            " >>> >>> >>> realm2 NEW INSTANCE OPEN >>> INSTANCE OPEN >>> INSTANCE OPEN >>>>>>>>>>>>>>> INSTANCE OPEN ");
+        if (task != null) {
+          task.run(realm2);
         }
-        realm2 = null;
-      }}
+      } finally {
+        synchronized (this) {
+          if (!realm2.isClosed()) {
+            realm2.close();
+            Log.d(tagRealmThread,
+                " >>> >>> >>> realm2 INSTANCE CLOSE INSTANCE CLOSE INSTANCE CLOSE INSTANCE CLOSE INSTANCE CLOSE <<<<<<<<<<");
+          }
+          realm2 = null;
+        }
+      }
     }
 
     /**
@@ -504,15 +540,19 @@ public class DrawActivity extends AppCompatActivity
   }
 
 
-/**Mój ropoczety wątek*/
-  class MyDrawThread extends Thread{
+  /**
+   * Mój ropoczety wątek
+   */
+  class MyDrawThread extends Thread {
+
     private Realm realm;
 
     @Override
     public void run() {
       realm = Realm.getDefaultInstance();
       Log.d(tagMyThread, "realm NEW INSTANCE OPEN >>> >>> >>>");
-      final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
+      final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class)
+          .equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
       canvas = null;
       try {
         final SurfaceHolder holder = surfaceView.getHolder();
@@ -524,8 +564,7 @@ public class DrawActivity extends AppCompatActivity
         }
       }
 
-
-      while(!isInterrupted()){
+      while (!isInterrupted()) {
         final SurfaceHolder holder = surfaceView.getHolder();
         canvas = holder.lockCanvas();
         if (canvas != null) {
@@ -537,14 +576,15 @@ public class DrawActivity extends AppCompatActivity
   }
 
   class DrawThread extends Thread {
+
     private Realm bgRealm;
 
     public void shutdown() {
       synchronized (this) {
         if (bgRealm != null) {
           bgRealm.stopWaitForChange();
-          Log.d(tag1,"Realm.getGlobalInstanceCount(): "+String.
-                  valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
+          Log.d(tag1, "Realm.getGlobalInstanceCount(): " + String.
+              valueOf(Realm.getGlobalInstanceCount(SplashActivity.publicSyncConfiguration)));
         }
       }
       interrupt();
@@ -626,15 +666,20 @@ public class DrawActivity extends AppCompatActivity
             surfaceView.getHolder().unlockCanvasAndPost(canvas);
           }
         }
-        if(realmCloseFlag) {
+        if (realmCloseFlag) {
           bgRealm.stopWaitForChange();
-          if(!bgRealm.isClosed())bgRealm.close();
+          if (!bgRealm.isClosed()) {
+            bgRealm.close();
+          }
+        } else {
+          bgRealm.waitForChange();
         }
-        else bgRealm.waitForChange();
         Log.d(tagBgRealm, " bgRealm.waitForChange() ");
       }
-      if(interrupted() && realmCloseFlag) {
-        if(!bgRealm.isClosed())bgRealm.close();
+      if (interrupted() && realmCloseFlag) {
+        if (!bgRealm.isClosed()) {
+          bgRealm.close();
+        }
         Log.d(tagBgRealm, "drawThread is interrupted() & bgRealm INSTANCE CLOSED <<<");
       }
     }
@@ -662,6 +707,7 @@ public class DrawActivity extends AppCompatActivity
   }
 
   private class firstSketchDownloadAsyncTask extends AsyncTask<Void, Void, Void> {
+
     SurfaceHolder holder;
 
     @Override
@@ -683,25 +729,24 @@ public class DrawActivity extends AppCompatActivity
       if (canvas != null) {
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
         //if (realmThread.isAlive()) {
-          //drawThread = new DrawThread();
-          //myDrawThread = new MyDrawThread();
-          //drawThread.start();
-          //myDrawThread.start();
+        //drawThread = new DrawThread();
+        //myDrawThread = new MyDrawThread();
+        //drawThread.start();
+        //myDrawThread.start();
 //          }else{
 //          realmThread.start();
 //          }
 
-        if (realmThread.getState() == Thread.State.NEW)
-        {
+        if (realmThread.getState() == Thread.State.NEW) {
           realmThread.start();
-        } else{
+        } else {
           Intent startDrawActivityIntent = new Intent(DrawActivity.this, DrawActivity.class);
           startDrawActivityIntent.putExtra("currentSubjectid", currentSubjectId);
           startActivity(startDrawActivityIntent);
           DrawActivity.this.finish();
         }
-          Log.d(tag, "AsyncTask.onPostExecute() ");
-        }
+        Log.d(tag, "AsyncTask.onPostExecute() ");
+      }
     }
 
 

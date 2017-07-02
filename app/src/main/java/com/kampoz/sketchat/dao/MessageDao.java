@@ -3,8 +3,7 @@ package com.kampoz.sketchat.dao;
 import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.realm.MessageRealm;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.SyncConfiguration;
+import java.util.Date;
 
 /**
  * Created by Kamil on 29.06.2017.
@@ -15,25 +14,13 @@ public class MessageDao {
 
   /** Constructors */
   public MessageDao() {
-    this.realm = Realm.getDefaultInstance();
+    this.realm = Realm.getInstance(SplashActivity.publicSyncConfiguration);
   }
-
-  /** This constructor using when local realm instance with RealmConfiguration is needed */
-  public MessageDao(RealmConfiguration realmConfiguration){
-    this.realm = Realm.getInstance(realmConfiguration);
-  }
-
-  /** This constructor can be used when realm with Syncconfigiration is needed */
-  public MessageDao(SyncConfiguration syncConfiguration){
-    this.realm = Realm.getInstance(syncConfiguration);
-  }
-
   /** Public methods */
   public void saveMessageGlobally(long userId, String mesageText){
     final MessageRealm messageRealm = new MessageRealm(userId, mesageText);
-    MessageDao messageDao = new MessageDao(SplashActivity.publicSyncConfiguration);
-    messageRealm.setId(messageDao.generateMessageId());
-    messageDao.closeRealmInstance();
+    messageRealm.setId(generateMessageId());
+    messageRealm.setMessageTime(new Date());
     realm.executeTransaction(new Realm.Transaction() {
       @Override
       public void execute(Realm realm) {
@@ -41,8 +28,6 @@ public class MessageDao {
       }
     });
   }
-
-
 
   public long generateMessageId() {
     long newId = 0;

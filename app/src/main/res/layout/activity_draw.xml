@@ -84,12 +84,10 @@
         android:layout_height="match_parent"
         tools:context="com.kampoz.sketchat.activity.ConversationActivity">
 
-
         <android.support.v7.widget.RecyclerView
           android:id="@+id/rvConversation"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_below="@+id/app_bar"
           android:layout_above="@+id/llToSendMessage"
           android:layout_marginTop="10dp"
           android:background="@color/colorMyAlmostWhite" />
@@ -114,7 +112,7 @@
             />
 
           <ImageButton
-            android:id="@+id/bSend"
+            android:id="@+id/ibSend"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"

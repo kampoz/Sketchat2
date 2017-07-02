@@ -56,7 +56,8 @@ public class ConversationDao {
     int userRandomId;
     for(long i=0; i< elementsNumber; i++){
       userRandomId = random.nextInt(3);
-      messagesList.add(new MessageRealm(i,userRandomId , "test text; "+"userId = "+userRandomId, new Date()));
+      Date date = new Date();
+      messagesList.add(new MessageRealm(i,userRandomId , "test text; "+"userId = "+userRandomId+"; "+date.toString(), date));
     }
     return messagesList;
   }
