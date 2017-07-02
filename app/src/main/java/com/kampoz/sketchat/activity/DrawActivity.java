@@ -55,9 +55,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class DrawActivity extends AppCompatActivity
-    implements SurfaceHolder.Callback, PaletteFragment.PaletteCallback,
-    ColorPickerDialogFragment.ColorListener {
+public class DrawActivity extends AppCompatActivity implements
+    SurfaceHolder.Callback,
+    PaletteFragment.PaletteCallback,
+    ColorPickerDialogFragment.ColorListener,
+    ConversationDao.ConversationListener {
 
   private static final String REALM_URL = "realm2://" + "100.0.0.21" + ":9080/Draw999";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
@@ -115,6 +117,8 @@ public class DrawActivity extends AppCompatActivity
   private ImageButton ibSend;
   private EditText etToWriteMessage;
   private long currentUserId;
+  private ConversationDao conversationDao;
+  private ArrayList<MessageRealm> messagesList;
 
 
   @Override
@@ -141,12 +145,13 @@ public class DrawActivity extends AppCompatActivity
     UserRealmLocalDao userLocalDao = new UserRealmLocalDao();
     currentUserId = userLocalDao.getCurrentLoginUser().getId();
     userLocalDao.closeRealmInstance();
-    ConversationDao conversationDao = new ConversationDao();
+    conversationDao = new ConversationDao();
+    conversationDao.setListener(this);
 
+    messagesList = conversationDao.getMessages(currentSubjectId);
+    //messagesList = conversationDao.getMessages2(currentSubjectId);
     //ArrayList<MessageRealm> messagesList = conversationDao.generteMessagesSeedList(20);
 
-    ArrayList<MessageRealm> messagesList = conversationDao.getMessages(currentSubjectId);
-    conversationDao.closeRealmInstance();
 
     adapter = new ConversationAdapter(messagesList, rvConversation);
     rvConversation.setAdapter(adapter);
@@ -168,6 +173,12 @@ public class DrawActivity extends AppCompatActivity
       @Override
       public void onClick(View v) {
         sendChatMessage();
+        /*
+        ConversationDao convDao = new ConversationDao();
+        messagesList.clear();
+        messagesList.addAll(convDao.getMessages2(currentSubjectId));
+        convDao.closeRealmInstance();
+        adapter.notifyDataSetChanged();*/
       }
     });
 
@@ -413,6 +424,7 @@ public class DrawActivity extends AppCompatActivity
 
       //realmThread.interrupt();
       //realmThread.shutdown();
+      conversationDao.closeRealmInstance();
     }
     ratio = 0;
   }
@@ -819,6 +831,14 @@ public class DrawActivity extends AppCompatActivity
     return currentColor;
   }
 
+  /** Interface ConversationDao.ConversationListener methods implementation: **/
+  @Override
+  public void refreshAdapterView() {
+    messagesList.clear();
+    messagesList.addAll(conversationDao.getMessages(currentSubjectId));
+    adapter.notifyDataSetChanged();
+  }
+
   /*************************/
 
   private void setPaletteFragment() {
@@ -846,5 +866,7 @@ public class DrawActivity extends AppCompatActivity
   public void setCurrentSubjectId(long currentSubjectId) {
     this.currentSubjectId = currentSubjectId;
   }
+
+
 }
 
