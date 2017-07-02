@@ -119,6 +119,7 @@ public class DrawActivity extends AppCompatActivity implements
   private long currentUserId;
   private ConversationDao conversationDao;
   private ArrayList<MessageRealm> messagesList;
+  private final LinearLayoutManager layoutManager= new LinearLayoutManager(this);
 
 
   @Override
@@ -137,7 +138,9 @@ public class DrawActivity extends AppCompatActivity implements
     tvSubjectTitle = (TextView) findViewById(R.id.tvSubjectTitle);
     rvConversation = (RecyclerView) findViewById(R.id.rvConversation);
     rvConversation.setHasFixedSize(true);
-    rvConversation.setLayoutManager(new LinearLayoutManager(this));
+    //layoutManager = new LinearLayoutManager(this);
+    layoutManager.setStackFromEnd(true);
+    rvConversation.setLayoutManager(layoutManager);
     ibSend = (ImageButton) findViewById(R.id.ibSend);
     etToWriteMessage = (EditText) findViewById(R.id.etToWriteMessage);
 
@@ -154,6 +157,7 @@ public class DrawActivity extends AppCompatActivity implements
 
 
     adapter = new ConversationAdapter(messagesList, rvConversation);
+
     rvConversation.setAdapter(adapter);
 
     bChat = (ImageButton) findViewById(R.id.bChat);
@@ -837,6 +841,8 @@ public class DrawActivity extends AppCompatActivity implements
     messagesList.clear();
     messagesList.addAll(conversationDao.getMessages(currentSubjectId));
     adapter.notifyDataSetChanged();
+    rvConversation.scrollToPosition(messagesList.size()-1);
+
   }
 
   /*************************/
