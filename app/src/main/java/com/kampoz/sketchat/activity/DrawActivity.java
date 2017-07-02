@@ -17,6 +17,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,17 +33,21 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.adapter.ConversationAdapter;
+import com.kampoz.sketchat.dao.ConversationDao;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.helper.MyColorRGB;
 import com.kampoz.sketchat.model.PencilView;
 import com.kampoz.sketchat.realm.DrawPathRealm;
 import com.kampoz.sketchat.realm.DrawPointRealm;
+import com.kampoz.sketchat.realm.MessageRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
 import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -101,6 +107,8 @@ public class DrawActivity extends AppCompatActivity
   private static String tagRealmThread = "DA inst realm2";
   private  boolean realmCloseFlag = false;
   private RealmThread realmThread;
+  private RecyclerView rvConversation;
+  private ConversationAdapter adapter;
 
 
   @Override
@@ -117,6 +125,22 @@ public class DrawActivity extends AppCompatActivity
     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     tvSubjectTitle = (TextView) findViewById(R.id.tvSubjectTitle);
+    rvConversation = (RecyclerView) findViewById(R.id.rvConversation);
+    rvConversation.setHasFixedSize(true);
+    rvConversation.setLayoutManager(new LinearLayoutManager(this));
+
+    currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
+
+    ConversationDao conversationDao = new ConversationDao();
+
+    //// TODO: 02.07.2017 zrobic watek wczytujacy dane lub zastowowac jakieos obserwatora wczytujacego dane gdy dane w BD sie zmienia
+    //ArrayList<MessageRealm> messagesList = conversationDao.getMessages(currentSubjectId);
+    ArrayList<MessageRealm> messagesList = conversationDao.generteMessagesSeedList(20);
+    conversationDao.closeRealmInstance();
+
+    adapter = new ConversationAdapter(messagesList, rvConversation);
+    rvConversation.setAdapter(adapter);
+
     bChat = (ImageButton) findViewById(R.id.bChat);
     bChat.setOnClickListener(new OnClickListener() {
       @Override
@@ -130,7 +154,7 @@ public class DrawActivity extends AppCompatActivity
       }
     });
 
-    currentSubjectId = intent.getLongExtra("currentSubjectid", 0);
+
     tvSubjectTitle.setText(getCurrentSubjectTitle(currentSubjectId));
     currentColor = -16777216;
     dialog = new ColorPickerDialogFragment();

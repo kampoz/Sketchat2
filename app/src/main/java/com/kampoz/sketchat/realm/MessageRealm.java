@@ -37,6 +37,15 @@ public class MessageRealm extends RealmObject{
         this.messageTime = messageTime;
     }
 
+    /** constructor fr seed*/
+    public MessageRealm(long id, long userId, String message, Date messageTime){
+        super();
+        this.id = id;
+        this.userId = userId;
+        this.messageText = message;
+        this.messageTime = messageTime;
+    }
+
     public long getId() {
         return id;
     }

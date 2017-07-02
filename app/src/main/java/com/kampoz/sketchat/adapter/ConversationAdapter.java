@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.kampoz.sketchat.R;
+import com.kampoz.sketchat.dao.UserRealmLocalDao;
 import com.kampoz.sketchat.realm.MessageRealm;
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ public class ConversationAdapter extends RecyclerView.Adapter {
 
   private RecyclerView recyclerView;
   private ArrayList<MessageRealm> messages; // = myGenerator.generateMessagesArrayList(10);
-
+  private UserRealmLocalDao userRealmLocalDao;
   int TYPE_RIGHT = 0;
   int TYPE_LEFT = 1;
 
@@ -40,8 +41,16 @@ public class ConversationAdapter extends RecyclerView.Adapter {
   @Override
   public int getItemViewType(int position) {
     MessageRealm messageObject = messages.get(position);
-    //return messageObject.isLeft() ? TYPE_LEFT : TYPE_RIGHT;
-    return TYPE_RIGHT;
+    userRealmLocalDao = new UserRealmLocalDao();
+    //int type =  (messageObject.getUserId() == userRealmLocalDao.getCurrentLoginUser().getId())? TYPE_RIGHT : TYPE_LEFT;
+    int type;
+    if (messageObject.getUserId() == userRealmLocalDao.getCurrentLoginUser().getId()){
+      type = TYPE_RIGHT;
+    }else{
+      type = TYPE_LEFT;
+    }
+    userRealmLocalDao.closeRealmInstance();
+    return type;
   }
 
   @Override
