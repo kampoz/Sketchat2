@@ -24,10 +24,12 @@ public class ConversationAdapter extends RecyclerView.Adapter {
 
   private class MyViewHolder extends RecyclerView.ViewHolder {
     public TextView tvMessageText;
+    public TextView tvUserName;
     //private LinearLayout singleMessageContainer;
     public MyViewHolder(View view) {
       super(view);
       tvMessageText = (TextView) view.findViewById(R.id.singleMessage);
+      tvUserName = (TextView)view.findViewById(R.id.tvUserName);
     }
   }
 

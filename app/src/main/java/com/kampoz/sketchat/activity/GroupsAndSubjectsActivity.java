@@ -308,11 +308,6 @@ public class GroupsAndSubjectsActivity extends AppCompatActivity implements
 
     class GettingActualGroupsThread extends Thread {
         public void run() {
-//            try {
-//                sleep(5000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
 
             while (isThreadActive) {
                 if(currentFragment instanceof GroupsFragment) {

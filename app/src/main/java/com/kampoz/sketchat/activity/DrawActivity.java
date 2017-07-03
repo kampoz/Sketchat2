@@ -58,8 +58,7 @@ import java.util.Iterator;
 public class DrawActivity extends AppCompatActivity implements
     SurfaceHolder.Callback,
     PaletteFragment.PaletteCallback,
-    ColorPickerDialogFragment.ColorListener,
-    ConversationDao.ConversationListener {
+    ColorPickerDialogFragment.ColorListener {
 
   private static final String REALM_URL = "realm2://" + "100.0.0.21" + ":9080/Draw999";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
@@ -119,7 +118,8 @@ public class DrawActivity extends AppCompatActivity implements
   private long currentUserId;
   private ConversationDao conversationDao;
   private ArrayList<MessageRealm> messagesList;
-  private final LinearLayoutManager layoutManager= new LinearLayoutManager(this);
+  private final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+  private boolean checkForNewMessages = true;
 
 
   @Override
@@ -149,15 +149,13 @@ public class DrawActivity extends AppCompatActivity implements
     currentUserId = userLocalDao.getCurrentLoginUser().getId();
     userLocalDao.closeRealmInstance();
     conversationDao = new ConversationDao();
-    conversationDao.setListener(this);
+    //conversationDao.setListener(this);
 
     messagesList = conversationDao.getMessages(currentSubjectId);
     //messagesList = conversationDao.getMessages2(currentSubjectId);
     //ArrayList<MessageRealm> messagesList = conversationDao.generteMessagesSeedList(20);
 
-
     adapter = new ConversationAdapter(messagesList, rvConversation);
-
     rvConversation.setAdapter(adapter);
 
     bChat = (ImageButton) findViewById(R.id.bChat);
@@ -177,12 +175,13 @@ public class DrawActivity extends AppCompatActivity implements
       @Override
       public void onClick(View v) {
         sendChatMessage();
-        /*
+
         ConversationDao convDao = new ConversationDao();
         messagesList.clear();
-        messagesList.addAll(convDao.getMessages2(currentSubjectId));
+        messagesList.addAll(convDao.getMessages(currentSubjectId));
         convDao.closeRealmInstance();
-        adapter.notifyDataSetChanged();*/
+        adapter.notifyDataSetChanged();
+        rvConversation.scrollToPosition(messagesList.size() - 1);
       }
     });
 
@@ -344,6 +343,33 @@ public class DrawActivity extends AppCompatActivity implements
           }
         });
 
+    /*ProgressListener listener = new ProgressListener() {
+
+      @Override
+      public void onChange(final Progress progress) {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            if (progress.isTransferComplete()) {
+              //hideActivityIndicator();
+              reloadMessages();
+            } else {
+              //showActivityIndicator();
+            }
+          }
+        });
+      }
+    };
+
+    SyncSession session = SyncManager.getSession(SplashActivity.publicSyncConfiguration);
+    session.addDownloadProgressListener(ProgressMode.INDEFINITELY, listener);
+
+// When stopping activity
+    session.removeProgressListener(listener);*/
+
+    GetMessagesThread getMessagesThread = new GetMessagesThread();
+    getMessagesThread.start();
+
   }
 
   public void sendChatMessage() {
@@ -429,6 +455,7 @@ public class DrawActivity extends AppCompatActivity implements
       //realmThread.interrupt();
       //realmThread.shutdown();
       conversationDao.closeRealmInstance();
+      checkForNewMessages = false;
     }
     ratio = 0;
   }
@@ -554,7 +581,6 @@ public class DrawActivity extends AppCompatActivity implements
     }
 
   }
-
 
   /**
    * Mój ropoczety wątek
@@ -722,6 +748,33 @@ public class DrawActivity extends AppCompatActivity implements
     return true;
   }
 
+  class GetMessagesThread extends Thread {
+    //ConversationDao convDao;
+    public void run() {
+      while (checkForNewMessages) {
+
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            ConversationDao convDao = new ConversationDao();
+            messagesList.clear();
+            messagesList.addAll(convDao.getMessages(currentSubjectId)); //tu jakis blad instancji realma jest
+            adapter.notifyDataSetChanged();
+            convDao.closeRealmInstance();
+            //convDao = null;
+            rvConversation.scrollToPosition(messagesList.size() - 1);
+            Log.d("messages thread", "................Pobranie wiadomości...");
+          }
+        });
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
   private class firstSketchDownloadAsyncTask extends AsyncTask<Void, Void, Void> {
 
     SurfaceHolder holder;
@@ -770,6 +823,13 @@ public class DrawActivity extends AppCompatActivity implements
     protected Void doInBackground(Void... arg0) {
       return null;
     }
+  }
+
+  public void reloadMessages() {
+    messagesList.clear();
+    messagesList.addAll(conversationDao.getMessages(currentSubjectId));
+    adapter.notifyDataSetChanged();
+    rvConversation.scrollToPosition(messagesList.size() - 1);
   }
 
   /*** Interfaces methods:**/
@@ -836,14 +896,15 @@ public class DrawActivity extends AppCompatActivity implements
   }
 
   /** Interface ConversationDao.ConversationListener methods implementation: **/
-  @Override
+  /*@Override
   public void refreshAdapterView() {
     messagesList.clear();
     messagesList.addAll(conversationDao.getMessages(currentSubjectId));
     adapter.notifyDataSetChanged();
     rvConversation.scrollToPosition(messagesList.size()-1);
 
-  }
+  }*/
+
 
   /*************************/
 

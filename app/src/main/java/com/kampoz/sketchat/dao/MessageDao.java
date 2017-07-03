@@ -45,5 +45,4 @@ public class MessageDao {
   public void closeRealmInstance() {
     realm.close();
   }
-
 }

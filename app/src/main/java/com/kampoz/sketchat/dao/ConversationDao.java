@@ -4,8 +4,6 @@ import com.kampoz.sketchat.activity.SplashActivity;
 import com.kampoz.sketchat.realm.ConversationRealm;
 import com.kampoz.sketchat.realm.MessageRealm;
 import com.kampoz.sketchat.realm.SubjectRealm;
-import io.realm.OrderedCollectionChangeSet;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -20,12 +18,12 @@ import java.util.Random;
 
 public class ConversationDao {
 
-  public interface ConversationListener{
+  /*public interface ConversationListener{
     void refreshAdapterView();
-  }
+  }*/
 
   private Realm realm;
-  private ConversationListener listener;
+  //private ConversationListener listener;
 
   public ConversationDao() {
     this.realm = Realm.getInstance(SplashActivity.publicSyncConfiguration);
@@ -52,8 +50,9 @@ public class ConversationDao {
   }
 
   /** gets messages for current subject sorted by date ascendencing */
-  public ArrayList<MessageRealm> getMessages(long subjectId){
-    RealmResults<MessageRealm> messagesRealmResults = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().sort("messageTime", Sort.ASCENDING);
+  /*public ArrayList<MessageRealm> getMessages(long subjectId){
+    //RealmResults<MessageRealm> messagesRealmResults = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().sort("messageTime", Sort.ASCENDING);
+    RealmResults<MessageRealm> messagesRealmResults = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().sort("id", Sort.ASCENDING);
     ArrayList<MessageRealm> messagesList = new ArrayList<>();
     messagesList.addAll(messagesRealmResults);
 
@@ -68,13 +67,19 @@ public class ConversationDao {
         });
 
     return messagesList;
-  }
+  }*/
 
-  public ArrayList<MessageRealm> getMessages2(long subjectId){
+  /*public ArrayList<MessageRealm> getMessages(long subjectId){
     RealmResults<MessageRealm> messagesRealmResults = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().sort("messageTime", Sort.ASCENDING);
     ArrayList<MessageRealm> messagesList = new ArrayList<>();
     messagesList.addAll(messagesRealmResults);
+    return messagesList;
+  }*/
 
+  public ArrayList<MessageRealm> getMessages(long subjectId){
+    RealmResults<MessageRealm> messagesRealmResults = realm.where(SubjectRealm.class).equalTo("id", subjectId).findFirst().getConversationRealm().getMessagesRealmList().sort("id", Sort.ASCENDING);
+    ArrayList<MessageRealm> messagesList = new ArrayList<>();
+    messagesList.addAll(messagesRealmResults);
     return messagesList;
   }
 
@@ -92,9 +97,9 @@ public class ConversationDao {
     return messagesList;
   }
 
-  public void setListener(ConversationListener listener) {
+  /*public void setListener(ConversationListener listener) {
     this.listener = listener;
-  }
+  }*/
 
   public void closeRealmInstance() {
     realm.close();
