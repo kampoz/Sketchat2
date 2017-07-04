@@ -51,6 +51,7 @@ import io.realm.Realm;
 import io.realm.Realm.Transaction;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
+import io.realm.SyncUser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -120,6 +121,10 @@ public class DrawActivity extends AppCompatActivity implements
   private ArrayList<MessageRealm> messagesList;
   private final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
   private boolean checkForNewMessages = true;
+  private String serverConnectionTag = "serv con";
+
+  public static int oldMessageslistSize = 0;
+  public static int newMessageListSize = 0;
 
 
   @Override
@@ -369,6 +374,8 @@ public class DrawActivity extends AppCompatActivity implements
 
     GetMessagesThread getMessagesThread = new GetMessagesThread();
     getMessagesThread.start();
+
+    checkingSyncUserLogs();
 
   }
 
@@ -732,6 +739,7 @@ public class DrawActivity extends AppCompatActivity implements
     int id = item.getItemId();
     if (id == R.id.action_drawer_chat) {
       drawer.openDrawer(Gravity.LEFT);
+      reloadMessages();
       return true;
     } else {
       // Handle your other action bar items...
@@ -750,6 +758,8 @@ public class DrawActivity extends AppCompatActivity implements
 
   class GetMessagesThread extends Thread {
     //ConversationDao convDao;
+
+
     public void run() {
       while (checkForNewMessages) {
 
@@ -759,11 +769,15 @@ public class DrawActivity extends AppCompatActivity implements
             ConversationDao convDao = new ConversationDao();
             messagesList.clear();
             messagesList.addAll(convDao.getMessages(currentSubjectId)); //tu jakis blad instancji realma jest
+            DrawActivity.newMessageListSize = messagesList.size();
             adapter.notifyDataSetChanged();
             convDao.closeRealmInstance();
             //convDao = null;
+            if(newMessageListSize != oldMessageslistSize){
             rvConversation.scrollToPosition(messagesList.size() - 1);
+            }
             Log.d("messages thread", "................Pobranie wiadomości...");
+            DrawActivity.oldMessageslistSize = newMessageListSize;
           }
         });
         try {
@@ -830,6 +844,8 @@ public class DrawActivity extends AppCompatActivity implements
     messagesList.addAll(conversationDao.getMessages(currentSubjectId));
     adapter.notifyDataSetChanged();
     rvConversation.scrollToPosition(messagesList.size() - 1);
+
+    Log.d("messages", "...................reloadMessages()...");
   }
 
   /*** Interfaces methods:**/
@@ -934,6 +950,24 @@ public class DrawActivity extends AppCompatActivity implements
     this.currentSubjectId = currentSubjectId;
   }
 
+  public void checkingSyncUserLogs(){
+    if(SyncUser.currentUser().isValid()){
+      Log.d(serverConnectionTag, "SyncUser.currentUser().isValid() = true");
+      Log.d(serverConnectionTag, "SyncUser.currentUser().getIdentity() "+SyncUser.currentUser().getIdentity());
+      Log.d(serverConnectionTag, "SyncUser.currentUser().toString()) "+SyncUser.currentUser().toString());
+    }else{
+      Log.d(serverConnectionTag, "SyncUser.currentUser().isValid() = false");
+    }
 
+    if(SyncUser.currentUser() != null){
+      Log.d(serverConnectionTag, "(SyncUser.currentUser() != null) = true");
+    }else{
+      Log.d(serverConnectionTag, "(SyncUser.currentUser() != null) = false");
+    }
+  }
+
+  public void checkIfIsConnectedToServer(){
+    //????
+  }
 }
 
