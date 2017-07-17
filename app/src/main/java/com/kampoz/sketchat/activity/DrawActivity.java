@@ -100,7 +100,6 @@ public class DrawActivity extends AppCompatActivity implements
   private String tagClose = "- in Thread close";
   private String tagCount = "= Realm instances opened in Thread: ";
   private String tagGlobal = "== globalRealmInstancesCount: ";
-
   private int countDA = 0;
   private String tag2 = "realm2 instance DA";
   private String tagOpenDA = "+ in DrawActivity open";
@@ -893,6 +892,44 @@ public class DrawActivity extends AppCompatActivity implements
     dialog.setCurrentColorRGB(currentRGBColor);
     dialog.show(fragmentTransaction, "ColorPickerDialogFragment");
   }
+
+  @Override
+  public void scalePlus() {
+    //todo Poprawic skalowanie,
+    canvas.scale(3, 3);
+  }
+
+  @Override
+  public void scaleMinus() {
+    //todo Poprawic skalowanie
+    canvas.scale(0.5f, 0.5f);
+  }
+
+  @Override
+  public void thickLine() {
+
+  }
+
+  @Override
+  public void middleLine() {
+
+  }
+
+  @Override
+  public void thinLine() {
+
+  }
+
+  @Override
+  public void drawCircle() {
+
+  }
+
+  @Override
+  public void drawRectangle() {
+
+  }
+
   /** End Interface PaletteFragment.PaletteCallback**/
 
   /***
