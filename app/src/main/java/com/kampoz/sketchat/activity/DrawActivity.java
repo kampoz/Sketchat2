@@ -164,28 +164,18 @@ public class DrawActivity extends AppCompatActivity implements
     rvConversation.setAdapter(adapter);
 
     bChat = (ImageButton) findViewById(R.id.bChat);
+
     bChat.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (!drawer.isDrawerOpen(Gravity.LEFT)) {
-          drawer.openDrawer(Gravity.LEFT);
-        }
-        if (drawer.isDrawerOpen(Gravity.LEFT)) {
-          drawer.closeDrawer(Gravity.LEFT);
-        }
+        showingAndHidingDrawer();
       }
     });
 
     ibSend.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        sendChatMessage();
-        ConversationDao convDao = new ConversationDao();
-        messagesList.clear();
-        messagesList.addAll(convDao.getMessages(currentSubjectId));
-        convDao.closeRealmInstance();
-        adapter.notifyDataSetChanged();
-        rvConversation.scrollToPosition(messagesList.size() - 1);
+        sendChatMessageAndScrollChatToBottom();
       }
     });
 
@@ -214,6 +204,7 @@ public class DrawActivity extends AppCompatActivity implements
 
     GetMessagesThread getMessagesThread = new GetMessagesThread();
     getMessagesThread.start();
+
     checkingSyncUserLogs();
 
   }
@@ -246,9 +237,7 @@ public class DrawActivity extends AppCompatActivity implements
             point.setX(pointX);
             point.setY(pointY);
             currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst()
-                .getDrawing()
-                .getPaths().add(currentPath);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
           }
         });
       } else if (action == MotionEvent.ACTION_MOVE) {
@@ -298,13 +287,13 @@ public class DrawActivity extends AppCompatActivity implements
     return false;
   }
 
+  /****/
   public ThreadToDraw setThreadToDrawOnCanvas(){
     ThreadToDraw threadToDraw = new ThreadToDraw(SplashActivity.publicSyncConfiguration,
         new ThreadToDraw.RealmRunnable() {
           @Override
           public void run(Realm realm) {
-            final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class)
-                .equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
+            final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
             do {
               try {
                 final SurfaceHolder holder = surfaceView.getHolder();
@@ -360,7 +349,27 @@ public class DrawActivity extends AppCompatActivity implements
     return threadToDraw;
   }
 
-  public void sendChatMessage() {
+
+  private void showingAndHidingDrawer(){
+    if (!drawer.isDrawerOpen(Gravity.LEFT)) {
+      drawer.openDrawer(Gravity.LEFT);
+    }
+    if (drawer.isDrawerOpen(Gravity.LEFT)) {
+      drawer.closeDrawer(Gravity.LEFT);
+    }
+  }
+
+  private void sendChatMessageAndScrollChatToBottom(){
+    sendChatMessageToRealm();
+    ConversationDao convDao = new ConversationDao();
+    messagesList.clear();
+    messagesList.addAll(convDao.getMessages(currentSubjectId));
+    convDao.closeRealmInstance();
+    adapter.notifyDataSetChanged();
+    rvConversation.scrollToPosition(messagesList.size() - 1);
+  }
+
+  private void sendChatMessageToRealm() {
     String messageText = etToWriteMessage.getText().toString();
     if (messageText != "") {
       MessageDao messageDao = new MessageDao();
