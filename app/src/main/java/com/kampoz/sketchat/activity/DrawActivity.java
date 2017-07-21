@@ -34,6 +34,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.kampoz.sketchat.POJO.DrawPath;
+import com.kampoz.sketchat.POJO.DrawingPoint;
 import com.kampoz.sketchat.R;
 import com.kampoz.sketchat.adapter.ConversationAdapter;
 import com.kampoz.sketchat.dao.ConversationDao;
@@ -41,6 +43,7 @@ import com.kampoz.sketchat.dao.MessageDao;
 import com.kampoz.sketchat.dao.UserRealmLocalDao;
 import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
+import com.kampoz.sketchat.helper.MyArrayHelper;
 import com.kampoz.sketchat.helper.MyColorRGB;
 import com.kampoz.sketchat.model.PencilView;
 import com.kampoz.sketchat.realm.DrawPathRealm;
@@ -61,7 +64,7 @@ public class DrawActivity extends AppCompatActivity implements
     PaletteFragment.PaletteCallback,
     ColorPickerDialogFragment.ColorListener {
 
-  private static final String REALM_URL = "realm2://" + "100.0.0.21" + ":9080/Draw999";
+  private static final String REALM_URL = "realm2://" + "100.0.0.21" + ":9080/Draw3333";
   private static final String AUTH_URL = "http://" + "100.0.0.21" + ":9080/auth";
   private static final String ID = "kampoz@kaseka.net";
   private static final String PASSWORD = "Murzyn1!";
@@ -133,6 +136,7 @@ public class DrawActivity extends AppCompatActivity implements
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
 
+    progressDialog = ProgressDialog.show(DrawActivity.this,"", "Loading sketch. Please wait..." , false);
     realm = Realm.getDefaultInstance();
     toolbar = (Toolbar) findViewById(R.id.app_bar);
 
@@ -209,8 +213,8 @@ public class DrawActivity extends AppCompatActivity implements
 
   }
 
-/***/
-  public boolean gettingDataOfDrawingFromSurfaceView(MotionEvent event){
+  /***/
+  public boolean gettingDataOfDrawingFromSurfaceView(MotionEvent event) {
 
     if (realm == null) {
       return false;
@@ -237,7 +241,8 @@ public class DrawActivity extends AppCompatActivity implements
             point.setX(pointX);
             point.setY(pointY);
             currentPath.getPoints().add(point);
-            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths().add(currentPath);
+            realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing()
+                .getPaths().add(currentPath);
           }
         });
       } else if (action == MotionEvent.ACTION_MOVE) {
@@ -288,12 +293,17 @@ public class DrawActivity extends AppCompatActivity implements
   }
 
   /****/
-  public ThreadToDraw setThreadToDrawOnCanvas(){
-    ThreadToDraw threadToDraw = new ThreadToDraw(SplashActivity.publicSyncConfiguration,
+  public ThreadToDraw setThreadToDrawOnCanvas() {
+    final ThreadToDraw threadToDraw = new ThreadToDraw(SplashActivity.publicSyncConfiguration,
         new ThreadToDraw.RealmRunnable() {
           @Override
           public void run(Realm realm) {
+
             final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
+
+            //MyArrayHelper myArrayHelper = new MyArrayHelper();
+            ArrayList<DrawPath> results2 = MyArrayHelper.pathsFromRealmToArray(results);
+
             do {
               try {
                 final SurfaceHolder holder = surfaceView.getHolder();
@@ -305,7 +315,8 @@ public class DrawActivity extends AppCompatActivity implements
                   final Paint paint = new Paint();
                   for (DrawPathRealm drawPath : results) {
                     final RealmList<DrawPointRealm> points = drawPath.getPoints();
-                    final Integer color = drawPath.getColor();//nameToColorMap.get(drawPath.getColor());
+                    final Integer color = drawPath
+                        .getColor();//nameToColorMap.get(drawPath.getColor());
                     if (color != null) {
                       paint.setColor(color);
                     } else {
@@ -329,13 +340,15 @@ public class DrawActivity extends AppCompatActivity implements
                       canvas.drawPath(path, paint);
                     }
                   }
-                  if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
-                  }
+
 
                 }
               } finally {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                  progressDialog.dismiss();
+                  progressDialog = null;
+                }
+
                 if (canvas != null) {
                   surfaceView.getHolder().unlockCanvasAndPost(canvas);
                 }
@@ -345,12 +358,32 @@ public class DrawActivity extends AppCompatActivity implements
 
             } while (realm.waitForChange());
           }
+
+          public ArrayList<DrawPath> changeRealmListOfDrawPathRealmToArrayList(
+              RealmList<DrawPathRealm> realmResults){
+            ArrayList<DrawPath> drawPaths = new ArrayList<>();
+            for (int i = 0; i < realmResults.size(); i++){
+              changeRealmListOfPointsRealmToArrayList(realmResults.get(i).getPoints(), drawPaths.get(i).getPoints());
+            }
+            return drawPaths;
+          }
+
+          public void changeRealmListOfPointsRealmToArrayList(
+              RealmList<DrawPointRealm> realmListOfPoints,
+              ArrayList<DrawingPoint> arrayListOfPoints){
+            for (int i = 0; i < realmListOfPoints.size(); i++){
+              arrayListOfPoints.get(i).setX(realmListOfPoints.get(i).getX());
+              arrayListOfPoints.get(i).setY(realmListOfPoints.get(i).getY());
+            }
+          }
+
         });
     return threadToDraw;
   }
 
 
-  private void showingAndHidingDrawer(){
+
+  private void showingAndHidingDrawer() {
     if (!drawer.isDrawerOpen(Gravity.LEFT)) {
       drawer.openDrawer(Gravity.LEFT);
     }
@@ -359,7 +392,7 @@ public class DrawActivity extends AppCompatActivity implements
     }
   }
 
-  private void sendChatMessageAndScrollChatToBottom(){
+  private void sendChatMessageAndScrollChatToBottom() {
     sendChatMessageToRealm();
     ConversationDao convDao = new ConversationDao();
     messagesList.clear();
@@ -384,6 +417,7 @@ public class DrawActivity extends AppCompatActivity implements
   public String getCurrentSubjectTitle(Long currentSubjectId) {
     return realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getSubject();
   }
+
 
   @Override
   protected void onStop() {
@@ -507,6 +541,8 @@ public class DrawActivity extends AppCompatActivity implements
     // Runnable interface
     public interface RealmRunnable {
       void run(final Realm realm);
+
+      ArrayList<DrawPath> changeRealmListOfDrawPathRealmToArrayList(RealmList<DrawPathRealm> results);
     }
 
     private final RealmConfiguration realmConfig;
@@ -524,6 +560,7 @@ public class DrawActivity extends AppCompatActivity implements
       this.realmConfig = realmConfig;
       this.task = task;
     }
+
 
     @Override
     public void run() {
@@ -566,6 +603,7 @@ public class DrawActivity extends AppCompatActivity implements
    * Mój ropoczety wątek
    */
   class MyDrawThread extends Thread {
+
     private Realm realm;
 
     @Override
@@ -676,10 +714,10 @@ public class DrawActivity extends AppCompatActivity implements
                 canvas.drawPath(path, paint);
               }
             }
-            if (progressDialog != null && progressDialog.isShowing()) {
+            /*if (progressDialog != null && progressDialog.isShowing()) {
               progressDialog.dismiss();
               progressDialog = null;
-            }
+            }*/
 
           }
         } finally {
@@ -740,13 +778,14 @@ public class DrawActivity extends AppCompatActivity implements
           public void run() {
             ConversationDao convDao = new ConversationDao();
             messagesList.clear();
-            messagesList.addAll(convDao.getMessages(currentSubjectId)); //tu jakis blad instancji realma jest
+            messagesList.addAll(
+                convDao.getMessages(currentSubjectId)); //tu jakis blad instancji realma jest
             DrawActivity.newMessageListSize = messagesList.size();
             adapter.notifyDataSetChanged();
             convDao.closeRealmInstance();
             //convDao = null;
-            if(newMessageListSize != oldMessageslistSize){
-            rvConversation.scrollToPosition(messagesList.size() - 1);
+            if (newMessageListSize != oldMessageslistSize) {
+              rvConversation.scrollToPosition(messagesList.size() - 1);
             }
             Log.d("messages thread", "................Pobranie wiadomości...");
             DrawActivity.oldMessageslistSize = newMessageListSize;
@@ -762,7 +801,6 @@ public class DrawActivity extends AppCompatActivity implements
   }
 
   private class firstSketchDownloadAsyncTask extends AsyncTask<Void, Void, Void> {
-
     SurfaceHolder holder;
 
     @Override
@@ -770,12 +808,18 @@ public class DrawActivity extends AppCompatActivity implements
       super.onPreExecute();
       holder = surfaceView.getHolder();
       canvas = holder.lockCanvas();
-      progressDialog = new ProgressDialog(DrawActivity.this);
+
+
+      /*
+      Dialog = new ProgressDialog(DrawActivity.this);
       progressDialog.setMessage("Loading sketch. Please wait...");
       //progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
       progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
-      progressDialog.show();
+      */
+
+
+
     }
 
     @Override
@@ -960,23 +1004,25 @@ public class DrawActivity extends AppCompatActivity implements
     this.currentSubjectId = currentSubjectId;
   }
 
-  public void checkingSyncUserLogs(){
-    if(SyncUser.currentUser().isValid()){
+  public void checkingSyncUserLogs() {
+    if (SyncUser.currentUser().isValid()) {
       Log.d(serverConnectionTag, "SyncUser.currentUser().isValid() = true");
-      Log.d(serverConnectionTag, "SyncUser.currentUser().getIdentity() "+SyncUser.currentUser().getIdentity());
-      Log.d(serverConnectionTag, "SyncUser.currentUser().toString()) "+SyncUser.currentUser().toString());
-    }else{
+      Log.d(serverConnectionTag,
+          "SyncUser.currentUser().getIdentity() " + SyncUser.currentUser().getIdentity());
+      Log.d(serverConnectionTag,
+          "SyncUser.currentUser().toString()) " + SyncUser.currentUser().toString());
+    } else {
       Log.d(serverConnectionTag, "SyncUser.currentUser().isValid() = false");
     }
 
-    if(SyncUser.currentUser() != null){
+    if (SyncUser.currentUser() != null) {
       Log.d(serverConnectionTag, "(SyncUser.currentUser() != null) = true");
-    }else{
+    } else {
       Log.d(serverConnectionTag, "(SyncUser.currentUser() != null) = false");
     }
   }
 
-  public void checkIfIsConnectedToServer(){
+  public void checkIfIsConnectedToServer() {
     //????
   }
 }
