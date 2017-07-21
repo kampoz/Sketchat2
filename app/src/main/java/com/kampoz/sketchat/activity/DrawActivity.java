@@ -136,7 +136,8 @@ public class DrawActivity extends AppCompatActivity implements
     setContentView(R.layout.activity_draw);
     Intent intent = getIntent();
 
-    progressDialog = ProgressDialog.show(DrawActivity.this,"", "Loading sketch. Please wait..." , false);
+    progressDialog = ProgressDialog
+        .show(DrawActivity.this, "", "Loading sketch. Please wait...", false);
     realm = Realm.getDefaultInstance();
     toolbar = (Toolbar) findViewById(R.id.app_bar);
 
@@ -299,14 +300,15 @@ public class DrawActivity extends AppCompatActivity implements
           @Override
           public void run(Realm realm) {
 
-            final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
+            final RealmList<DrawPathRealm> results = realm.where(SubjectRealm.class)
+                .equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
 
             //MyArrayHelper myArrayHelper = new MyArrayHelper();
             ArrayList<DrawPath> results2 = MyArrayHelper.pathsFromRealmToArray(results);
 
             do {
               try {
-                final SurfaceHolder holder = surfaceView.getHolder();
+                /*final SurfaceHolder holder = surfaceView.getHolder();
                 canvas = holder.lockCanvas();
                 synchronized (holder) {
                   if (canvas != null) {
@@ -340,9 +342,45 @@ public class DrawActivity extends AppCompatActivity implements
                       canvas.drawPath(path, paint);
                     }
                   }
-
-
+                }*/
+                ///////////////// aarayList jako zrodlo danych do rysunku//////////////////
+                final SurfaceHolder holder = surfaceView.getHolder();
+                canvas = holder.lockCanvas();
+                synchronized (holder) {
+                  if (canvas != null) {
+                    canvas.drawColor(Color.WHITE);
+                  }
+                  final Paint paint = new Paint();
+                  for (DrawPath drawPath : results2) {
+                    final ArrayList<DrawingPoint> points = drawPath.getPoints();
+                    final Integer color = drawPath
+                        .getColor();//nameToColorMap.get(drawPath.getColor());
+                    if (color != null) {
+                      paint.setColor(color);
+                    } else {
+                      paint.setColor(currentColor);
+                    }
+                    paint.setStyle(Style.STROKE);
+                    paint.setStrokeWidth((float) (4 / ratio));
+                    final Iterator<DrawingPoint> iterator = points.iterator();
+                    final DrawingPoint firstPoint = iterator.next();
+                    final Path path = new Path();
+                    final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
+                    final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
+                    path.moveTo(firstX, firstY);
+                    while (iterator.hasNext()) {
+                      DrawingPoint point = iterator.next();
+                      final float x = (float) ((point.getX() / ratio) + marginLeft);
+                      final float y = (float) ((point.getY() / ratio) + marginTop);
+                      path.lineTo(x, y);
+                    }
+                    if (canvas != null) {
+                      canvas.drawPath(path, paint);
+                    }
+                  }
                 }
+
+
               } finally {
                 if (progressDialog != null && progressDialog.isShowing()) {
                   progressDialog.dismiss();
@@ -353,25 +391,25 @@ public class DrawActivity extends AppCompatActivity implements
                   surfaceView.getHolder().unlockCanvasAndPost(canvas);
                 }
               }
-
               Log.d("ThreadToDraw", " wątek ThreadToDraw działa ...");
 
             } while (realm.waitForChange());
           }
 
           public ArrayList<DrawPath> changeRealmListOfDrawPathRealmToArrayList(
-              RealmList<DrawPathRealm> realmResults){
+              RealmList<DrawPathRealm> realmResults) {
             ArrayList<DrawPath> drawPaths = new ArrayList<>();
-            for (int i = 0; i < realmResults.size(); i++){
-              changeRealmListOfPointsRealmToArrayList(realmResults.get(i).getPoints(), drawPaths.get(i).getPoints());
+            for (int i = 0; i < realmResults.size(); i++) {
+              changeRealmListOfPointsRealmToArrayList(realmResults.get(i).getPoints(),
+                  drawPaths.get(i).getPoints());
             }
             return drawPaths;
           }
 
           public void changeRealmListOfPointsRealmToArrayList(
               RealmList<DrawPointRealm> realmListOfPoints,
-              ArrayList<DrawingPoint> arrayListOfPoints){
-            for (int i = 0; i < realmListOfPoints.size(); i++){
+              ArrayList<DrawingPoint> arrayListOfPoints) {
+            for (int i = 0; i < realmListOfPoints.size(); i++) {
               arrayListOfPoints.get(i).setX(realmListOfPoints.get(i).getX());
               arrayListOfPoints.get(i).setY(realmListOfPoints.get(i).getY());
             }
@@ -380,7 +418,6 @@ public class DrawActivity extends AppCompatActivity implements
         });
     return threadToDraw;
   }
-
 
 
   private void showingAndHidingDrawer() {
@@ -540,9 +577,11 @@ public class DrawActivity extends AppCompatActivity implements
 
     // Runnable interface
     public interface RealmRunnable {
+
       void run(final Realm realm);
 
-      ArrayList<DrawPath> changeRealmListOfDrawPathRealmToArrayList(RealmList<DrawPathRealm> results);
+      ArrayList<DrawPath> changeRealmListOfDrawPathRealmToArrayList(
+          RealmList<DrawPathRealm> results);
     }
 
     private final RealmConfiguration realmConfig;
@@ -801,6 +840,7 @@ public class DrawActivity extends AppCompatActivity implements
   }
 
   private class firstSketchDownloadAsyncTask extends AsyncTask<Void, Void, Void> {
+
     SurfaceHolder holder;
 
     @Override
@@ -817,8 +857,6 @@ public class DrawActivity extends AppCompatActivity implements
       progressDialog.setCancelable(false);
       //progressDialog.setProgressStyle(R.style.MyProgressDialogTheme);
       */
-
-
 
     }
 
