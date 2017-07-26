@@ -45,6 +45,7 @@ import com.kampoz.sketchat.dialog.ColorPickerDialogFragment;
 import com.kampoz.sketchat.fragments.PaletteFragment;
 import com.kampoz.sketchat.helper.MyArrayHelper;
 import com.kampoz.sketchat.helper.MyColorRGB;
+import com.kampoz.sketchat.helper.MyDrawingHelper;
 import com.kampoz.sketchat.model.PencilView;
 import com.kampoz.sketchat.realm.DrawPathRealm;
 import com.kampoz.sketchat.realm.DrawPointRealm;
@@ -124,6 +125,8 @@ public class DrawActivity extends AppCompatActivity implements
   private final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
   private boolean checkForNewMessages = true;
   private String serverConnectionTag = "serv con";
+  private ArrayList<DrawPath> wholeDrawing = new ArrayList<>();
+  private MyDrawingHelper myDrawingHelper = new MyDrawingHelper();
 
 
   public static int oldMessageslistSize = 0;
@@ -255,8 +258,7 @@ public class DrawActivity extends AppCompatActivity implements
             point.setY(pointY);
             currentPath.getPoints().add(point);
             realm.where(SubjectRealm.class).equalTo("id", currentSubjectId).findFirst()
-                .getDrawing()
-                .getPaths().add(currentPath);
+                .getDrawing().getPaths().add(currentPath);
           }
         });
       } else if (action == MotionEvent.ACTION_UP) {
@@ -304,82 +306,12 @@ public class DrawActivity extends AppCompatActivity implements
                 .equalTo("id", currentSubjectId).findFirst().getDrawing().getPaths();
 
             //MyArrayHelper myArrayHelper = new MyArrayHelper();
-            ArrayList<DrawPath> results2 = MyArrayHelper.pathsFromRealmToArray(results);
-
+            ArrayList<DrawPath> results2 = MyArrayHelper.rewritePathsFromRealmToArray(results);
+            
             do {
               try {
-                /*final SurfaceHolder holder = surfaceView.getHolder();
-                canvas = holder.lockCanvas();
-                synchronized (holder) {
-                  if (canvas != null) {
-                    canvas.drawColor(Color.WHITE);
-                  }
-                  final Paint paint = new Paint();
-                  for (DrawPathRealm drawPath : results) {
-                    final RealmList<DrawPointRealm> points = drawPath.getPoints();
-                    final Integer color = drawPath
-                        .getColor();//nameToColorMap.get(drawPath.getColor());
-                    if (color != null) {
-                      paint.setColor(color);
-                    } else {
-                      paint.setColor(currentColor);
-                    }
-                    paint.setStyle(Style.STROKE);
-                    paint.setStrokeWidth((float) (4 / ratio));
-                    final Iterator<DrawPointRealm> iterator = points.iterator();
-                    final DrawPointRealm firstPoint = iterator.next();
-                    final Path path = new Path();
-                    final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
-                    final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
-                    path.moveTo(firstX, firstY);
-                    while (iterator.hasNext()) {
-                      DrawPointRealm point = iterator.next();
-                      final float x = (float) ((point.getX() / ratio) + marginLeft);
-                      final float y = (float) ((point.getY() / ratio) + marginTop);
-                      path.lineTo(x, y);
-                    }
-                    if (canvas != null) {
-                      canvas.drawPath(path, paint);
-                    }
-                  }
-                }*/
-                ///////////////// aarayList jako zrodlo danych do rysunku//////////////////
-                final SurfaceHolder holder = surfaceView.getHolder();
-                canvas = holder.lockCanvas();
-                synchronized (holder) {
-                  if (canvas != null) {
-                    canvas.drawColor(Color.WHITE);
-                  }
-                  final Paint paint = new Paint();
-                  for (DrawPath drawPath : results2) {
-                    final ArrayList<DrawingPoint> points = drawPath.getPoints();
-                    final Integer color = drawPath
-                        .getColor();//nameToColorMap.get(drawPath.getColor());
-                    if (color != null) {
-                      paint.setColor(color);
-                    } else {
-                      paint.setColor(currentColor);
-                    }
-                    paint.setStyle(Style.STROKE);
-                    paint.setStrokeWidth((float) (4 / ratio));
-                    final Iterator<DrawingPoint> iterator = points.iterator();
-                    final DrawingPoint firstPoint = iterator.next();
-                    final Path path = new Path();
-                    final float firstX = (float) ((firstPoint.getX() / ratio) + marginLeft);
-                    final float firstY = (float) ((firstPoint.getY() / ratio) + marginTop);
-                    path.moveTo(firstX, firstY);
-                    while (iterator.hasNext()) {
-                      DrawingPoint point = iterator.next();
-                      final float x = (float) ((point.getX() / ratio) + marginLeft);
-                      final float y = (float) ((point.getY() / ratio) + marginTop);
-                      path.lineTo(x, y);
-                    }
-                    if (canvas != null) {
-                      canvas.drawPath(path, paint);
-                    }
-                  }
-                }
 
+                myDrawingHelper.draw(surfaceView, canvas, marginLeft, marginTop, ratio, results2, currentColor);
 
               } finally {
                 if (progressDialog != null && progressDialog.isShowing()) {
